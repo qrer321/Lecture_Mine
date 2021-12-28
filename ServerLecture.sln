@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameServerBase", "GameServerBase\GameServerBase.vcxproj", "{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{7CE78E79-2CFC-4FC5-B177-0E1893605204}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Git", "Git", "{E758455F-E5DE-4AB9-951B-E9BF2C66CD59}"
+	ProjectSection(SolutionItems) = preProject
+		HowToUse.txt = HowToUse.txt
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Debug|x64.ActiveCfg = Debug|x64
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Debug|x64.Build.0 = Debug|x64
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Debug|x86.ActiveCfg = Debug|Win32
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Debug|x86.Build.0 = Debug|Win32
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Release|x64.ActiveCfg = Release|x64
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Release|x64.Build.0 = Release|x64
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Release|x86.ActiveCfg = Release|Win32
+		{4BB3E41A-14B7-46C0-958E-D1B0BF16EF1A}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E758455F-E5DE-4AB9-951B-E9BF2C66CD59} = {7CE78E79-2CFC-4FC5-B177-0E1893605204}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EADD76B9-4F0C-4B36-B57C-6A9900FCD047}
+	EndGlobalSection
+EndGlobal
