@@ -1,2 +1,36 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" />
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="PreCompile.h">
+      <Filter>PreCompile</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerObjectBase.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerDebug.h">
+      <Filter>Debug</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="PreCompile.cpp">
+      <Filter>PreCompile</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerObjectBase.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerDebug.cpp">
+      <Filter>Debug</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="PreCompile">
+      <UniqueIdentifier>{3279ae6f-94f3-4e16-ad46-52daa8edb4a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{0fd03584-f5e8-44e4-83c5-3270f7c4f145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Debug">
+      <UniqueIdentifier>{7776efeb-d66c-4dd8-ab7b-6c70a602282e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
