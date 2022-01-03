@@ -8,7 +8,7 @@
 GameServerIocp g_newIocp0;
 GameServerIocp g_newIocp1;
 
-void Func0(const std::shared_ptr<GameServerIocpWorker>& worker)
+void Func0(std::shared_ptr<GameServerIocpWorker> worker)
 {
 	while (true)
 	{

@@ -54,8 +54,8 @@ private: // Member Var
 
 public: // Default
 	GameServerIocp();
-	GameServerIocp(std::function<void(std::shared_ptr<GameServerIocpWorker>)> func, int threadCount);
-	GameServerIocp(std::function<void(std::shared_ptr<GameServerIocpWorker>)> func, int threadCount, DWORD time);
+	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount);
+	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount, DWORD time);
 
 	~GameServerIocp();
 

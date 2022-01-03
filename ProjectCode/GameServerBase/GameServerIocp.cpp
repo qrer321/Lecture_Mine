@@ -44,13 +44,23 @@ GameServerIocp::GameServerIocp()
 
 }
 
-GameServerIocp::GameServerIocp(std::function<void(std::shared_ptr<GameServerIocpWorker>)> func, int threadCount)
+/*
+ * std::function<void(std::shared_ptr<GameServerIocpWorker>)> func와
+ * const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func의 차이
+ *
+ * const 레퍼런스의 유무
+ * 함수에 매개변수를 값으로 전달하면 값 전체가 복제되는데 비해
+ * const 레퍼런스로 전달하면 복제되지도 않고, 원본 변수가 변경되지도 않는다는 장점이 있다.
+ * 결국 성능이 증가하기에 사용한다
+ */
+
+GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount)
 {
 	Initialize(func, threadCount, INFINITE);
 }
 
-GameServerIocp::GameServerIocp(std::function<void(std::shared_ptr<GameServerIocpWorker>)> func, int threadCount,
-	DWORD time)
+GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount,
+                               DWORD time)
 {
 	Initialize(func, threadCount, time);
 }
