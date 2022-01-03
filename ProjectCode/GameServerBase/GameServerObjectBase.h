@@ -1,26 +1,41 @@
 #pragma once
+#include <memory>
+#include <vector>
 
 // 용도 : 
 // 분류 :
 // 첨언 : 
-class GameServerObjectBase
+class GameServerObjectBase : public std::enable_shared_from_this<GameServerObjectBase>
 {
 private: // Member Var
 
 public: // Default
 	GameServerObjectBase();
-	~GameServerObjectBase();
+	virtual ~GameServerObjectBase();
 
 	GameServerObjectBase(const GameServerObjectBase& _Other) = delete;
 	GameServerObjectBase(GameServerObjectBase&& _Other) noexcept;
 
-protected:
+public:
 	GameServerObjectBase& operator=(const GameServerObjectBase& _Other) = delete;
 	GameServerObjectBase& operator=(GameServerObjectBase&& _Other) = delete;
 
 private:
+	GameServerObjectBase*				m_Parent;
+	std::vector<GameServerObjectBase*>	m_LinkObject;
+
+public:
+	void SetParent(GameServerObjectBase* parent) { m_Parent = parent; }
+	void SetLink(GameServerObjectBase* link) { m_LinkObject.push_back(link); }
+
+public:
+	template<typename ParentType>
+	ParentType* GetParent() { return dynamic_cast<ParentType>(m_Parent); }
+
+	template<typename LinkType>
+	LinkType* GetLink(int index = 0) { return dynamic_cast<LinkType>(m_LinkObject[index]); }
 
 public: // Member Function
-	bool IsValid();
+	bool IsLowLevelValid();
 };
 

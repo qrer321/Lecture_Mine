@@ -10,6 +10,15 @@
     <ClInclude Include="GameServerDebug.h">
       <Filter>Debug</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerNameBase.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerIocp.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerThread.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -21,6 +30,15 @@
     <ClCompile Include="GameServerDebug.cpp">
       <Filter>Debug</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerNameBase.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerIocp.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerThread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -31,6 +49,9 @@
     </Filter>
     <Filter Include="Debug">
       <UniqueIdentifier>{7776efeb-d66c-4dd8-ab7b-6c70a602282e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Thread">
+      <UniqueIdentifier>{aca1da05-c5ea-42c1-af80-2d08b97743cc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

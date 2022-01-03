@@ -23,7 +23,19 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerIocp.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="GameServerNameBase.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="GameServerObjectBase.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="GameServerThread.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -34,7 +46,19 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerIocp.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerNameBase.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="GameServerObjectBase.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerThread.cpp">
       <SubType>
       </SubType>
     </ClCompile>
