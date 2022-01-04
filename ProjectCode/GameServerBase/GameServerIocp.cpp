@@ -67,10 +67,13 @@ GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServ
 
 GameServerIocp::~GameServerIocp() 
 {
-
+	for (const auto& element : m_ThreadList)
+	{
+		element->join();
+	}
 }
 
-GameServerIocp::GameServerIocp(GameServerIocp&& _Other) noexcept
+GameServerIocp::GameServerIocp(GameServerIocp&& other) noexcept
 {
 }
 

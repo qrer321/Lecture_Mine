@@ -37,8 +37,11 @@ public:
 	template<typename ConvertType>
 	ConvertType ConvertKey() { return reinterpret_cast<ConvertType>(CompletionKey); }
 
+	[[nodiscard]] ULONG_PTR GetCompletionKey() const { return CompletionKey; }
+	[[nodiscard]] DWORD GetNumberOfBytes() const { return NumberOfBytesTransferred; }
+
 public:
-	size_t GetIndex() const { return Index; }
+	[[nodiscard]] size_t GetIndex() const { return Index; }
 
 public:
 	IocpWaitReturnType Wait();
@@ -57,14 +60,14 @@ public: // Default
 	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount);
 	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount, DWORD time);
 
-	~GameServerIocp();
+	virtual ~GameServerIocp() override;
 
-	GameServerIocp(const GameServerIocp& _Other) = delete;
-	GameServerIocp(GameServerIocp&& _Other) noexcept;
+	GameServerIocp(const GameServerIocp& other) = delete;
+	GameServerIocp(GameServerIocp&& other) noexcept;
 
 public:
-	GameServerIocp& operator=(const GameServerIocp& _Other) = delete;
-	GameServerIocp& operator=(GameServerIocp&& _Other) = delete;
+	GameServerIocp& operator=(const GameServerIocp& other) = delete;
+	GameServerIocp& operator=(GameServerIocp&& other) = delete;
 
 public:
 	void Initialize(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount, DWORD time);

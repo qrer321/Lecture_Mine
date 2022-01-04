@@ -14,19 +14,19 @@ public: // Default
 	GameServerNameBase();
 	virtual ~GameServerNameBase() override;
 
-	GameServerNameBase(const GameServerNameBase& _Other) = delete;
-	GameServerNameBase(GameServerNameBase&& _Other) noexcept;
+	GameServerNameBase(const GameServerNameBase& other) = delete;
+	GameServerNameBase(GameServerNameBase&& other) noexcept;
 
 public:
-	GameServerNameBase& operator=(const GameServerNameBase& _Other) = delete;
-	GameServerNameBase& operator=(GameServerNameBase&& _Other) = delete;
+	GameServerNameBase& operator=(const GameServerNameBase& other) = delete;
+	GameServerNameBase& operator=(GameServerNameBase&& other) = delete;
 
 public:
 	virtual void SetName(const std::string& name);
 
-	std::string_view GetNameView();
-	std::string GetNameCopy();
-	const char* GetNamePtr();
+	std::string_view GetNameView() const;
+	std::string GetNameCopy() const;
+	const char* GetNamePtr() const;
 
 private:
 

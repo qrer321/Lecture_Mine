@@ -27,20 +27,22 @@ public: // Default
 
 	virtual ~GameServerThread() override;
 
-	GameServerThread(const GameServerThread& _Other) = delete;
-	GameServerThread(GameServerThread&& _Other) noexcept;
+	GameServerThread(const GameServerThread& other) = delete;
+	GameServerThread(GameServerThread&& other) noexcept;
 
 public:
-	GameServerThread& operator=(const GameServerThread& _Other) = delete;
-	GameServerThread& operator=(GameServerThread&& _Other) = delete;
+	GameServerThread& operator=(const GameServerThread& other) = delete;
+	GameServerThread& operator=(GameServerThread&& other) = delete;
 
 public:
 	static void ThreadNameSetting(const wchar_t* name);
 
 public:
-	std::thread::id ThreadId() { return m_Thread.get_id(); }
+	std::thread::id ThreadId() const { return m_Thread.get_id(); }
 
 public: // Member Function
+	void join();
+
 	template <class _Fn, class... _Args, std::enable_if_t<!std::is_same_v<std::_Remove_cvref_t<_Fn>, std::thread>, int> = 0>
 	void Start(_Fn&& _Fx, _Args&&... _Ax)
 	{
