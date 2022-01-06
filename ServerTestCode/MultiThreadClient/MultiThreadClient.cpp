@@ -144,6 +144,12 @@ int main()
 			std::cout << "포트 번호를 다시 확인해주세요" << std::endl;
 			system("pause");
 		}
+        else if (WSAEADDRNOTAVAIL == errorValue)
+        {
+            std::cout << "원격 주소가 유효한 주소가 아닙니다" << std::endl;
+            std::cout << "IP주소를 다시 확인해주세요" << std::endl;
+            system("pause");
+        }
 		else
 		{
 			std::cout << "알 수 없는 오류가 발생하였습니다" << std::endl;
