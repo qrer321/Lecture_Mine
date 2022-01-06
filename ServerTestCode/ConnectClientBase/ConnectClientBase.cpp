@@ -25,7 +25,13 @@ int main()
     WSADATA wsa;
 
     /*
+     * WSAStartup(wVersionRequired, lpWSAData)
      * 윈도우에 프로그램이 소켓통신을 하겠다고 미리 알려주는 함수
+     *
+     * @param
+     * _In  WORD      wVersionRequired : 애플리케이션이 사용할 수 있는 WinSock API의 최상위 버전
+     *                                   상위 바이트가 마이너 버전, 하위 바이트가 메이저 버전
+     * _Out LPWSADATA lpWSAData        : WSADATA 타입의 구조체에 대한 포인터
      *
      * MAKEWORD(2, 2) : 소켓 통신 방식 버전을 알려준다.
      * 대부분 2.2 버전이기 때문에 아래와 같이 입력해주면 된다.
@@ -36,15 +42,20 @@ int main()
     }
 
     /*
-     * socket( )
+     * socket(af, type, protocol)
      *
      * @param
-     * int af(domain)   : 어떤 영역에서 통신할 것이지에 대한 영역을 지정한다. 프로토콜 family를 지정
-     *                    AF_INET(IPv4) / AF_INET6(IPv6) / AF_UNIX(local to host (pipes, portals))
-     * int type         : 어떤 타입의 프로토콜을 사용할 것인지에 대해 설정
-     *                    SOCK_STREAM(TCP) / SOCK_DGRAM(UDP) / SOCK_RAW(사용자 정의)
-     * int protocol     : 어떤 프로토콜의 값을 결정하는 것
-     *                    0 / IPPROTO_TCP(TCP일 때) / IPPROTO_UDP(UDP일 때)
+     * int af(domain)   : 주소영역을 정의하기 위해서 사용한다.
+     *                    AF_INET   : IPv4 주소영역
+     *                    AF_INET6  : IPv6 주소영역
+     * int type         : 소켓의 통신 타입을 지정하기 위해서 사용한다.
+     *                    SOCK_STREAM(TCP)      : 연결지향, 양방향의 TCP/IP 기반의 통신을 위해서 사용된다
+     *                    SOCK_DGRAM(UDP)       : UDP/IP 기반의 통신을 위해 사용한다.
+     *                    SOCK_RAW(사용자 정의)  : IP 헤더를 직접 제어하기 위한 목적으로 사용한다.
+     * int protocol     : 호스트간 통신에 사용할 프로토콜을 결정하기 위해서 사용한다.
+     *                    IPPROTO_TCP : TCP를 사용한다.
+     *                    IPPROTO_UDP : UDP를 사용한다.
+     *
      * @return
      * SOCKET(UINT_PTR) : 해당 소켓을 가리키는 소켓 디스크립터(socket descriptor) 반환
      *                    -1(소켓 생성 실패) / 0 이상의 값(socket descriptor 반환)
@@ -59,15 +70,19 @@ int main()
     _getch();
 
     /*
+     * SOCKADDR_IN
      * 소켓통신을 위한 주소정보를 담는 구조체
-     * ADDRESS_FAMILY sin_family : 주소체계
-     * USHORT   sin_port         : 16비트 포트 번호, network byte order
-     * IN_ADDR  sin_addr         : 32비트 IP 주소
-     * CHAR     sin_zero[8]      : 전체 크기를 16비트로 맞추기 위한 dummy
      *
+     * @param
+     * ADDRESS_FAMILY   sin_family  : 주소체계
+     * USHORT           sin_port    : 16비트 포트 번호, network byte order
+     * IN_ADDR          sin_addr    : 32비트 IP 주소
+     * CHAR             sin_zero[8] : 전체 크기를 16비트로 맞추기 위한 dummy
+     *
+     * @desc
      * sin_port : 포트 번호를 가지며 2bytes이다. 즉 포트번호는 0 ~ 65535의 범위를 갖는 숫자 값이다.
      *            이 변수에 저장되는 값은 network byte order이어야 한다.
-     *            추가설명. ip주소로 서버가 존재하는 컴퓨터까지는 올 수 있다.
+     *            ip주소로 서버가 존재하는 컴퓨터까지는 올 수 있다.
      *            여러 개의 프로그램들이 통신을 하고 있을 때 해당 프로그램 중 어느 프로그램에 패킷을 보내야 하는지 결정
      *            특정 번호를 정해서 패킷이 도착할 위치를 정할 수 있다.
      *
@@ -83,11 +98,33 @@ int main()
     add.sin_port = htons(30001);    // 30001 포트로 빅엔디안으로 변환하여 설정
 
     /*
-     * inet_pton
+     * inet_pton(Family, pszAddrString, pAddrBuf)
+     * inet_pton() 함수는 사람이 알아보기 쉬운 텍스트 형태의 IPv4와 IPv6 주소를 binary 형태로 변환하는 함수
+     *
      * @param
      * _In  INT   Family        : address family를 지정한다. pszAddrString 문자열이 IPv4 / IPv6 주소를 나타내는지 함수에 알린다.
      * _In  PCSTR pszAddrString : 문자열 형태의 IP주소를 넣는다.
      * _Out PVOID pAddrBuf      : 입력된 IP주소를 binary 형태로 변환 후 복사된 메모리의 포인터이다.
+     *
+     * @return
+     * 성공 시 1을 반환한다.
+     * 즉, 1이 return되면 네트워크 주소가 성공적으로 변환되었음을 알린다.
+     *
+     * 0이 반환되는 경우 pszAddrString의 문자열이 나타내는 네트워크 주소가,
+     * Family에 명시된 address family의 유효한 값이 아닌 경우이다.
+     *
+     * -1이 반환되는 경우 Family가 적절한 address family 값이 아닌 경우이다.
+     * 이 때는 errno가 EAFNOSUPPORT 값으로 설정된다.
+     *
+     * @desc
+     * Family 매개변수의 address family가 가리키는 네트워크 주소 구조체에
+     * pszAddrString의 문자열의 값을 변환한 후,
+     * 이 네트워크 주소 구조체를 pAddrBuf(sin_addr)에 복사한다.
+     *
+     * Family는 반드시 AF_INET 혹은 AF_INET6, 둘 중 하나여야 한다.
+     * pAddrBuf는 network byte order로 작성된다.
+     *
+     * inet_aton() 및 inet_addr()와는 달리, inet_pton은 IPv4 / IPv6 주소를 모두 지원한다.
      */
     if (SOCKET_ERROR == inet_pton(AF_INET, "61.98.125.214", &add.sin_addr))
         return 0;
