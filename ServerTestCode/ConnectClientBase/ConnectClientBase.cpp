@@ -7,6 +7,7 @@
 #include <WinSock2.h>
 #include <Windows.h>
 #include <WS2tcpip.h>
+#include <string>
 
 #pragma comment(lib, "ws2_32")  // 서버 통신용 구현이 들어있는 라이브러리
 
@@ -60,14 +61,54 @@ int main()
      * SOCKET(UINT_PTR) : 해당 소켓을 가리키는 소켓 디스크립터(socket descriptor) 반환
      *                    -1(소켓 생성 실패) / 0 이상의 값(socket descriptor 반환)
      */
-    SOCKET ServerConnectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (INVALID_SOCKET == ServerConnectSocket)
+    SOCKET sessionSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if (INVALID_SOCKET == sessionSocket)
         return 0;
 
     // 클라이언트는 bind 할 필요가 없다.
 
-    std::cout << "접속 준비 키를 누르면 접속합니다" << std::endl;
-    _getch();
+    std::cout << "IP 주소를 입력해주세요  ";
+    std::cout << "(q를 입력하시면 127.0.0.1:30001로 접속합니다)" << std::endl;
+    std::string ip;
+    std::string port;
+    std::cin >> ip;
+    system("cls");
+
+    if ("q" == ip ||
+        "Q" == ip)
+    {
+        ip = "127.0.0.1";
+        port = "30001";
+    }
+
+    size_t portPos = ip.find(':');
+    if (port.empty() && std::string::npos == portPos)
+    {
+        std::cout << "포트 번호를 입력해주세요" << std::endl;
+        std::cin >> port;
+        system("cls");
+    }
+    else if (port.empty() && std::string::npos != portPos)
+    {
+        port = ip.substr(portPos + 1, ip.length() - portPos);
+        ip = ip.substr(0, portPos);
+    }
+
+
+    u_short port_s = 0;
+    try
+    {
+        port_s = static_cast<u_short>(std::stoi(port));
+    }
+    catch (...)
+    {
+        std::cout << "잘못된 포트 번호를 입력하였습니다" << std::endl;
+
+        std::cout << std::endl << std::endl;
+        std::cout << "입력한 포트 번호 : " << port << std::endl;
+        system("pause");
+        return 0;
+    }
 
     /*
      * SOCKADDR_IN
@@ -94,8 +135,8 @@ int main()
      *            struct sockaddr 구조체와 크기를 일치시키려는 목적으로 사용한다.
      */
     SOCKADDR_IN add = {};
-    add.sin_family = AF_INET;               // IP버전 4로 주소체계를 잡는다
-    add.sin_port = htons(30001);    // 30001 포트로 빅엔디안으로 변환하여 설정
+    add.sin_family = AF_INET;        // IP버전 4로 주소체계를 잡는다
+    add.sin_port = htons(port_s);    // 30001 포트로 빅엔디안으로 변환하여 설정
 
     /*
      * inet_pton(Family, pszAddrString, pAddrBuf)
@@ -126,8 +167,24 @@ int main()
      *
      * inet_aton() 및 inet_addr()와는 달리, inet_pton은 IPv4 / IPv6 주소를 모두 지원한다.
      */
-    if (SOCKET_ERROR == inet_pton(AF_INET, "61.98.125.214", &add.sin_addr))
+
+    INT pton_return_value = inet_pton(AF_INET, ip.c_str(), &add.sin_addr);
+    if (SOCKET_ERROR == pton_return_value)
         return 0;
+
+    if (0 == pton_return_value)
+    {
+        std::cout << "입력한 IP가 IPv4 형태의 주소가 아닙니다" << std::endl;
+
+        std::cout << std::endl << std::endl;
+        std::cout << "입력한 IP : " << ip << std::endl;
+        system("pause");
+
+        return 0;
+    }
+
+    std::cout << "IP 주소     : " << ip << std::endl;
+    std::cout << "port 번호   : " << port << std::endl << std::endl << std::endl;
 
     /*
      * connect(s, name, namelen)
@@ -138,10 +195,39 @@ int main()
      *     const sockaddr* name     : 연결정보를 담고 있는 sockaddr 구조체의 포인터
      * _In int             namelen  : sockaddr 구조체 포인터가 가리키는 데이터의 크기
      */
-    if (SOCKET_ERROR == connect(ServerConnectSocket, reinterpret_cast<const sockaddr*>(&add), sizeof(SOCKADDR_IN)))
+    if (SOCKET_ERROR == connect(sessionSocket, reinterpret_cast<const sockaddr*>(&add), sizeof(SOCKADDR_IN)))
+    {
+        int errorValue = WSAGetLastError();
+        if (WSAECONNREFUSED == errorValue)
+        {
+            std::cout << "연결이 거부되었습니다" << std::endl;
+            std::cout << "포트 번호를 다시 확인해주세요" << std::endl;
+            system("pause");
+        }
+        else
+        {
+            std::cout << "알 수 없는 오류가 발생하였습니다" << std::endl;
+            std::cout << "오류 코드를 확인해주세요" << std::endl;
+            std::cout << std::endl << std::endl;
+            std::cout << errorValue << std::endl;
+            system("pause");
+        }
+
+        return 0;
+    }
+    
+    std::cout << "정상적으로 접속하였습니다" << std::endl;
+    std::cout << "서버의 입력을 대기하고 있습니다" << std::endl << std::endl;
+        
+
+    char buffer[1024] = {};
+    int result = recv(sessionSocket, buffer, sizeof(buffer), 0);
+    if (SOCKET_ERROR == result)
         return 0;
 
     std::cout << "접속에 성공했습니다" << std::endl;
 
     _getch();
+
+    return 0;
 }

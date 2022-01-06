@@ -15,9 +15,9 @@ int main()
      * struct WSADATA
      * WORD				wVersion								: 버전
      * WORD				wHighVersion							: 사용할 수 있는 상위 버전으로 wVersion과 일치한다
-     * unsigned short	iMaxSockets								: 최대 소켓
+     * unsigned short   iMaxSockets								: 최대 소켓
      * unsigned short	iMaxUdpDg								: 데이터 그램의 최대 크기
-     * char FAR*		lpVenderInfo							: 벤더 정보(큰 의미 없음)
+     * char FAR*	    lpVenderInfo							: 벤더 정보(큰 의미 없음)
      * char				szDescription[WSADESCRIPTION_LEN + 1]	: 윈속 설명
      * char				szSystemStatus[WSASYS_STATUS_LEN + 1]	: 상태 문자열
      */
@@ -189,8 +189,15 @@ int main()
      * 이 소켓을 이용해서 클라이언트와 데이터 통신을 할 수 있다.
      * 클라이언트와 연결된 소켓이라고 해서 흔히 '연결 소켓'이라고 부른다.
      */
-    SOCKET userSocket = accept(ServerAcceptSocket, reinterpret_cast<sockaddr*>(&userAdd), &len);
-    if (INVALID_SOCKET == userSocket)
+    SOCKET sessionSocket = accept(ServerAcceptSocket, reinterpret_cast<sockaddr*>(&userAdd), &len);
+    if (INVALID_SOCKET == sessionSocket)
+        return 0;
+
+    std::cout << "패킷 보내기 전 대기" << std::endl;
+    _getch();
+
+    int result = send(sessionSocket, "hi", sizeof("hi"), 0);
+    if (SOCKET_ERROR == result)
         return 0;
 
     std::cout << "접속자가 있습니다" << std::endl;
