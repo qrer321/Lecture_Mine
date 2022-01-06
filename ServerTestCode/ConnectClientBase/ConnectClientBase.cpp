@@ -167,7 +167,6 @@ int main()
      *
      * inet_aton() 및 inet_addr()와는 달리, inet_pton은 IPv4 / IPv6 주소를 모두 지원한다.
      */
-
     INT pton_return_value = inet_pton(AF_INET, ip.c_str(), &add.sin_addr);
     if (SOCKET_ERROR == pton_return_value)
         return 0;
