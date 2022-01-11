@@ -47,15 +47,19 @@ int main()
 	{
 		return 0;
 	}
-
+	
 	while (true)
 	{
 		int sendAddSize = sizeof(SOCKADDR_IN);
-		char sendBuffer[256] = {};
+		char sendBuffer[10000] = {};
 		int sendSize = 0;
 
 		std::cout << "패킷을 입력해주세요" << std::endl;
-		std::cin >> sendBuffer;
+
+		std::string testString;
+		std::cin >> testString;
+
+		memcpy(sendBuffer, testString.c_str(), testString.size());
 
 		sendSize = sendto(clientSocket, sendBuffer, sizeof(sendBuffer), 0, 
 						  reinterpret_cast<const sockaddr*>(&sendAdd), sizeof(SOCKADDR_IN));

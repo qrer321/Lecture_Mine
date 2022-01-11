@@ -23,26 +23,22 @@ GameServerIocpWorker::GameServerIocpWorker(HANDLE iocpHandle, DWORD time, size_t
  */
 IocpWaitReturnType GameServerIocpWorker::Wait()
 {
-	LastWaitValue = GetQueuedCompletionStatus(IocpHandle, &NumberOfBytesTransferred, &CompletionKey, &lpOverlapped, Time);
+	BOOL returnValue = GetQueuedCompletionStatus(IocpHandle, &NumberOfBytesTransferred, &CompletionKey, &lpOverlapped, Time);
+	/*void(*Ptr)() = reinterpret_cast<void(*)()>(CompletionKey);
+	Ptr();*/
 
-	switch(LastWaitValue)
+	if (0 == returnValue)
 	{
-	case 0:
-		return IocpWaitReturnType::RETURN_TIMEOUT;
-	case 1:
-		return IocpWaitReturnType::RETURN_POST;
-	default:
-		break;
+		if (WAIT_TIMEOUT == GetLastError())
+			return IocpWaitReturnType::RETURN_TIMEOUT;
+
+		return IocpWaitReturnType::RETURN_ERROR;
 	}
-
-	GameServerDebug::AssertDebug();
-	return IocpWaitReturnType::RETURN_ERROR;
+	
+	return IocpWaitReturnType::RETURN_OK;
 }
 
-GameServerIocp::GameServerIocp()
-{
-
-}
+GameServerIocp::GameServerIocp() = default;
 
 /*
  * std::function<void(std::shared_ptr<GameServerIocpWorker>)> func¿Í

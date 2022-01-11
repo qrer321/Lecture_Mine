@@ -11,9 +11,11 @@ GameServerThread::GameServerThread(GameServerThread&& other) noexcept
 
 }
 
-void GameServerThread::ThreadNameSetting(const wchar_t* name)
+void GameServerThread::ThreadNameSetting(const std::string& name)
 {
-	SetThreadDescription(GetCurrentThread(), name);
+	std::wstring wName;
+	wName.assign(name.begin(), name.end());
+	SetThreadDescription(GetCurrentThread(), wName.c_str());
 }
 
 void GameServerThread::join()

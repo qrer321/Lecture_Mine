@@ -35,7 +35,7 @@ public:
 	GameServerThread& operator=(GameServerThread&& other) = delete;
 
 public:
-	static void ThreadNameSetting(const wchar_t* name);
+	static void ThreadNameSetting(const std::string& name);
 
 public:
 	std::thread::id ThreadId() const { return m_Thread.get_id(); }

@@ -12,7 +12,7 @@ private: // Member Var
 
 public: // Default
 	GameServerNameBase();
-	virtual ~GameServerNameBase() override;
+	~GameServerNameBase() override;
 
 	GameServerNameBase(const GameServerNameBase& other) = delete;
 	GameServerNameBase(GameServerNameBase&& other) noexcept;

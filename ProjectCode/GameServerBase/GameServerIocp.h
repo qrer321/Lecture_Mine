@@ -13,7 +13,7 @@ enum class IocpWaitReturnType
 {
 	RETURN_ERROR,
 	RETURN_TIMEOUT,
-	RETURN_POST,
+	RETURN_OK,
 };
 
 class GameServerIocpWorker
@@ -59,8 +59,7 @@ public: // Default
 	GameServerIocp();
 	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount);
 	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount, DWORD time);
-
-	virtual ~GameServerIocp() override;
+	~GameServerIocp() override;
 
 	GameServerIocp(const GameServerIocp& other) = delete;
 	GameServerIocp(GameServerIocp&& other) noexcept;
@@ -75,5 +74,7 @@ public:
 public: // Member Function
 	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time);
 	void Post(DWORD byteSize, ULONG_PTR data);
+
+	size_t GetThreadCount() const { return m_ThreadList.size(); }
 };
 

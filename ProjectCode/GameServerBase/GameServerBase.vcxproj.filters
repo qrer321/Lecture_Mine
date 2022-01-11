@@ -19,6 +19,9 @@
     <ClInclude Include="GameServerThread.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerQueue.h">
+      <Filter>Thread</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -37,6 +40,9 @@
       <Filter>Thread</Filter>
     </ClCompile>
     <ClCompile Include="GameServerThread.cpp">
+      <Filter>Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerQueue.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
   </ItemGroup>

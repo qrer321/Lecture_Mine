@@ -63,10 +63,11 @@ int main()
     {
         SOCKADDR_IN recvAdd = {};
         int recvAddSize = sizeof(SOCKADDR_IN);
-        char recvBuffer[256] = {};
+        char recvBuffer[10000] = {};
         int recvSize = 0;
         
         recvSize = recvfrom(serverSocket, recvBuffer, sizeof(recvBuffer), 0, reinterpret_cast<sockaddr*>(&recvAdd), &recvAddSize);
+        int test = static_cast<int>(sizeof(recvBuffer));
 
         if (recvSize == -1)
         {
