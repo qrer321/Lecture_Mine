@@ -7,15 +7,11 @@ const char* GameServerDebug::s_TypeText[3] = { "ERROR	: ", "WARNING	: ", "INFO	:
 GameServerIocp GameServerDebug::s_LogIocp;
 std::atomic<int> GameServerDebug::s_LogCount;
 
-GameServerDebug::GameServerDebug() 
-{
+GameServerDebug::GameServerDebug()
+= default;
 
-}
-
-GameServerDebug::~GameServerDebug() 
-{
-
-}
+GameServerDebug::~GameServerDebug()
+= default;
 
 GameServerDebug::GameServerDebug(GameServerDebug&& other) noexcept
 {
@@ -33,7 +29,7 @@ void GameServerDebug::LogThread(const std::shared_ptr<GameServerIocpWorker>& wor
 
 		++GameServerDebug::s_LogCount;
 
-		std::unique_ptr<LogTask> logPtr = std::unique_ptr<LogTask>(worker->ConvertKey<LogTask*>());
+		std::unique_ptr<LogTask> logPtr = std::unique_ptr<LogTask>(worker->GetConvertCompletionKey<LogTask*>());
 		std::cout << s_TypeText[static_cast<int>(logPtr->m_Type)] << logPtr->m_LogText << std::endl;
 	}
 }

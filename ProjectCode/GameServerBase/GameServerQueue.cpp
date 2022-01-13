@@ -14,7 +14,8 @@ void GameServerQueue::QueueFunction(const std::shared_ptr<GameServerIocpWorker>&
 	self->Run(work);
 }
 
-GameServerQueue::GameServerQueue() = default;
+GameServerQueue::GameServerQueue()
+= default;
 
 GameServerQueue::GameServerQueue(WORK_TYPE type, int threadCount, const std::string& threadName)
 {
@@ -22,7 +23,8 @@ GameServerQueue::GameServerQueue(WORK_TYPE type, int threadCount, const std::str
 	m_Iocp.Initialize(std::bind(QueueFunction, std::placeholders::_1, this, threadName), threadCount, INFINITE);
 }
 
-GameServerQueue::~GameServerQueue() = default;
+GameServerQueue::~GameServerQueue()
+= default;
 
 GameServerQueue::GameServerQueue(GameServerQueue&& other) noexcept
 {
@@ -58,7 +60,13 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkDefault(const std::shared_ptr
 		case WORK_MESSAGE_TYPE::MSG_DESTROY:
 			return QUEUE_RETURN::DESTROY;
 		case WORK_MESSAGE_TYPE::MSG_POST:
-			return QUEUE_RETURN::OK;
+		{
+			// IocpWorker에 들어온 CompletionKey를 PostTask*로 형변환하여
+			// 해당 작업에 들어있는 함수포인터를 호출한다.
+			std::unique_ptr<PostTask> JobTask = std::unique_ptr<PostTask>(work->GetConvertCompletionKey<PostTask*>());
+			JobTask->task();
+		}
+		return QUEUE_RETURN::OK;
 		default:
 			break;
 		}
@@ -106,10 +114,28 @@ void GameServerQueue::EnQueue(const std::function<void()>& callback)
 	postTask.release();
 }
 
+void GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback)
+{
+	if (nullptr == callback)
+	{
+		GameServerDebug::AssertDebugMsg("콜백이 nullptr 입니다");
+		return;
+	}
+
+	std::unique_ptr<OverlappedTask> overTask = std::make_unique<OverlappedTask>();
+	overTask->task = callback;
+
+	if (false == m_Iocp.Bind(reinterpret_cast<HANDLE>(socket), reinterpret_cast<ULONG_PTR>(overTask.get())))
+		GameServerDebug::AssertDebugMsg("소켓 IOCP 바인드에 실패했습니다");
+
+	overTask.release();
+}
+
 void GameServerQueue::Destroy()
 {
 	for (size_t i = 0; i < m_Iocp.GetThreadCount(); ++i)
 	{
+		// default
 		m_Iocp.Post(static_cast<DWORD>(WORK_MESSAGE_TYPE::MSG_DESTROY), 0);
 		Sleep(1);
 	}

@@ -9,13 +9,11 @@ GameServerObjectBase::GameServerObjectBase()
     m_LinkObject.reserve(5);
 }
 
-GameServerObjectBase::~GameServerObjectBase() 
-{
+GameServerObjectBase::~GameServerObjectBase()
+= default;
 
-}
-
-GameServerObjectBase::GameServerObjectBase(GameServerObjectBase&& _Other) noexcept
-    : m_Parent(_Other.m_Parent)
+GameServerObjectBase::GameServerObjectBase(GameServerObjectBase&& other) noexcept
+    : m_Parent(other.m_Parent)
 {
 
 }

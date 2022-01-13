@@ -35,7 +35,7 @@ private:
 
 public:
 	template<typename ConvertType>
-	ConvertType ConvertKey() { return reinterpret_cast<ConvertType>(CompletionKey); }
+	ConvertType GetConvertCompletionKey() { return reinterpret_cast<ConvertType>(CompletionKey); }
 
 	[[nodiscard]] ULONG_PTR GetCompletionKey() const { return CompletionKey; }
 	[[nodiscard]] DWORD GetNumberOfBytes() const { return NumberOfBytesTransferred; }
@@ -50,7 +50,7 @@ public:
 class GameServerIocp : public GameServerObjectBase
 {
 private: // Member Var
-	HANDLE m_Iocp{};
+	HANDLE m_IocpHandle{};
 	std::mutex m_IocpLock;
 	std::vector<std::shared_ptr<GameServerThread>> m_ThreadList;
 	std::vector<std::shared_ptr<GameServerIocpWorker>> m_ThreadWorkerList;
@@ -74,6 +74,7 @@ public:
 public: // Member Function
 	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time);
 	void Post(DWORD byteSize, ULONG_PTR data);
+	bool Bind(HANDLE handle, ULONG_PTR key);
 
 	size_t GetThreadCount() const { return m_ThreadList.size(); }
 };

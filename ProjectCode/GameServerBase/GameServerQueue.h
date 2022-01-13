@@ -74,6 +74,8 @@ private:
 
 public: // Member Function
 	void EnQueue(const std::function<void()>& callback);
+	void NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback);
+
 	void Destroy();
 };
 

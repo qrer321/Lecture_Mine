@@ -4,15 +4,12 @@
     <ClInclude Include="PreCompile.h">
       <Filter>PreCompile</Filter>
     </ClInclude>
-    <ClInclude Include="SocketBase.h" />
-    <ClInclude Include="TCPListener.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
       <Filter>PreCompile</Filter>
     </ClCompile>
-    <ClCompile Include="SocketBase.cpp" />
-    <ClCompile Include="TCPListener.cpp" />
+    <ClCompile Include="GameClientApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

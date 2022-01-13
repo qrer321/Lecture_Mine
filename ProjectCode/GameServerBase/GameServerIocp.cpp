@@ -13,14 +13,6 @@ GameServerIocpWorker::GameServerIocpWorker(HANDLE iocpHandle, DWORD time, size_t
 {
 }
 
-/*
- * GetQueuedCompletionStatus() 함수를 내부적으로 구현
- *
- * @return
- * 0	: Time Out
- * 1	: Post
- * other : Error
- */
 IocpWaitReturnType GameServerIocpWorker::Wait()
 {
 	BOOL returnValue = GetQueuedCompletionStatus(IocpHandle, &NumberOfBytesTransferred, &CompletionKey, &lpOverlapped, Time);
@@ -38,7 +30,8 @@ IocpWaitReturnType GameServerIocpWorker::Wait()
 	return IocpWaitReturnType::RETURN_OK;
 }
 
-GameServerIocp::GameServerIocp() = default;
+GameServerIocp::GameServerIocp()
+= default;
 
 /*
  * std::function<void(std::shared_ptr<GameServerIocpWorker>)> func와
@@ -87,7 +80,7 @@ void GameServerIocp::Initialize(const std::function<void(std::shared_ptr<GameSer
 	}
 
 	// IOCP 핸들 생성
-	m_Iocp = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, NULL, threadCount);
+	m_IocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, NULL, threadCount);
 
 	for (size_t i = 0; i < static_cast<size_t>(threadCount); ++i)
 	{
@@ -102,7 +95,7 @@ void GameServerIocp::AddThread(const std::function<void(std::shared_ptr<GameServ
 	// mutex lock을 통해 한 번에 하나의 thread만 접근이 가능하도록 설정
 	m_IocpLock.lock();
 
-	std::shared_ptr<GameServerIocpWorker> newWork = std::make_shared<GameServerIocpWorker>(m_Iocp, time, static_cast<DWORD>(m_ThreadWorkerList.size()));
+	std::shared_ptr<GameServerIocpWorker> newWork = std::make_shared<GameServerIocpWorker>(m_IocpHandle, time, static_cast<DWORD>(m_ThreadWorkerList.size()));
 	m_ThreadWorkerList.push_back(newWork);
 	m_ThreadList.push_back(std::make_shared<GameServerThread>(func, newWork));
 
@@ -112,5 +105,14 @@ void GameServerIocp::AddThread(const std::function<void(std::shared_ptr<GameServ
 
 void GameServerIocp::Post(DWORD byteSize, ULONG_PTR data)
 {
-	PostQueuedCompletionStatus(m_Iocp, byteSize, data, nullptr);
+	PostQueuedCompletionStatus(m_IocpHandle, byteSize, data, nullptr);
+}
+
+bool GameServerIocp::Bind(HANDLE handle, ULONG_PTR key)
+{
+	// iocp를 통해 해당 handle을 감시
+	if (m_IocpHandle != CreateIoCompletionPort(handle, m_IocpHandle, key, 0))
+		return false;
+
+	return true;
 }

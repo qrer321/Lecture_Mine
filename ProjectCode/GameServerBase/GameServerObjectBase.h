@@ -13,12 +13,12 @@ public: // Default
 	GameServerObjectBase();
 	virtual ~GameServerObjectBase();
 
-	GameServerObjectBase(const GameServerObjectBase& _Other) = delete;
-	GameServerObjectBase(GameServerObjectBase&& _Other) noexcept;
+	GameServerObjectBase(const GameServerObjectBase& other) = delete;
+	GameServerObjectBase(GameServerObjectBase&& other) noexcept;
 
 public:
-	GameServerObjectBase& operator=(const GameServerObjectBase& _Other) = delete;
-	GameServerObjectBase& operator=(GameServerObjectBase&& _Other) = delete;
+	GameServerObjectBase& operator=(const GameServerObjectBase& other) = delete;
+	GameServerObjectBase& operator=(GameServerObjectBase&& other) = delete;
 
 private:
 	GameServerObjectBase*				m_Parent;
