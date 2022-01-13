@@ -19,8 +19,7 @@ GameServerQueue::GameServerQueue()
 
 GameServerQueue::GameServerQueue(WORK_TYPE type, int threadCount, const std::string& threadName)
 {
-	SetWorkType(type);
-	m_Iocp.Initialize(std::bind(QueueFunction, std::placeholders::_1, this, threadName), threadCount, INFINITE);
+	Initialize(type, threadCount, threadName);
 }
 
 GameServerQueue::~GameServerQueue()
@@ -99,6 +98,12 @@ void GameServerQueue::SetWorkType(WORK_TYPE type)
 	}
 }
 
+void GameServerQueue::Initialize(WORK_TYPE type, int threadCount, const std::string& threadName)
+{
+	SetWorkType(type);
+	m_Iocp.Initialize(std::bind(QueueFunction, std::placeholders::_1, this, threadName), threadCount, INFINITE);
+}
+
 void GameServerQueue::EnQueue(const std::function<void()>& callback)
 {
 	if (nullptr == callback)
@@ -114,21 +119,26 @@ void GameServerQueue::EnQueue(const std::function<void()>& callback)
 	postTask.release();
 }
 
-void GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback)
+bool GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback) const
 {
 	if (nullptr == callback)
 	{
 		GameServerDebug::AssertDebugMsg("콜백이 nullptr 입니다");
-		return;
+		return false;
 	}
 
 	std::unique_ptr<OverlappedTask> overTask = std::make_unique<OverlappedTask>();
 	overTask->task = callback;
 
 	if (false == m_Iocp.Bind(reinterpret_cast<HANDLE>(socket), reinterpret_cast<ULONG_PTR>(overTask.get())))
-		GameServerDebug::AssertDebugMsg("소켓 IOCP 바인드에 실패했습니다");
+	{
+		GameServerDebug::GetLastErrorPrint();
+		return false;
+	}
 
 	overTask.release();
+
+	return true;
 }
 
 void GameServerQueue::Destroy()

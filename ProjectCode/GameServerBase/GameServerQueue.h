@@ -18,13 +18,13 @@ public:
 
 private:
 	// 일을 시키기
-	struct PostTask
+	struct PostTask : public enable_shared_from_this<PostTask>
 	{
 		std::function<void()> task;
 	};
 
 	// 비동기 파일 입출력
-	struct OverlappedTask
+	struct OverlappedTask : public enable_shared_from_this<OverlappedTask>
 	{
 		// BOOL			: 성공/실패
 		// DWORD		: 받은 패킷이나 처리한 데이터의 길이
@@ -73,8 +73,10 @@ private:
 	void SetWorkType(WORK_TYPE type);
 
 public: // Member Function
+	void Initialize(WORK_TYPE type, int threadCount, const std::string& threadName);
+
 	void EnQueue(const std::function<void()>& callback);
-	void NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback);
+	bool NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback) const;
 
 	void Destroy();
 };

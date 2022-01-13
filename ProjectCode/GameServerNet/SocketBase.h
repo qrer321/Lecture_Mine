@@ -3,10 +3,9 @@
 // 용도 : 
 // 분류 :
 // 첨언 : 
-class SocketBase
+class SocketBase : public GameServerNameBase
 {
 private: // Member Var
-	SOCKET m_Socket;
 
 public: // Default
 	SocketBase();
@@ -19,8 +18,7 @@ public:
 	SocketBase& operator=(const SocketBase& other) = delete;
 	SocketBase& operator=(SocketBase&& other) = delete;
 
-protected:
-	void Close();
+private:
 
 public: // Member Function
 };

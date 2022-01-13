@@ -4,19 +4,81 @@
     <ClInclude Include="PreCompile.h">
       <Filter>PreCompile</Filter>
     </ClInclude>
-    <ClInclude Include="SocketBase.h" />
-    <ClInclude Include="TCPListener.h" />
+    <ClInclude Include="SocketBase.h">
+      <Filter>NetObject</Filter>
+    </ClInclude>
+    <ClInclude Include="TCPListener.h">
+      <Filter>NetObject</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerHelper.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="TypeDefine.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="IPAddress.h">
+      <Filter>IP</Filter>
+    </ClInclude>
+    <ClInclude Include="EndPoint.h">
+      <Filter>IP</Filter>
+    </ClInclude>
+    <ClInclude Include="IPEndPoint.h">
+      <Filter>IP</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketAddress.h">
+      <Filter>IP</Filter>
+    </ClInclude>
+    <ClInclude Include="TCPSession.h">
+      <Filter>NetObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
       <Filter>PreCompile</Filter>
     </ClCompile>
-    <ClCompile Include="SocketBase.cpp" />
-    <ClCompile Include="TCPListener.cpp" />
+    <ClCompile Include="SocketBase.cpp">
+      <Filter>NetObject</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPListener.cpp">
+      <Filter>NetObject</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerHelper.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="IPAddress.cpp">
+      <Filter>IP</Filter>
+    </ClCompile>
+    <ClCompile Include="EndPoint.cpp">
+      <Filter>IP</Filter>
+    </ClCompile>
+    <ClCompile Include="IPEndPoint.cpp">
+      <Filter>IP</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketAddress.cpp">
+      <Filter>IP</Filter>
+    </ClCompile>
+    <ClCompile Include="TCPSession.cpp">
+      <Filter>NetObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
       <UniqueIdentifier>{3279ae6f-94f3-4e16-ad46-52daa8edb4a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{d6c6228e-7385-4dd7-89fd-1d7aa14fed11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IP">
+      <UniqueIdentifier>{68479d20-6de5-4d07-9259-9f480d589f61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{29923b72-bdcb-40dd-8866-f077c2c8b32b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NetObject">
+      <UniqueIdentifier>{b97da892-4aa6-4731-b1f2-3be73795a5de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

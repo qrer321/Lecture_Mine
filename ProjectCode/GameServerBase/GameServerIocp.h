@@ -74,7 +74,7 @@ public:
 public: // Member Function
 	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time);
 	void Post(DWORD byteSize, ULONG_PTR data);
-	bool Bind(HANDLE handle, ULONG_PTR key);
+	bool Bind(HANDLE handle, ULONG_PTR key) const;
 
 	size_t GetThreadCount() const { return m_ThreadList.size(); }
 };

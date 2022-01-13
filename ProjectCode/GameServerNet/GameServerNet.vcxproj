@@ -19,7 +19,28 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="EndPoint.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Enums.h" />
+    <ClInclude Include="IPAddress.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="IPEndPoint.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PreCompile.h" />
+    <ClInclude Include="ServerHelper.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="SocketAddress.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="SocketBase.h">
       <SubType>
       </SubType>
@@ -28,19 +49,48 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="TCPSession.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="TypeDefine.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="EndPoint.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="IPAddress.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="IPEndPoint.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PreCompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="ServerHelper.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="SocketAddress.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="SocketBase.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="TCPListener.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="TCPSession.cpp">
       <SubType>
       </SubType>
     </ClCompile>

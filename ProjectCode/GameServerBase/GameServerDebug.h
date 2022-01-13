@@ -53,5 +53,7 @@ public: // Member Function
 
 	static void AssertDebug();
 	static void AssertDebugMsg(const std::string& msg);
+
+	static void GetLastErrorPrint();
 };
 

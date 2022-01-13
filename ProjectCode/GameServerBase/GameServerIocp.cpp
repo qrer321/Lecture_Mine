@@ -108,7 +108,7 @@ void GameServerIocp::Post(DWORD byteSize, ULONG_PTR data)
 	PostQueuedCompletionStatus(m_IocpHandle, byteSize, data, nullptr);
 }
 
-bool GameServerIocp::Bind(HANDLE handle, ULONG_PTR key)
+bool GameServerIocp::Bind(HANDLE handle, ULONG_PTR key) const
 {
 	// iocp를 통해 해당 handle을 감시
 	if (m_IocpHandle != CreateIoCompletionPort(handle, m_IocpHandle, key, 0))

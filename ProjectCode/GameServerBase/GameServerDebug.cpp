@@ -82,3 +82,22 @@ void GameServerDebug::AssertDebugMsg(const std::string& msg)
 	AssertDebug();
 }
 
+void GameServerDebug::GetLastErrorPrint()
+{
+	DWORD error = WSAGetLastError();
+	char* message = nullptr;
+
+	FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_ALLOCATE_BUFFER,
+		nullptr,
+		error,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		reinterpret_cast<char*>(&message),
+		0,
+		nullptr);
+
+	if (nullptr != message)
+	{
+		printf_s("Code : %d, Message : %s", error, message);
+		LocalFree(message);
+	}
+}
