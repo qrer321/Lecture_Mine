@@ -8,6 +8,11 @@
 #include <GameServerNet/TCPSession.h>
 #include <GameServerNet/ServerHelper.h>
 
+void TestFunc(PtrSTCPSession s)
+{
+	GameServerDebug::LogInfo("테스트");
+}
+
 int main()
 {
 	ServerHelper::StartEngineStartUp();
@@ -20,10 +25,15 @@ int main()
 			GameServerDebug::LogInfo("접속자가 있습니다");
 		});
 
+	//listener->Initialize(IPEndPoint(IPAddress::Parse("127.0.0.1"), 30001), &TestFunc);
+
 	GameServerQueue networkQueue;
 	networkQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 10, "Network");
 
 	listener->BindQueue(networkQueue);
+
+	// 접속자 받기 시작
+	listener->StartAccept(10);
 
 	return 0;
 }

@@ -1,16 +1,17 @@
 #pragma once
-#include "IPEndPoint.h"
+#include "SocketBase.h"
 
 // 용도 : 
 // 분류 :
 // 첨언 : 
-class TCPSession : public std::enable_shared_from_this<TCPSession>
+class TCPSession : public SocketBase
 {
 private: // Member Var
+	SOCKET m_SessionSocket;
 
 public: // Default
 	TCPSession();
-	~TCPSession();
+	~TCPSession() override;
 
 	TCPSession(const TCPSession& other) = delete;
 	TCPSession(TCPSession&& other) noexcept;
@@ -20,7 +21,11 @@ public:
 	TCPSession& operator=(TCPSession&& other) = delete;
 
 private:
+	void Close() override;
 
 public: // Member Function
+	SOCKET GetSocket() const;
+
+	bool Initialize();
 };
 

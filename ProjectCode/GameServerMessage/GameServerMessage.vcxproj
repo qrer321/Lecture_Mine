@@ -19,95 +19,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EndPoint.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Enums.h" />
-    <ClInclude Include="GameServerOverlapped.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="IPAddress.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="IPEndPoint.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="PreCompile.h" />
-    <ClInclude Include="ServerHelper.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="SocketAddress.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="SocketBase.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="TCPListener.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="TCPSession.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="TypeDefine.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EndPoint.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="GameServerOverlapped.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="IPAddress.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="IPEndPoint.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="PreCompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ServerHelper.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="SocketAddress.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="SocketBase.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="TCPListener.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="TCPSession.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{ad556ca4-d2ec-4e73-a747-74e1c1415550}</ProjectGuid>
-    <RootNamespace>GameServerNet</RootNamespace>
+    <ProjectGuid>{a1ac749d-be47-4f4f-af80-46d16ee51762}</ProjectGuid>
+    <RootNamespace>GameServerMessage</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -159,29 +85,21 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>
-    </PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>
-    </PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>
-    </PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <PublicIncludeDirectories>
-    </PublicIncludeDirectories>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -192,7 +110,6 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PreCompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -210,7 +127,6 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PreCompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -228,7 +144,6 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PreCompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -246,7 +161,6 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>PreCompile.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>..\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

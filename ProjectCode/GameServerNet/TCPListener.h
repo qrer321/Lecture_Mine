@@ -12,23 +12,25 @@ class GameServerQueue;
 class TCPListener : public SocketBase
 {
 private:
-	SOCKET														m_ListenSocket;
-	IPEndPoint													m_ListenEndPoint;
+	SOCKET										m_ListenSocket;
+	IPEndPoint									m_ListenEndPoint;
 
 	/*
 	 * GameServerQueue 내부의 IOCP에 m_ListenSocket을 등록시키고
 	 * IOCP를 이용하여 접속자 이벤트를 처리한다.
 	 */
-	const GameServerQueue*										m_TaskQueue;
-	std::function<void(std::shared_ptr<TCPSession>)>			m_CallBack;
-	std::mutex													m_ConnectLock;
+	const GameServerQueue*						m_TaskQueue;
+
+	std::function<void(PtrSTCPSession)>			m_CallBack;
+	std::mutex									m_ConnectLock;
 
 	/*
 	 * 미리 n개의 세션을 만들어둔다.
 	 * AcceptEx를 호출하면 호출한 횟수만큼 백로그가 생기는 시스템.
 	 */
-	std::deque<std::shared_ptr<TCPSession>>						m_ConnectionPool;
-	std::unordered_map<__int64, std::shared_ptr<TCPSession>>	m_Connections;
+	std::deque<PtrSTCPSession>					m_ConnectionPool;
+
+	std::unordered_map<__int64, PtrSTCPSession>	m_Connections;
 
 public: // Default
 	TCPListener();
@@ -41,12 +43,17 @@ public:
 	TCPListener& operator=(const TCPListener& other) = delete;
 	TCPListener& operator=(TCPListener&& other) = delete;
 
+private:
+	void Close() override;
+
 public: // Member Function
-	bool Initialize(const IPEndPoint& endPoint, const std::function<void(std::shared_ptr<TCPSession>)>& callback);
+	bool Initialize(const IPEndPoint& endPoint, const std::function<void(PtrSTCPSession)>& callback);
 	bool BindQueue(const GameServerQueue& taskQueue);
+	bool StartAccept(int backlog);
 
-	void OnAccept(BOOL, DWORD, LPOVERLAPPED);
+	void OnAccept(IocpWaitReturnType result, DWORD byteSize, LPOVERLAPPED overlapped);
 
-	void Close();
+protected:
+	void AsyncAccept();
 };
 

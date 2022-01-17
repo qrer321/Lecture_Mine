@@ -19,6 +19,7 @@ public:
 	SocketBase& operator=(SocketBase&& other) = delete;
 
 private:
+	virtual void Close() {}
 
 public: // Member Function
 };
