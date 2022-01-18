@@ -7,6 +7,14 @@
 // 분류 :
 // 첨언 : IOCP를 한번 감싸서 기본 규칙을 정의한 Queue
 //		  관리되는 IOCP라고 본다.
+
+enum class IocpWaitReturnType
+{
+	RETURN_ERROR,
+	RETURN_TIMEOUT,
+	RETURN_OK,
+};
+
 class GameServerQueue : public GameServerNameBase
 {
 public:
@@ -29,7 +37,7 @@ private:
 		// BOOL			: 성공/실패
 		// DWORD		: 받은 패킷이나 처리한 데이터의 길이
 		// LPOVERLAPPED : 비동기 입출력의 정보를 담고있는 OVERLAPPED 포인터
-		std::function<void(IocpWaitReturnType, DWORD, LPOVERLAPPED)> task;
+		std::function<void(BOOL, DWORD, LPOVERLAPPED)> task;
 	};
 
 	enum class QUEUE_RETURN : char
@@ -76,7 +84,7 @@ public: // Member Function
 	void Initialize(WORK_TYPE type, int threadCount, const std::string& threadName);
 
 	void EnQueue(const std::function<void()>& callback);
-	bool NetworkBind(SOCKET socket, const std::function<void(IocpWaitReturnType, DWORD, LPOVERLAPPED)>& callback) const;
+	bool NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback) const;
 
 	void Destroy();
 };

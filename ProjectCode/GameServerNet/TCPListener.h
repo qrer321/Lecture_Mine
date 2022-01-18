@@ -52,7 +52,7 @@ public: // Member Function
 	bool BindQueue(const GameServerQueue& taskQueue);
 	bool StartAccept(int backlog);
 
-	void OnAccept(IocpWaitReturnType result, DWORD byteSize, LPOVERLAPPED overlapped);
+	void OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped);
 
 	void Close();
 

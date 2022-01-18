@@ -13,21 +13,12 @@ GameServerIocpWorker::GameServerIocpWorker(HANDLE iocpHandle, DWORD time, size_t
 {
 }
 
-IocpWaitReturnType GameServerIocpWorker::Wait()
+BOOL GameServerIocpWorker::Wait()
 {
-	BOOL returnValue = GetQueuedCompletionStatus(IocpHandle, &NumberOfBytesTransferred, &CompletionKey, &lpOverlapped, Time);
 	/*void(*Ptr)() = reinterpret_cast<void(*)()>(CompletionKey);
 	Ptr();*/
-
-	if (0 == returnValue)
-	{
-		if (WAIT_TIMEOUT == GetLastError())
-			return IocpWaitReturnType::RETURN_TIMEOUT;
-
-		return IocpWaitReturnType::RETURN_ERROR;
-	}
 	
-	return IocpWaitReturnType::RETURN_OK;
+	return GetQueuedCompletionStatus(IocpHandle, &NumberOfBytesTransferred, &CompletionKey, &lpOverlapped, Time);
 }
 
 GameServerIocp::GameServerIocp()

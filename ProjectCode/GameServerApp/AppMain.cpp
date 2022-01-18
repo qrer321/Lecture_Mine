@@ -10,6 +10,8 @@
 
 int main()
 {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	ServerHelper::StartEngineStartUp();
 	GameServerDebug::Initialize();
 
@@ -29,15 +31,20 @@ int main()
 
 			// 세션이 연결된 접속자는 IP / PW를 전달하고
 			// DB를 통해 서버의 인정을 받아야 한다
+			s->SetCallBack([](PtrSTCPSession callback, const std::vector<char>& value)
+				{
+					std::string strTest = &value[0];
+					GameServerDebug::LogInfo(strTest);
+				}, nullptr);
 			GameServerDebug::LogInfo("접속자가 있습니다");
 		});
 
 	GameServerQueue networkQueue;
-	networkQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 8, "Network");
+	networkQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 1, "Network");
 	listener->BindQueue(networkQueue);
 
 	// 접속자 받기 시작
-	listener->StartAccept(10);
+	listener->StartAccept(1);
 
 	_getch();
 

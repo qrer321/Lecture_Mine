@@ -79,10 +79,11 @@ bool TCPListener::BindQueue(const GameServerQueue& taskQueue)
 
 	// 숨겨놓은 함수로 연결
 	// NetworkBind는 비동기 파일 입출력 OverlappedTask로 통하는 함수이다.
-	return m_TaskQueue->NetworkBind(m_ListenSocket, std::bind(&TCPListener::OnAccept, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	return m_TaskQueue->NetworkBind(m_ListenSocket,
+		std::bind(&TCPListener::OnAccept, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-void TCPListener::OnAccept(IocpWaitReturnType result, DWORD byteSize, LPOVERLAPPED overlapped)
+void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 {
 	// 접속대기자 한 명이 소켓연결이 되어
 	// 소켓을 들고갔으니 새로운 접속대기 소켓을 생성한다
@@ -99,16 +100,15 @@ void TCPListener::OnAccept(IocpWaitReturnType result, DWORD byteSize, LPOVERLAPP
 	std::unique_ptr<AcceptExOverlapped> overlappedPtr = 
 		std::unique_ptr<AcceptExOverlapped>(reinterpret_cast<AcceptExOverlapped*>(reinterpret_cast<char*>(overlapped) - sizeof(void*)));
 
-	if (result == IocpWaitReturnType::RETURN_OK)
+	if (0 != result)
 	{
 		overlappedPtr->Execute(TRUE, byteSize);
 
 		m_AcceptCallBack(overlappedPtr->GetTCPSession());
 
-		// 프로토콜
-		// 앞으로 어떤 방식으로 통신할지는 이 곳에서 결정한다
-		// 예. 무조건 앞에 1바이트씩 보내면서 통신하자 등
+		// Receive를 위한 바인드
 		overlappedPtr->GetTCPSession()->BindQueue(*m_TaskQueue);
+		overlappedPtr->GetTCPSession()->RecvRequest();
 
 		m_ConnectionLock.lock();
 		m_Connections.insert(make_pair(overlappedPtr->GetTCPSession()->GetConnectId(), overlappedPtr->GetTCPSession()));
@@ -132,7 +132,7 @@ bool TCPListener::StartAccept(int backlog)
 		backlog = system_info.dwNumberOfProcessors;
 	}
 
-	for (size_t i = 0; i < backlog; ++i)
+	for (int i = 0; i < backlog; ++i)
 	{
 		AsyncAccept();
 	}

@@ -9,6 +9,9 @@ GameServerOverlapped::GameServerOverlapped()
 	ResetOverlapped();
 }
 
+GameServerOverlapped::~GameServerOverlapped()
+= default;
+
 LPWSAOVERLAPPED GameServerOverlapped::GetOverlapped()
 {
 	return &m_Overlapped;
@@ -97,3 +100,37 @@ void AcceptExOverlapped::Execute(BOOL result, DWORD byteSize)
 	m_TCPSession->m_LocalAddress = IPEndPoint(localAddress->sin_addr.s_addr, htons(localAddress->sin_port));
 	m_TCPSession->m_RemoteAddress = IPEndPoint(remoteAddress->sin_addr.s_addr, htons(remoteAddress->sin_port));
 }
+
+
+////////////////// RecvOverlapped //////////////////
+RecvOverlapped::RecvOverlapped(const PtrSTCPSession& tcpSession)
+	: m_Buffer{}
+	, m_wsaBuffer()
+	, m_TCPSession(tcpSession)
+{
+	Clear();
+}
+
+RecvOverlapped::~RecvOverlapped()
+= default;
+
+void RecvOverlapped::Clear()
+{
+	memset(m_Buffer, 0x00, sizeof(m_Buffer));
+
+	m_wsaBuffer.len = sizeof(m_Buffer);
+	m_wsaBuffer.buf = m_Buffer;
+}
+
+void RecvOverlapped::Execute(BOOL result, DWORD byteSize)
+{
+	// 넘어온 byteSize가 0일 경우는
+	// 서버가 터졌다던가, 클라의 연결이 끊어졌다는 등
+	// 잘못된 경우이기 때문에 무조건 정리한다
+	if (0 == byteSize)
+		m_TCPSession->Close();
+
+	m_TCPSession->OnRecv(m_Buffer, byteSize);
+}
+
+

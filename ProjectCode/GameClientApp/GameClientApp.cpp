@@ -46,6 +46,17 @@ int main()
 
 	std::cout << "Ä¿³ØÆ® ¼º°ø" << std::endl;
 
+	while (true)
+	{
+		std::string in;
+
+		std::cin >> in;
+
+		char buffer[1024] = {};
+		memcpy_s(buffer, sizeof(buffer), in.c_str(), in.size());
+		int result = send(SessionSocket, buffer, sizeof(buffer), 0);
+	}
+
 	_getch();
 
 	return 0;

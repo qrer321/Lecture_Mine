@@ -9,13 +9,6 @@
 // ºÐ·ù :
 // Ã·¾ð :
 
-enum class IocpWaitReturnType
-{
-	RETURN_ERROR,
-	RETURN_TIMEOUT,
-	RETURN_OK,
-};
-
 class GameServerIocpWorker
 {
 public:
@@ -45,7 +38,7 @@ public:
 	[[nodiscard]] size_t GetIndex() const { return Index; }
 
 public:
-	IocpWaitReturnType Wait();
+	BOOL Wait();
 };
 
 class GameServerIocp : public GameServerObjectBase

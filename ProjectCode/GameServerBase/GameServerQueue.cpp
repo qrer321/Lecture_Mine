@@ -57,7 +57,19 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkDefault(const std::shared_ptr
 	// 클라이언트가 메세지를 보내면
 	// PostQueuedCompletionStatue 함수가 호출될 것이고,
 	// 대기하고 있던 스레드들은 해당 함수로 인하여 깨어나게 된다.
-	switch (IocpWaitReturnType returnType = work->Wait())
+	BOOL returnType = work->Wait();
+
+	IocpWaitReturnType checkType = IocpWaitReturnType::RETURN_OK;
+	if (0 == returnType)
+	{
+		if (WAIT_TIMEOUT == GetLastError())
+		{
+			checkType = IocpWaitReturnType::RETURN_TIMEOUT;
+		}
+		checkType = IocpWaitReturnType::RETURN_ERROR;
+	}
+
+	switch (checkType)
 	{
 	case IocpWaitReturnType::RETURN_ERROR:
 		GameServerDebug::AssertDebugMsg("IOCP의 리턴타입이 RETURN_ERROR 입니다");
@@ -93,7 +105,7 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkDefault(const std::shared_ptr
 			{
 				if (0 != work->GetCompletionKey())
 				{
-					std::unique_ptr<OverlappedTask> overTask = std::unique_ptr<OverlappedTask>(work->GetConvertCompletionKey<OverlappedTask*>());
+					auto overTask = work->GetConvertCompletionKey<OverlappedTask*>();
 					overTask->task(returnType, work->GetNumberOfBytes(), work->GetOverlappedPtr());
 				}
 				else
@@ -155,7 +167,7 @@ void GameServerQueue::EnQueue(const std::function<void()>& callback)
 }
 
 // 비동기 파일 입출력
-bool GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(IocpWaitReturnType, DWORD, LPOVERLAPPED)>& callback) const
+bool GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback) const
 {
 	if (nullptr == callback)
 	{
