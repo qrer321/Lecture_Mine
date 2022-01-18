@@ -4,9 +4,6 @@
     <ClInclude Include="PreCompile.h">
       <Filter>PreCompile</Filter>
     </ClInclude>
-    <ClInclude Include="SocketBase.h">
-      <Filter>NetObject</Filter>
-    </ClInclude>
     <ClInclude Include="TCPListener.h">
       <Filter>NetObject</Filter>
     </ClInclude>
@@ -41,9 +38,6 @@
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
       <Filter>PreCompile</Filter>
-    </ClCompile>
-    <ClCompile Include="SocketBase.cpp">
-      <Filter>NetObject</Filter>
     </ClCompile>
     <ClCompile Include="TCPListener.cpp">
       <Filter>NetObject</Filter>

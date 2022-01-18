@@ -1,4 +1,7 @@
 #include "PreCompile.h"
+#include <GameServerBase/GameServerDebug.h>
+
+#pragma comment (lib, "GameServerBase.lib")
 
 int main()
 {
@@ -22,6 +25,11 @@ int main()
 	{
 		Ip = "127.0.0.1";
 	}
+	else if ("W" == Ip
+		|| "w" == Ip)
+	{
+		Ip = "61.98.125.214";
+	}
 
 	SOCKADDR_IN Add = { 0, };
 	Add.sin_family = AF_INET;
@@ -32,11 +40,11 @@ int main()
 
 	if (SOCKET_ERROR == connect(SessionSocket, reinterpret_cast<const sockaddr*>(&Add), sizeof(SOCKADDR_IN)))
 	{
-		std::cout << "커넥트 실패했습니다." << std::endl;
+		GameServerDebug::GetLastErrorPrint();
 		return 0;
 	}
 
-	std::cout << "커넥트 성공." << std::endl;
+	std::cout << "커넥트 성공" << std::endl;
 
 	_getch();
 

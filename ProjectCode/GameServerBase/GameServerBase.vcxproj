@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DateTime.h" />
+    <ClInclude Include="DateTimeKind.h" />
     <ClInclude Include="GameServerDebug.h">
       <SubType>
       </SubType>
@@ -43,9 +45,16 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerUnique.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PreCompile.h" />
+    <ClInclude Include="TimeInternal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DateTime.cpp" />
+    <ClCompile Include="DateTimeKind.cpp" />
     <ClCompile Include="GameServerDebug.cpp">
       <SubType>
       </SubType>
@@ -70,12 +79,17 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerUnique.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PreCompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TimeInternal.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

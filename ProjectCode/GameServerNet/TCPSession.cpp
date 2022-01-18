@@ -19,6 +19,11 @@ SOCKET TCPSession::GetSocket() const
 	return m_SessionSocket;
 }
 
+long long TCPSession::GetConnectId() const
+{
+	return m_ConnectId;
+}
+
 bool TCPSession::Initialize()
 {
 	// 접속자를 받으려는 소켓
@@ -70,6 +75,14 @@ bool TCPSession::Initialize()
 			return false;
 		}
 	}
+
+	return true;
+}
+
+bool TCPSession::BindQueue(const GameServerQueue& taskQueue)
+{
+
+	
 
 	return true;
 }

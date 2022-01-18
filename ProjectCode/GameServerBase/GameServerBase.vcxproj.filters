@@ -22,6 +22,18 @@
     <ClInclude Include="GameServerQueue.h">
       <Filter>Thread</Filter>
     </ClInclude>
+    <ClInclude Include="DateTimeKind.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeInternal.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="DateTime.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerUnique.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -45,6 +57,18 @@
     <ClCompile Include="GameServerQueue.cpp">
       <Filter>Thread</Filter>
     </ClCompile>
+    <ClCompile Include="TimeInternal.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="DateTime.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="DateTimeKind.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerUnique.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -58,6 +82,9 @@
     </Filter>
     <Filter Include="Thread">
       <UniqueIdentifier>{aca1da05-c5ea-42c1-af80-2d08b97743cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Time">
+      <UniqueIdentifier>{af7e6402-fc6e-464d-9694-c2e8d5dd71fb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

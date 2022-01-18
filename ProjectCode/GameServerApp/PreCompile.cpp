@@ -1,4 +1,4 @@
 #include "PreCompile.h"
 
-#pragma comment(lib, "GameServerBase")
-#pragma comment(lib, "GameServerNet")
+#pragma comment(lib, "GameServerBase.lib")
+#pragma comment(lib, "GameServerNet.lib")

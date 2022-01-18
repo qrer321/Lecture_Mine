@@ -12,7 +12,9 @@ GameServerQueue::GameServerQueue(WORK_TYPE type, int threadCount, const std::str
 }
 
 GameServerQueue::~GameServerQueue()
-= default;
+{
+	Destroy();
+}
 
 GameServerQueue::GameServerQueue(GameServerQueue&& other) noexcept
 {
@@ -136,7 +138,7 @@ void GameServerQueue::Initialize(WORK_TYPE type, int threadCount, const std::str
 	m_Iocp.Initialize(std::bind(QueueFunction, std::placeholders::_1, this, threadName), threadCount, INFINITE);
 }
 
-// 동기? 파일 입출력
+// 동기 파일 입출력
 void GameServerQueue::EnQueue(const std::function<void()>& callback)
 {
 	if (nullptr == callback)

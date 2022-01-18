@@ -45,10 +45,6 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="SocketBase.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="TCPListener.h">
       <SubType>
       </SubType>
@@ -87,10 +83,6 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="SocketAddress.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="SocketBase.cpp">
       <SubType>
       </SubType>
     </ClCompile>
