@@ -3,7 +3,7 @@
 #include <Windows.h>
 #include <iostream>
 
-const char* GameServerDebug::s_TypeText[3] = { "ERROR	: ", "WARNING	: ", "INFO	: ", };
+const char* GameServerDebug::s_TypeText[4] = { "ERROR	: ", "WARNING	: ", "INFO	: ", "LASTERROR	: "};
 GameServerIocp GameServerDebug::s_LogIocp;
 std::atomic<int> GameServerDebug::s_LogCount;
 
@@ -71,6 +71,11 @@ void GameServerDebug::LogInfo(const std::string& text)
 	Log(LOGTYPE::LOGTYPE_INFO, text);
 }
 
+void GameServerDebug::LogLastError(const std::string& text)
+{
+	Log(LOGTYPE::LOGTYPE_LASTERROR, text);
+}
+
 void GameServerDebug::AssertDebug()
 {
 	assert(false);
@@ -97,7 +102,12 @@ void GameServerDebug::GetLastErrorPrint()
 
 	if (nullptr != message)
 	{
-		printf_s("Code : %d, Message : %s", error, message);
+		std::string text = "Code : ";
+		text += std::to_string(error);
+		text += " Message : ";
+		text += message;
+
+		LogLastError(text);
 		LocalFree(message);
 	}
 }

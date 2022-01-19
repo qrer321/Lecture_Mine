@@ -19,8 +19,9 @@ TCPListener::~TCPListener()
 TCPListener::TCPListener(TCPListener&& other) noexcept
 	: m_ListenSocket(other.m_ListenSocket)
 	, m_TaskQueue(other.m_TaskQueue)
+	, m_AcceptCallBack(std::move(other.m_AcceptCallBack))
 {
-	other.m_ListenSocket = NULL;
+	other.m_ListenSocket = INVALID_SOCKET;
 	other.m_TaskQueue = nullptr;
 }
 
@@ -80,7 +81,32 @@ bool TCPListener::BindQueue(const GameServerQueue& taskQueue)
 	// 숨겨놓은 함수로 연결
 	// NetworkBind는 비동기 파일 입출력 OverlappedTask로 통하는 함수이다.
 	return m_TaskQueue->NetworkBind(m_ListenSocket,
-		std::bind(&TCPListener::OnAccept, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	                                [this](auto&& returnType, auto&& NumberOfBytes, auto&& OverlappedPtr)
+	                                {
+		                                OnAccept(std::forward<decltype(returnType)>(returnType)
+											, std::forward<decltype(NumberOfBytes)>(NumberOfBytes)
+											, std::forward<decltype(OverlappedPtr)>(OverlappedPtr));
+	                                });
+}
+
+// backlog 개수만큼 접속대기
+bool TCPListener::StartAccept(int backlog)
+{
+	// 128명을 한계로 둔다
+	if (0 > backlog || 128 < backlog)
+	{
+		SYSTEM_INFO system_info;
+		GetSystemInfo(&system_info);
+
+		backlog = system_info.dwNumberOfProcessors;
+	}
+
+	for (int i = 0; i < backlog; ++i)
+	{
+		AsyncAccept();
+	}
+
+	return true;
 }
 
 void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
@@ -120,26 +146,6 @@ void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 	}
 }
 
-// backlog 개수만큼 접속대기
-bool TCPListener::StartAccept(int backlog)
-{
-	// 128명을 한계로 둔다
-	if (0 > backlog || 128 < backlog)
-	{
-		SYSTEM_INFO system_info;
-		GetSystemInfo(&system_info);
-
-		backlog = system_info.dwNumberOfProcessors;
-	}
-
-	for (int i = 0; i < backlog; ++i)
-	{
-		AsyncAccept();
-	}
-
-	return true;
-}
-
 void TCPListener::AsyncAccept()
 {
 	// 접속대기 소켓 생성함수
@@ -162,7 +168,7 @@ void TCPListener::AsyncAccept()
 	// 그렇기에 10개의 스레드가 동시에 AsyncAccept 함수를 호출하면 문제가 발생할 수 있다.
 	PtrSTCPSession newSession = nullptr;
 	{
-		m_ConnectPoolLock.lock();
+		m_ConnectionPoolLock.lock();
 
 		// 재활용에 사용할 풀이 비어있다면
 		if (m_ConnectionPool.empty())
@@ -170,14 +176,24 @@ void TCPListener::AsyncAccept()
 			newSession = std::make_shared<TCPSession>();
 			newSession->Initialize();
 			newSession->SetParent(this);
+
+			HANDLE eventHandle = newSession->m_DisconnectOverlapped->GetOverlapped()->hEvent;
+
+			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
+			GameServerDebug::LogInfo(logText + " 소켓을 새로 생성하였습니다");
 		}
 		else
 		{
 			newSession = m_ConnectionPool.front();
 			m_ConnectionPool.pop_front();
+
+			HANDLE eventHandle = newSession->m_DisconnectOverlapped->GetOverlapped()->hEvent;
+
+			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
+			GameServerDebug::LogInfo(logText + " 소켓을 재활용하여 새로운 대기 소켓을 만들었습니다");
 		}
 
-		m_ConnectPoolLock.unlock();
+		m_ConnectionPoolLock.unlock();
 	}
 
 	std::unique_ptr<AcceptExOverlapped> overlappedPtr = std::make_unique<AcceptExOverlapped>(newSession);
@@ -251,6 +267,25 @@ void TCPListener::AsyncAccept()
 	overlappedPtr.release();
 }
 
+void TCPListener::CloseSession(const PtrSTCPSession& tcpSession)
+{
+	// CloseSession 함수까지 오게 된 세션은
+	// 연결끊기 동작이 완료된 소켓
+	{
+		// 현재 연결 중인 세션에 대한 hash_map에서 빠지게 되었으니
+		// CloseSession에 들어온 tcpSession을 해당 맵에서 지워준다
+		std::lock_guard lock(m_ConnectionLock);
+		m_Connections.erase(tcpSession->GetConnectId());
+	}
+
+	{
+		// Disconnect된 Socket은 지워지는 것이 아닌
+		// 재활용을 위해 ConnectionPool에 담아둔다
+		std::lock_guard lock(m_ConnectionPoolLock);
+		m_ConnectionPool.push_back(tcpSession);
+	}
+}
+
 void TCPListener::Close()
 {
 	if (NULL != m_ListenSocket)
@@ -259,4 +294,3 @@ void TCPListener::Close()
 		m_ListenSocket = NULL;
 	}
 }
-

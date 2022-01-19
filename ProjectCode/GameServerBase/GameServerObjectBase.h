@@ -30,7 +30,7 @@ public:
 
 public:
 	template<typename ParentType>
-	ParentType* GetParent() { return dynamic_cast<ParentType>(m_Parent); }
+	ParentType* GetParent() { return dynamic_cast<ParentType*>(m_Parent); }
 
 	template<typename LinkType>
 	LinkType* GetLink(int index = 0) { return dynamic_cast<LinkType>(m_LinkObject[index]); }

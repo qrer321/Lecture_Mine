@@ -35,7 +35,7 @@ private:
 
 public:
 	AcceptExOverlapped() = delete;
-	AcceptExOverlapped(const PtrSTCPSession& tcpSession);
+	AcceptExOverlapped(PtrSTCPSession tcpSession);
 	~AcceptExOverlapped() override;
 
 	AcceptExOverlapped(const AcceptExOverlapped& other) = delete;
@@ -62,7 +62,7 @@ private:
 
 public:
 	RecvOverlapped() = delete;
-	RecvOverlapped(const PtrSTCPSession& tcpSession);
+	RecvOverlapped(PtrSTCPSession tcpSession);
 	~RecvOverlapped() override;
 
 	RecvOverlapped(const RecvOverlapped& other) = delete;
@@ -81,4 +81,25 @@ public:
 public:
 	void Execute(BOOL result, DWORD byteSize) override;
 	void Clear();
+};
+
+class DisconnectOverlapped : public GameServerOverlapped
+{
+private:
+	PtrSTCPSession	m_TCPSession;
+
+public:
+	DisconnectOverlapped() = delete;
+	DisconnectOverlapped(PtrSTCPSession tcpSession);
+	~DisconnectOverlapped() override;
+
+	DisconnectOverlapped(const DisconnectOverlapped& other) = delete;
+	DisconnectOverlapped(DisconnectOverlapped&& other) = delete;
+
+public:
+	DisconnectOverlapped& operator=(const DisconnectOverlapped& other) = delete;
+	DisconnectOverlapped& operator=(DisconnectOverlapped&& other) = delete;
+
+public:
+	void Execute(BOOL result, DWORD byteSize) override;
 };

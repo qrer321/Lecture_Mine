@@ -30,12 +30,12 @@ public:
 	template<typename ConvertType>
 	ConvertType GetConvertCompletionKey() { return reinterpret_cast<ConvertType>(CompletionKey); }
 
-	[[nodiscard]] ULONG_PTR GetCompletionKey() const { return CompletionKey; }
-	[[nodiscard]] DWORD GetNumberOfBytes() const { return NumberOfBytesTransferred; }
-	[[nodiscard]] LPOVERLAPPED GetOverlappedPtr() const { return lpOverlapped;  }
-
 public:
-	[[nodiscard]] size_t GetIndex() const { return Index; }
+	[[nodiscard]] ULONG_PTR		GetCompletionKey() const { return CompletionKey; }
+	[[nodiscard]] DWORD			GetNumberOfBytes() const { return NumberOfBytesTransferred; }
+	[[nodiscard]] LPOVERLAPPED	GetOverlappedPtr() const { return lpOverlapped;  }
+
+	[[nodiscard]] size_t		GetIndex()		   const { return Index; }
 
 public:
 	BOOL Wait();

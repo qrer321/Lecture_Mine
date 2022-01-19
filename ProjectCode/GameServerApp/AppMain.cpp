@@ -17,7 +17,7 @@ int main()
 
 	// 접속자를 받기 위한 비동기 소켓 초기화
 	PtrSTCPListener listener = std::make_shared<TCPListener>();
-	listener->Initialize(IPEndPoint(IPAddress::Parse("127.0.0.1"), 30001), [](PtrSTCPSession s)
+	listener->Initialize(IPEndPoint(IPAddress::Parse("0.0.0.0"), 30001), [](PtrSTCPSession s)
 		{
 			// 내부적인 처리가 끝나고
 			// 어떤 게임을 만들어야 할지는
@@ -35,16 +35,22 @@ int main()
 				{
 					std::string strTest = &value[0];
 					GameServerDebug::LogInfo(strTest);
-				}, nullptr);
-			GameServerDebug::LogInfo("접속자가 있습니다");
+				},
+				[](PtrSTCPSession callback)
+				{
+					std::string logText = std::to_string(static_cast<int>(callback->GetSocket()));
+					GameServerDebug::LogInfo(logText + " 접속자가 종료했습니다");
+				});
+			std::string logText = std::to_string(static_cast<int>(s->GetSocket()));
+			GameServerDebug::LogInfo(logText + " 접속자가 있습니다");
 		});
 
 	GameServerQueue networkQueue;
-	networkQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 1, "Network");
+	networkQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 8, "Network");
 	listener->BindQueue(networkQueue);
+	listener->StartAccept(10);
 
-	// 접속자 받기 시작
-	listener->StartAccept(1);
+	GameServerDebug::LogInfo("서버 시작");
 
 	_getch();
 

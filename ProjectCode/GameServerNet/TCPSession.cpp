@@ -1,11 +1,13 @@
 #include "PreCompile.h"
 #include "TCPSession.h"
 #include "GameServerOverlapped.h"
+#include "TCPListener.h"
 
 TCPSession::TCPSession()
 	: m_SessionSocket(NULL)
 	, m_ConnectId(0)
 	, m_RecvOverlapped(nullptr)
+	, m_DisconnectOverlapped(nullptr)
 	, m_CallClose(false)
 {}
 
@@ -18,9 +20,11 @@ TCPSession::TCPSession(TCPSession&& other) noexcept
 	: m_SessionSocket(other.m_SessionSocket)
 	, m_ConnectId(other.m_ConnectId)
 	, m_RecvOverlapped(other.m_RecvOverlapped)
+	, m_DisconnectOverlapped(other.m_DisconnectOverlapped)
 	, m_CallClose(other.m_CallClose)
 {
 	other.m_RecvOverlapped = nullptr;
+	other.m_DisconnectOverlapped = nullptr;
 }
 
 bool TCPSession::Initialize()
@@ -82,6 +86,11 @@ bool TCPSession::Initialize()
 		m_RecvOverlapped = new RecvOverlapped(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
 	}
 
+	if (nullptr == m_DisconnectOverlapped)
+	{
+		m_DisconnectOverlapped = new DisconnectOverlapped(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
+	}
+
 	return true;
 }
 
@@ -105,12 +114,6 @@ void TCPSession::OnCallBack(PtrWTCPSession weakSession, BOOL result, DWORD numbe
 
 void TCPSession::OnRecv(const char* data, DWORD byteSize)
 {
-	if (0 == byteSize)
-	{
-		Close();
-		return;
-	}
-
 	// 프로토콜 처리
 	// byteSize만큼 vector resize
 	std::vector<char> outputBuffer = std::vector<char>(byteSize);
@@ -120,6 +123,11 @@ void TCPSession::OnRecv(const char* data, DWORD byteSize)
 	{
 		m_RecvCallBack(std::dynamic_pointer_cast<TCPSession>(shared_from_this()), outputBuffer);
 	}
+
+	// 잘못된 혹은 수상한 패킷이 들어올 경우
+	// if () 문을 통해 패킷을 검사하고
+	// 정상적인 패킷을 보내지 않은 클라이언트라면
+	// Close(force_close = true); 함수 호출로 서버에서 내보낸다
 
 	if (false == m_CallClose)
 	{
@@ -164,7 +172,27 @@ void TCPSession::SetCallBack(const RecvCallBack& recvCallBack, const CloseCallBa
 	m_CloseCallBack = closeCallBack;
 }
 
-void TCPSession::Close()
+// Disconnect를 통한 등록해제
+void TCPSession::UnRegisterSession()
+{
+	TCPListener* parentListener = GetParent<TCPListener>();
+
+	if (nullptr == parentListener)
+	{
+		GameServerDebug::AssertDebugMsg("리스너와 연결되지 않은 세션이 존재합니다.");
+		return;
+	}
+
+	parentListener->CloseSession(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
+
+	m_CallClose = false;
+
+	// 새로운 Connection ID를 부여받아야 한다.
+	// UniqueId의 특성상 새로 들어오게 된 세션의 경우 새로운 UniqueId를 부여해주어야 하기 때문이다.
+	m_ConnectId = GameServerUnique::GetNextUniqueId();
+}
+
+void TCPSession::Close(bool forceClose)
 {
 	if (nullptr != m_CloseCallBack)
 	{
@@ -173,7 +201,68 @@ void TCPSession::Close()
 
 	m_CallClose = true;
 
-	CloseSocket();
+	if (false == forceClose)
+	{
+		DisconnectSocket();
+	}
+	else
+	{
+		// 강제종료
+		CloseSocket();
+	}
+}
+
+void TCPSession::DisconnectSocket()
+{
+	if (INVALID_SOCKET == m_SessionSocket)
+	{
+		GameServerDebug::AssertDebugMsg("유효하지 않은 소켓을 디스커넥트 하려고 했습니다");
+		return;
+	}
+
+	if (nullptr == m_DisconnectOverlapped)
+	{
+		GameServerDebug::AssertDebugMsg("m_DisconnectOverlapped가 정상적으로 만들어지지 않았습니다");
+		return;
+	}
+
+	/*
+	 * TransmitFile(hSocket, hFile, nNumberOfBytesToWrite, nNumberOfBytesPerSend, lpOverlapped, lpTransmitBuffers, dwReserved)
+	 * TransmitFile의 기본적인 기능은 연결된 소켓 핸들을 통해 파일 데이터를 전송하는 것이다.
+	 *
+	 * 해당 코드에서는 TF_DISCONNECT와 TF_REUSE_SOCKET 플래그를 이용하여
+	 * 클라이언트와 연결된 소켓을 Disconnect하고 Reuse 하겠다고 OS에게 알려주기 위해 사용한다.
+	 * 클라이언트의 접속이 종료되면 OS는 아직 세션을 유지하고 있는데
+	 * 해당 세션과의 연결끊기 작업이 완료되면 OS에게 DisconnectOverlapped로 보내달라고 요청하는 것 이다.
+	 *
+	 * TransmitFile이 반환될 경우 m_SessionSocket에 바인드되어있는
+	 * OnCallBack 함수로 Overlapped 구조체와 함께 넘어온다
+	 * 해당 Overlapped는 DisconnectOverlapped이기 때문에
+	 * DisconnectOverlapped::Execute()가 호출될 것이다.
+	 *
+	 * @param
+	 * SOCKET hSocket								: 연결 종료를 할 소켓, SessionSocket
+	 *
+	 * LPOVERLAPPED lpOverlapped					: 연결 종료 시 사용할 Overlapped 구조체 포인터
+	 *												  Overlapped I/O일 경우 TransmitFile이 반환되기 전에 해당 작업이 완료되지 않을 수 있다.
+	 *												  이 경우 ERROR_IO_PENDING 혹은 WSA_IO_PENDING 오류 값을 반환한다.
+	 *												  Windows는 요청이 완료되면 OVERLAPPED 구조체의 hEvent 멤버 혹은 hSocket에 이벤트 신호를 보낸다
+	 *
+	 * DWORD dwReserved								: 동작을 설정하는데 사용되는 플래그 집합
+	 *												  TF_DISCONNECT : 연결 끊기
+	 *												  TF_REUSE_SOCKET : 재사용을 위한 플래그, TCP_TIME_WAIT에 종속되어 호출이 지연될 수 있다.
+	 */
+	BOOL result = TransmitFile(m_SessionSocket, NULL, 0, 0,
+								m_DisconnectOverlapped->GetOverlapped(), nullptr, TF_DISCONNECT | TF_REUSE_SOCKET);
+
+	if (FALSE == result)
+	{
+		int error = WSAGetLastError();
+		if (WSA_IO_PENDING != error)
+		{
+			GameServerDebug::GetLastErrorPrint();
+		}
+	}
 }
 
 void TCPSession::CloseSocket()

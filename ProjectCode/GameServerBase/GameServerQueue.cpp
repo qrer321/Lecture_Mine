@@ -59,66 +59,46 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkDefault(const std::shared_ptr
 	// 대기하고 있던 스레드들은 해당 함수로 인하여 깨어나게 된다.
 	BOOL returnType = work->Wait();
 
-	IocpWaitReturnType checkType = IocpWaitReturnType::RETURN_OK;
-	if (0 == returnType)
+	// ReturnType이 RETURN_OK일 경우,
+	// Post한 메세지의 NumberOfBytes가 무엇이냐에 따라 다른 동작을 수행한다.
+	// MSG_POST일 경우 동기 액셉트를 통해서 들어온 것이고,
+	// Default일 경우 비동기 액셉트를 통해 들어온 것이다.
+	switch (auto type = static_cast<WORK_MESSAGE_TYPE>(work->GetNumberOfBytes()))
 	{
-		if (WAIT_TIMEOUT == GetLastError())
+	case WORK_MESSAGE_TYPE::MSG_DESTROY:
+		return QUEUE_RETURN::DESTROY;
+	case WORK_MESSAGE_TYPE::MSG_POST:
+	{
+		if (0 != work->GetCompletionKey())
 		{
-			checkType = IocpWaitReturnType::RETURN_TIMEOUT;
+			// IocpWorker에 들어온 CompletionKey를 PostTask*로 형변환하여
+			// 해당 작업에 들어있는 함수포인터를 호출한다.
+			std::unique_ptr<PostTask> postTask = std::unique_ptr<PostTask>(work->GetConvertCompletionKey<PostTask*>());
+			postTask->task();
 		}
-		checkType = IocpWaitReturnType::RETURN_ERROR;
-	}
+		else
+		{
+			GameServerDebug::LogError("PostTask Is Null");
+		}
 
-	switch (checkType)
-	{
-	case IocpWaitReturnType::RETURN_ERROR:
-		GameServerDebug::AssertDebugMsg("IOCP의 리턴타입이 RETURN_ERROR 입니다");
-		break;
-	case IocpWaitReturnType::RETURN_TIMEOUT:
-		break;
-	case IocpWaitReturnType::RETURN_OK:
-	{
-		// ReturnType이 RETURN_OK일 경우,
-		// Post한 메세지의 NumberOfBytes가 무엇이냐에 따라 다른 동작을 수행한다.
-		// MSG_POST일 경우 동기 액셉트를 통해서 들어온 것이고,
-		// Default일 경우 비동기 액셉트를 통해 들어온 것이다.
-		switch (auto type = static_cast<WORK_MESSAGE_TYPE>(work->GetNumberOfBytes()))
-		{
-		case WORK_MESSAGE_TYPE::MSG_DESTROY:
-			return QUEUE_RETURN::DESTROY;
-		case WORK_MESSAGE_TYPE::MSG_POST:
-		{
-			if (0 != work->GetCompletionKey())
-			{
-				// IocpWorker에 들어온 CompletionKey를 PostTask*로 형변환하여
-				// 해당 작업에 들어있는 함수포인터를 호출한다.
-				std::unique_ptr<PostTask> postTask = std::unique_ptr<PostTask>(work->GetConvertCompletionKey<PostTask*>());
-				postTask->task();
-			}
-			else
-			{
-				GameServerDebug::LogError("PostTask Is Null");
-			}
-		}
 		return QUEUE_RETURN::OK;
-		default:
-			{
-				if (0 != work->GetCompletionKey())
-				{
-					auto overTask = work->GetConvertCompletionKey<OverlappedTask*>();
-					overTask->task(returnType, work->GetNumberOfBytes(), work->GetOverlappedPtr());
-				}
-				else
-				{
-					GameServerDebug::LogError("OverlappedTask Is Null");
-				}
-			}
-			break;
+	}
+	default:  // NOLINT(clang-diagnostic-covered-switch-default)
+	{
+		if (0 != work->GetCompletionKey())
+		{
+			// @desc
+			// task go to : TCPListener::OnAccept()
+			//				TCPListener::OnCallBack()
+			OverlappedTask* overTask = work->GetConvertCompletionKey<OverlappedTask*>();
+			overTask->task(returnType, work->GetNumberOfBytes(), work->GetOverlappedPtr());
+		}
+		else
+		{
+			GameServerDebug::LogError("OverlappedTask Is Null");
 		}
 	}
 	break;
-	default:
-		break;
 	}
 
 	return QUEUE_RETURN::OK;

@@ -10,6 +10,8 @@ class TCPSession;
 class GameServerQueue;
 class TCPListener : public GameServerObjectBase
 {
+	friend TCPSession;
+
 private:
 	SOCKET										m_ListenSocket;
 	IPEndPoint									m_ListenEndPoint;
@@ -28,7 +30,7 @@ private:
 	 * AcceptEx를 호출하면 호출한 횟수만큼 백로그가 생기는 시스템.
 	 */
 	std::deque<PtrSTCPSession>					m_ConnectionPool;
-	std::mutex									m_ConnectPoolLock;
+	std::mutex									m_ConnectionPoolLock;
 
 	// __int64 : ConnectionId
 	std::unordered_map<__int64, PtrSTCPSession>	m_Connections;
@@ -46,17 +48,16 @@ public:
 	TCPListener& operator=(TCPListener&& other) = delete;
 
 private:
+	void OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped);
+	void AsyncAccept();
+
+	void CloseSession(const PtrSTCPSession& tcpSession);
 
 public: // Member Function
 	bool Initialize(const IPEndPoint& endPoint, const std::function<void(PtrSTCPSession)>& acceptCallback);
 	bool BindQueue(const GameServerQueue& taskQueue);
 	bool StartAccept(int backlog);
 
-	void OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped);
-
 	void Close();
-
-protected:
-	void AsyncAccept();
 };
 

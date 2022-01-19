@@ -22,10 +22,11 @@ void GameServerOverlapped::ResetOverlapped()
 	memset(&m_Overlapped, 0x00, sizeof(WSAOVERLAPPED));
 }
 
+
 ////////////////// AcceptExOverlapped //////////////////
-AcceptExOverlapped::AcceptExOverlapped(const PtrSTCPSession& tcpSession)
+AcceptExOverlapped::AcceptExOverlapped(PtrSTCPSession tcpSession)
 	: m_Buffer{}
-	, m_TCPSession(tcpSession)
+	, m_TCPSession(std::move(tcpSession))
 {
 }
 
@@ -103,10 +104,10 @@ void AcceptExOverlapped::Execute(BOOL result, DWORD byteSize)
 
 
 ////////////////// RecvOverlapped //////////////////
-RecvOverlapped::RecvOverlapped(const PtrSTCPSession& tcpSession)
+RecvOverlapped::RecvOverlapped(PtrSTCPSession tcpSession)
 	: m_Buffer{}
 	, m_wsaBuffer()
-	, m_TCPSession(tcpSession)
+	, m_TCPSession(std::move(tcpSession))
 {
 	Clear();
 }
@@ -128,9 +129,28 @@ void RecvOverlapped::Execute(BOOL result, DWORD byteSize)
 	// 서버가 터졌다던가, 클라의 연결이 끊어졌다는 등
 	// 잘못된 경우이기 때문에 무조건 정리한다
 	if (0 == byteSize)
+	{
 		m_TCPSession->Close();
+		return;
+	}
 
 	m_TCPSession->OnRecv(m_Buffer, byteSize);
 }
 
 
+////////////////// DisconnectOverlapped //////////////////
+DisconnectOverlapped::DisconnectOverlapped(PtrSTCPSession tcpSession)
+	: m_TCPSession(std::move(tcpSession))
+{
+}
+
+DisconnectOverlapped::~DisconnectOverlapped()
+= default;
+
+void DisconnectOverlapped::Execute(BOOL result, DWORD byteSize)
+{
+	if (nullptr != m_TCPSession)
+	{
+		m_TCPSession->UnRegisterSession();
+	}
+}

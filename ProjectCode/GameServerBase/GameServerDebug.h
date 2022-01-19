@@ -1,13 +1,13 @@
 #pragma once
 #include <string>
-#include <assert.h>
 #include "GameServerIocp.h"
 
 enum class LOGTYPE
 {
 	LOGTYPE_ERROR,
 	LOGTYPE_WARNING,
-	LOGTYPE_INFO
+	LOGTYPE_INFO,
+	LOGTYPE_LASTERROR
 };
 
 // ¿ëµµ : 
@@ -24,7 +24,7 @@ private:
 	};
 
 private: // Member Var
-	static const char*		s_TypeText[3];
+	static const char*		s_TypeText[4];
 	static GameServerIocp	s_LogIocp;
 	static std::atomic<int> s_LogCount;
 
@@ -50,6 +50,7 @@ public: // Member Function
 	static void LogError(const std::string & text);
 	static void LogWarning(const std::string& text);
 	static void LogInfo(const std::string& text);
+	static void LogLastError(const std::string& text);
 
 	static void AssertDebug();
 	static void AssertDebugMsg(const std::string& msg);

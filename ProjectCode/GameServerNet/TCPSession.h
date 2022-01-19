@@ -8,6 +8,7 @@
 class TCPListener;
 class AcceptExOverlapped;
 class RecvOverlapped;
+class DisconnectOverlapped;
 class TCPSession : public GameServerObjectBase
 {
 	friend TCPListener;
@@ -21,7 +22,8 @@ private: // Member Var
 	IPEndPoint	m_LocalAddress;
 	IPEndPoint	m_RemoteAddress;
 
-	RecvOverlapped* m_RecvOverlapped;
+	RecvOverlapped*			m_RecvOverlapped;
+	DisconnectOverlapped*	m_DisconnectOverlapped;
 
 	bool m_CallClose;
 	std::function<void(PtrSTCPSession)>								m_CloseCallBack;
@@ -42,24 +44,27 @@ public:
 	TCPSession& operator=(TCPSession&& other) = delete;
 
 private:
-	SOCKET GetSocket() const { return m_SessionSocket; }
+	//SOCKET GetSocket() const { return m_SessionSocket; }
 
 private:
+	static void OnCallBack(PtrWTCPSession weakSession, BOOL result, DWORD numberOfBytes, LPOVERLAPPED lpOverlapped);
+
 	bool Initialize();
 	bool BindQueue(const GameServerQueue& taskQueue);	// nullptr가 들어올 수 없도록 매개변수를 &로 받는다
 
-	static void OnCallBack(PtrWTCPSession weakSession, BOOL result, DWORD numberOfBytes, LPOVERLAPPED lpOverlapped);
-
 	void OnRecv(const char* data, DWORD byteSize);
 	void RecvRequest();
-
-	void Close();
-	void CloseSocket();
+		
+	void Close(bool forceClose = false);
+	void DisconnectSocket();	// 정상 종료 후 재활용
+	void CloseSocket();			// 강제 종료
 
 public:
+	SOCKET GetSocket() const { return m_SessionSocket; }
 	__int64 GetConnectId() const { return m_ConnectId; }
 
 public: // Member Function
 	void SetCallBack(const RecvCallBack& recvCallBack, const CloseCallBack& closeCallBack);
+	void UnRegisterSession();
 };
 
