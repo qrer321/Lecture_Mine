@@ -2,7 +2,7 @@
 #include "GameServerOverlapped.h"
 #include "TCPSession.h"
 
-////////////////// GameServerOverlapped //////////////////
+///////////////////////////// GameServerOverlapped /////////////////////////////
 GameServerOverlapped::GameServerOverlapped()
 	: m_Overlapped()
 {
@@ -22,8 +22,7 @@ void GameServerOverlapped::ResetOverlapped()
 	memset(&m_Overlapped, 0x00, sizeof(WSAOVERLAPPED));
 }
 
-
-////////////////// AcceptExOverlapped //////////////////
+///////////////////////////// AcceptExOverlapped /////////////////////////////
 AcceptExOverlapped::AcceptExOverlapped(PtrSTCPSession tcpSession)
 	: m_Buffer{}
 	, m_TCPSession(std::move(tcpSession))
@@ -36,7 +35,10 @@ AcceptExOverlapped::~AcceptExOverlapped()
 void AcceptExOverlapped::Execute(BOOL result, DWORD byteSize)
 {
 	if (nullptr == m_TCPSession)
+	{
 		GameServerDebug::LogError("세션이 세팅되어있지 않은 오버랩드 객체입니다");
+		return;
+	}
 
 	// AcceptEx의 주소값이 같이 날아오는데
 	// 해당 주소값을 뽑아낸다
@@ -103,7 +105,69 @@ void AcceptExOverlapped::Execute(BOOL result, DWORD byteSize)
 }
 
 
-////////////////// RecvOverlapped //////////////////
+///////////////////////////// SendOverlapped /////////////////////////////
+SendOverlapped::SendOverlapped()
+	: m_wsaBuffer()
+	, m_TCPSession(nullptr)
+{
+}
+
+SendOverlapped::SendOverlapped(PtrSTCPSession tcpSession)
+	: m_wsaBuffer()
+	, m_TCPSession(std::move(tcpSession))
+{
+}
+
+SendOverlapped::~SendOverlapped()
+= default;
+
+LPWSABUF SendOverlapped::GetBuffer()
+{
+	return &m_wsaBuffer;
+}
+
+int SendOverlapped::GetMaxBufferLength() const
+{
+	return static_cast<int>(m_Buffer.size());
+}
+
+void SendOverlapped::SetTCPSession(PtrSTCPSession tcpSession)
+{
+	if (nullptr == tcpSession)
+	{
+		GameServerDebug::AssertDebugMsg("nullptr 세션을 세팅하려고 시도하였습니다");
+		return;
+	}
+
+	m_TCPSession = std::move(tcpSession);
+}
+
+void SendOverlapped::New(size_t maxBufferLength)
+{
+	m_Buffer.resize(maxBufferLength);
+	m_wsaBuffer.buf = &m_Buffer[0];
+	m_wsaBuffer.len = static_cast<ULONG>(m_Buffer.size());
+}
+
+void SendOverlapped::CopyFrom(const std::vector<char>& from)
+{
+	New(from.size());
+	std::copy(from.begin(), from.end(), m_Buffer.begin());
+}
+
+void SendOverlapped::Execute(BOOL result, DWORD byteSize)
+{
+	if (nullptr == m_TCPSession)
+	{
+		GameServerDebug::LogError("세션이 세팅되어있지 않은 오버랩드 객체입니다");
+		return;
+	}
+		
+	m_TCPSession->OnSendComplete(this);
+}
+
+
+///////////////////////////// RecvOverlapped /////////////////////////////
 RecvOverlapped::RecvOverlapped(PtrSTCPSession tcpSession)
 	: m_Buffer{}
 	, m_wsaBuffer()
@@ -138,7 +202,7 @@ void RecvOverlapped::Execute(BOOL result, DWORD byteSize)
 }
 
 
-////////////////// DisconnectOverlapped //////////////////
+///////////////////////////// DisconnectOverlapped /////////////////////////////
 DisconnectOverlapped::DisconnectOverlapped(PtrSTCPSession tcpSession)
 	: m_TCPSession(std::move(tcpSession))
 {
@@ -149,8 +213,11 @@ DisconnectOverlapped::~DisconnectOverlapped()
 
 void DisconnectOverlapped::Execute(BOOL result, DWORD byteSize)
 {
-	if (nullptr != m_TCPSession)
+	if (nullptr == m_TCPSession)
 	{
-		m_TCPSession->UnRegisterSession();
+		GameServerDebug::LogError("세션이 세팅되어있지 않은 오버랩드 객체입니다");
+		return;
 	}
+
+	m_TCPSession->UnRegisterSession();
 }

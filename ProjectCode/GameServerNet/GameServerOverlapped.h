@@ -3,7 +3,7 @@
 
 // ¿ëµµ : 
 // ºÐ·ù :
-// Ã·¾ð : 
+// Ã·¾ð :
 class GameServerOverlapped
 {
 protected: // Member Var
@@ -50,6 +50,37 @@ public:
 	PtrSTCPSession GetTCPSession() { return m_TCPSession; }
 
 public:
+	void Execute(BOOL result, DWORD byteSize) override;
+};
+
+class SendOverlapped : public GameServerOverlapped
+{
+private:
+	std::vector<char>	m_Buffer;
+	WSABUF				m_wsaBuffer;
+	PtrSTCPSession		m_TCPSession;
+
+public:
+	SendOverlapped();
+	SendOverlapped(PtrSTCPSession tcpSession);
+	~SendOverlapped() override;
+
+	SendOverlapped(const SendOverlapped& other) = delete;
+	SendOverlapped(SendOverlapped&& other) = delete;
+
+public:
+	SendOverlapped& operator=(const SendOverlapped& other) = delete;
+	SendOverlapped& operator=(SendOverlapped&& other) = delete;
+
+public:
+	LPWSABUF GetBuffer();
+	int GetMaxBufferLength() const;
+
+public:
+	void SetTCPSession(PtrSTCPSession tcpSession);
+	void New(size_t maxBufferLength);
+	void CopyFrom(const std::vector<char>& from);
+
 	void Execute(BOOL result, DWORD byteSize) override;
 };
 

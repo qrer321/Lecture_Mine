@@ -3,6 +3,25 @@
 
 #pragma comment (lib, "GameServerBase.lib")
 
+std::mutex g_Lock;
+std::thread g_recvThread;
+
+bool g_Check = true;
+void RecvFunc(SOCKET sessionSocket)
+{
+	while (g_Check)
+	{
+		char buffer[1024] = {};
+
+		int result = recv(sessionSocket, buffer, static_cast<int>(sizeof(buffer)), 0);
+		if (SOCKET_ERROR == result)
+			return;
+
+		std::cout << buffer << std::endl;
+	}
+}
+
+
 int main()
 {
 	WSADATA wsa;
@@ -10,9 +29,9 @@ int main()
 	if (0 != WSAStartup(MAKEWORD(2, 2), &wsa))
 		std::cout << "WSAStartup Error" << std::endl;
 
-	SOCKET SessionSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	SOCKET sessionSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
-	if (INVALID_SOCKET == SessionSocket)
+	if (INVALID_SOCKET == sessionSocket)
 		return 0;
 
 	std::cout << "IP주소를 입력해주세요" << std::endl;
@@ -38,13 +57,15 @@ int main()
 	if (SOCKET_ERROR == inet_pton(AF_INET, Ip.c_str(), &Add.sin_addr))
 		return 0;
 
-	if (SOCKET_ERROR == connect(SessionSocket, reinterpret_cast<const sockaddr*>(&Add), sizeof(SOCKADDR_IN)))
+	if (SOCKET_ERROR == connect(sessionSocket, reinterpret_cast<const sockaddr*>(&Add), sizeof(SOCKADDR_IN)))
 	{
 		GameServerDebug::GetLastErrorPrint();
 		return 0;
 	}
 
 	std::cout << "커넥트 성공" << std::endl;
+
+	g_recvThread = std::thread(RecvFunc, sessionSocket);
 
 	while (true)
 	{
@@ -55,13 +76,16 @@ int main()
 		if ("q" == in ||
 			"Q" == in)
 		{
-			closesocket(SessionSocket);
+			closesocket(sessionSocket);
+			g_Check = false;
+			g_recvThread.join();
+			Sleep(1);
 			return 0;
 		}
 
 		char buffer[1024] = {};
 		memcpy_s(buffer, sizeof(buffer), in.c_str(), in.size());
-		int result = send(SessionSocket, buffer, sizeof(buffer), 0);
+		int result = send(sessionSocket, buffer, sizeof(buffer), 0);
 	}
 
 	_getch();

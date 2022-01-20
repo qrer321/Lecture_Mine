@@ -34,6 +34,9 @@
     <ClInclude Include="GameServerUnique.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerObjectPool.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="GameServerUnique.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerObjectPool.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -85,6 +91,9 @@
     </Filter>
     <Filter Include="Time">
       <UniqueIdentifier>{af7e6402-fc6e-464d-9694-c2e8d5dd71fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{56ff567f-208e-4fd4-b7dd-f316dd8ba98c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

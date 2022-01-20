@@ -90,6 +90,8 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkDefault(const std::shared_ptr
 			// @desc
 			// task go to : TCPListener::OnAccept()
 			//				TCPListener::OnCallBack()
+			//				TCPSession::OnSendComplete()
+			//				TCPSession::OnRecv()
 			OverlappedTask* overTask = work->GetConvertCompletionKey<OverlappedTask*>();
 			overTask->task(returnType, work->GetNumberOfBytes(), work->GetOverlappedPtr());
 		}

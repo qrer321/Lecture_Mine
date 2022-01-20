@@ -132,8 +132,18 @@ void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 
 		m_AcceptCallBack(overlappedPtr->GetTCPSession());
 
-		// Receive를 위한 바인드
-		overlappedPtr->GetTCPSession()->BindQueue(*m_TaskQueue);
+		// 이미 Bind된 Socket이 재활용되어 OnAccept 함수에 들어왔을 때
+		// IOCP와 다시 Bind 하지 않도록 막아준다
+		if (false == overlappedPtr->GetTCPSession()->m_IsAcceptBind)
+		{
+			// GameServerQueue == m_TaskQueue가 가지고 있는 IOCP의 감시를 받도록 하여
+			// SessionSocket에서 무언가 일이 발생될 때 TCPSession::OnCallBack() 함수를 호출하도록 설정
+			overlappedPtr->GetTCPSession()->BindQueue(*m_TaskQueue);
+			overlappedPtr->GetTCPSession()->AcceptBindOn();
+		}
+
+		// IOCP의 감시를 받는 SessionSocket에서 무언가 일이 발생했을 때
+		// 그 무언가가 어떤 것에서 발생할지 대한 설정 ==> 현재 Receive 동작
 		overlappedPtr->GetTCPSession()->RecvRequest();
 
 		m_ConnectionLock.lock();

@@ -6,6 +6,7 @@
 TCPSession::TCPSession()
 	: m_SessionSocket(NULL)
 	, m_ConnectId(0)
+	, m_IsAcceptBind(false)
 	, m_RecvOverlapped(nullptr)
 	, m_DisconnectOverlapped(nullptr)
 	, m_CallClose(false)
@@ -19,12 +20,24 @@ TCPSession::~TCPSession()
 TCPSession::TCPSession(TCPSession&& other) noexcept
 	: m_SessionSocket(other.m_SessionSocket)
 	, m_ConnectId(other.m_ConnectId)
+	, m_IsAcceptBind(other.m_IsAcceptBind)
 	, m_RecvOverlapped(other.m_RecvOverlapped)
 	, m_DisconnectOverlapped(other.m_DisconnectOverlapped)
 	, m_CallClose(other.m_CallClose)
 {
 	other.m_RecvOverlapped = nullptr;
 	other.m_DisconnectOverlapped = nullptr;
+}
+
+void TCPSession::OnCallBack(PtrWTCPSession weakSession, BOOL result, DWORD numberOfBytes, LPOVERLAPPED lpOverlapped)
+{
+	if (nullptr == lpOverlapped)
+		return;
+
+	auto overlappedPtr = reinterpret_cast<GameServerOverlapped*>(reinterpret_cast<char*>(lpOverlapped) - sizeof(void*));
+
+	// recv던 send던 다형성을 통해 적절한 클래스의 Execute 함수 호출
+	overlappedPtr->Execute(result, numberOfBytes);
 }
 
 bool TCPSession::Initialize()
@@ -97,19 +110,53 @@ bool TCPSession::Initialize()
 bool TCPSession::BindQueue(const GameServerQueue& taskQueue)
 {
 	PtrWTCPSession sessionPtr = std::dynamic_pointer_cast<TCPSession>(shared_from_this());
-	return taskQueue.NetworkBind(m_SessionSocket, 
-		std::bind(&TCPSession::OnCallBack, sessionPtr, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+	return taskQueue.NetworkBind(m_SessionSocket,
+	                             [sessionPtr](auto&& result, auto&& numberOfBytes, auto&& lpOverlapped)
+	                             {
+		                             return TCPSession::OnCallBack(sessionPtr, std::forward<decltype(result)>(result),
+		                                                           std::forward<decltype(numberOfBytes)>(numberOfBytes),
+		                                                           std::forward<decltype(lpOverlapped)>(lpOverlapped));
+	                             });
 }
 
-void TCPSession::OnCallBack(PtrWTCPSession weakSession, BOOL result, DWORD numberOfBytes, LPOVERLAPPED lpOverlapped)
+void TCPSession::AcceptBindOn()
 {
-	if (nullptr == lpOverlapped)
-		return;
+	m_IsAcceptBind = true;
+}
 
-	auto overlappedPtr = reinterpret_cast<GameServerOverlapped*>(reinterpret_cast<char*>(lpOverlapped) - sizeof(void*));
+// Session이 Send를 완료했을 경우 m_SendOverlappedPool에 Overlapped를 반납한다.
+void TCPSession::OnSendComplete(SendOverlapped* sendOverlapped)
+{
+	m_SendOverlappedPool.Push(sendOverlapped);
+}
 
-	// recv던 send던 다형성을 통해 적절한 클래스의 Execute 함수 호출
-	overlappedPtr->Execute(result, numberOfBytes);
+bool TCPSession::Send(const std::vector<char>& buffer)
+{
+	if (buffer.empty())
+		return false;
+
+	DWORD byteSize = 0;
+	DWORD flag = 0;
+
+	SendOverlapped* sendOverlapped = m_SendOverlappedPool.Pop();
+	sendOverlapped->SetTCPSession(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
+	sendOverlapped->CopyFrom(buffer);
+
+	// WSASend가 완료된 경우 설정된 Overlapped 주소 ==> GameServerQueue::WorkDefault() 함수에서 설정된 task에 의해
+	// TCPSession::OnSendComplete 함수가 호출되어 사용한 SendOverlapped를 Pool에 반환한다.
+	int error = WSASend(m_SessionSocket, sendOverlapped->GetBuffer(), 1, &byteSize, flag,
+						sendOverlapped->GetOverlapped(), nullptr);
+
+	if (SOCKET_ERROR == error)
+	{
+		if (WSA_IO_PENDING == WSAGetLastError())
+		{
+			GameServerDebug::GetLastErrorPrint();
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void TCPSession::OnRecv(const char* data, DWORD byteSize)

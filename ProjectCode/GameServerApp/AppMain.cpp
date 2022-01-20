@@ -31,12 +31,19 @@ int main()
 
 			// 세션이 연결된 접속자는 IP / PW를 전달하고
 			// DB를 통해 서버의 인정을 받아야 한다
-			s->SetCallBack([](PtrSTCPSession callback, const std::vector<char>& value)
+			s->SetCallBack([](const PtrSTCPSession& callback, const std::vector<char>& value)
 				{
 					std::string strTest = &value[0];
 					GameServerDebug::LogInfo(strTest);
+
+					strTest = "to Server : " + strTest;
+					std::vector<char> testVector = std::vector<char>(strTest.size() + 1);
+					std::copy(strTest.begin(), strTest.end(), testVector.begin());
+					testVector[strTest.size()] = 0;
+
+					callback->Send(testVector);
 				},
-				[](PtrSTCPSession callback)
+				[](const PtrSTCPSession& callback)
 				{
 					std::string logText = std::to_string(static_cast<int>(callback->GetSocket()));
 					GameServerDebug::LogInfo(logText + " 접속자가 종료했습니다");
