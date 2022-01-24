@@ -19,19 +19,7 @@ int main()
 	PtrSTCPListener listener = std::make_shared<TCPListener>();
 	listener->Initialize(IPEndPoint(IPAddress::Parse("0.0.0.0"), 30001), [](PtrSTCPSession s)
 		{
-			// 내부적인 처리가 끝나고
-			// 어떤 게임을 만들어야 할지는
-			// 이 곳에서 처리한다
-			// (어플리케이션 설정)
-
-			// 서버로 나뉘는 게임인지, 채널로 나뉘는 게임인지 결정
-
-			// 접속자가 존재하고 해당 접속자와 세션을 연결하면
-			// 최종적으로 처리할 함수가 이 곳
-
-			// 세션이 연결된 접속자는 IP / PW를 전달하고
-			// DB를 통해 서버의 인정을 받아야 한다
-			s->SetCallBack([](const PtrSTCPSession& callback, const std::vector<char>& value)
+			s->SetCallBack([](const PtrSTCPSession& session, const std::vector<char>& value)
 				{
 					std::string strTest = &value[0];
 					GameServerDebug::LogInfo(strTest);
@@ -41,15 +29,31 @@ int main()
 					std::copy(strTest.begin(), strTest.end(), testVector.begin());
 					testVector[strTest.size()] = 0;
 
-					callback->Send(testVector);
+					session->Send(testVector);
 				},
-				[](const PtrSTCPSession& callback)
+				[](const PtrSTCPSession& session)
 				{
-					std::string logText = std::to_string(static_cast<int>(callback->GetSocket()));
+					std::string logText = std::to_string(static_cast<int>(session->GetSocket()));
 					GameServerDebug::LogInfo(logText + " 접속자가 종료했습니다");
 				});
+
 			std::string logText = std::to_string(static_cast<int>(s->GetSocket()));
 			GameServerDebug::LogInfo(logText + " 접속자가 있습니다");
+			{
+				std::string strTest = "OSI7 계층중 1계층의 명사를 패킷으로 쏘시오!!";
+				std::vector<char> testVector = std::vector<char>(strTest.size() + 1);
+				std::copy(strTest.begin(), strTest.end(), testVector.begin());
+				testVector[strTest.size()] = 0;
+
+				for (const char i : testVector)
+				{
+					std::vector<char> TestP = std::vector<char>(2);
+					TestP[0] = i;
+					TestP[1] = 0;
+					s->Send(TestP);
+					Sleep(100);
+				}
+			}
 		});
 
 	GameServerQueue networkQueue;

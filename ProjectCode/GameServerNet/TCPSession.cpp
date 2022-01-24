@@ -15,6 +15,7 @@ TCPSession::TCPSession()
 TCPSession::~TCPSession()
 {
 	delete m_RecvOverlapped;
+	delete m_DisconnectOverlapped;
 }
 
 TCPSession::TCPSession(TCPSession&& other) noexcept
@@ -96,12 +97,12 @@ bool TCPSession::Initialize()
 
 	if (nullptr == m_RecvOverlapped)
 	{
-		m_RecvOverlapped = new RecvOverlapped(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
+		m_RecvOverlapped = new RecvOverlapped(this);
 	}
 
 	if (nullptr == m_DisconnectOverlapped)
 	{
-		m_DisconnectOverlapped = new DisconnectOverlapped(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
+		m_DisconnectOverlapped = new DisconnectOverlapped(this);
 	}
 
 	return true;
@@ -139,7 +140,7 @@ bool TCPSession::Send(const std::vector<char>& buffer)
 	DWORD flag = 0;
 
 	SendOverlapped* sendOverlapped = m_SendOverlappedPool.Pop();
-	sendOverlapped->SetTCPSession(std::dynamic_pointer_cast<TCPSession>(shared_from_this()));
+	sendOverlapped->SetTCPSession(this);
 	sendOverlapped->CopyFrom(buffer);
 
 	// WSASend가 완료된 경우 설정된 Overlapped 주소 ==> GameServerQueue::WorkDefault() 함수에서 설정된 task에 의해

@@ -14,7 +14,8 @@ TCPListener::TCPListener()
 }
 
 TCPListener::~TCPListener()
-= default;
+{
+}
 
 TCPListener::TCPListener(TCPListener&& other) noexcept
 	: m_ListenSocket(other.m_ListenSocket)
@@ -130,8 +131,6 @@ void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 	{
 		overlappedPtr->Execute(TRUE, byteSize);
 
-		m_AcceptCallBack(overlappedPtr->GetTCPSession());
-
 		// 이미 Bind된 Socket이 재활용되어 OnAccept 함수에 들어왔을 때
 		// IOCP와 다시 Bind 하지 않도록 막아준다
 		if (false == overlappedPtr->GetTCPSession()->m_IsAcceptBind)
@@ -142,6 +141,11 @@ void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 			overlappedPtr->GetTCPSession()->AcceptBindOn();
 		}
 
+		// TCPListener Initializer 시 설정해두었던 AcceptCallBack 호출 -> GameServerApp::main()의 람다 형식의 함수
+		// TCPSession을 통해 호출이 이루어지므로 AcceptCallBack을 호출하기 이전에 TCPSession과 GameServerQueue의 Bind 되어야 한다.
+		// -> 호출 순서를 틀리면 문제 발생(예. SendOverlapped로 인한 leak)
+		m_AcceptCallBack(std::static_pointer_cast<TCPSession>(overlappedPtr->GetTCPSession()->shared_from_this()));
+
 		// IOCP의 감시를 받는 SessionSocket에서 무언가 일이 발생했을 때
 		// 그 무언가가 어떤 것에서 발생할지 대한 설정 ==> 현재 Receive 동작
 		overlappedPtr->GetTCPSession()->RecvRequest();
@@ -149,6 +153,14 @@ void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 		m_ConnectionLock.lock();
 		m_Connections.insert(make_pair(overlappedPtr->GetTCPSession()->GetConnectId(), overlappedPtr->GetTCPSession()));
 		m_ConnectionLock.unlock();
+
+		// IOCP가 관리하던 AcceptExOverlapped 메모리를
+		// 접속자와 연결된 소켓이 관리하게 되었으므로
+		// 기존 Pool에서 꺼내어 AcceptExOverlappedPool에 넣어준다
+		// 또한, overlappedPtr(AcceptExOverlapped)는 unique_ptr이므로 release 해준다.
+		m_IocpAcceptExOverlappedPool.Erase(overlappedPtr.get());
+		m_AcceptExOverlappedPool.Push(overlappedPtr.get());
+		overlappedPtr.release();
 	}
 	else
 	{
@@ -178,16 +190,14 @@ void TCPListener::AsyncAccept()
 	// 그렇기에 10개의 스레드가 동시에 AsyncAccept 함수를 호출하면 문제가 발생할 수 있다.
 	PtrSTCPSession newSession = nullptr;
 	{
-		m_ConnectionPoolLock.lock();
+		std::lock_guard lock(m_ConnectionPoolLock);
 
 		// 재활용에 사용할 풀이 비어있다면
 		if (m_ConnectionPool.empty())
 		{
-			newSession = std::make_shared<TCPSession>();
+			newSession = std::make_unique<TCPSession>();
 			newSession->Initialize();
 			newSession->SetParent(this);
-
-			HANDLE eventHandle = newSession->m_DisconnectOverlapped->GetOverlapped()->hEvent;
 
 			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
 			GameServerDebug::LogInfo(logText + " 소켓을 새로 생성하였습니다");
@@ -197,17 +207,21 @@ void TCPListener::AsyncAccept()
 			newSession = m_ConnectionPool.front();
 			m_ConnectionPool.pop_front();
 
-			HANDLE eventHandle = newSession->m_DisconnectOverlapped->GetOverlapped()->hEvent;
-
 			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
 			GameServerDebug::LogInfo(logText + " 소켓을 재활용하여 새로운 대기 소켓을 만들었습니다");
 		}
-
-		m_ConnectionPoolLock.unlock();
 	}
 
-	std::unique_ptr<AcceptExOverlapped> overlappedPtr = std::make_unique<AcceptExOverlapped>(newSession);
-
+	AcceptExOverlapped* acceptOverlapped = nullptr;
+	if (true == m_AcceptExOverlappedPool.IsEmpty())
+	{
+		acceptOverlapped = new AcceptExOverlapped(newSession);
+	}
+	else
+	{
+		acceptOverlapped = m_AcceptExOverlappedPool.Pop();
+		acceptOverlapped->SetTCPSession(newSession);
+	}
 	DWORD dwByte = 0;
 
 	// Overlapped에 대한 주소를 넘겨주었다
@@ -258,12 +272,12 @@ void TCPListener::AsyncAccept()
 	 */
 	const BOOL result = AcceptEx(m_ListenSocket,
 		newSession->GetSocket(),
-		overlappedPtr->GetBuffer(),
+		acceptOverlapped->GetBuffer(),
 		0,
 		sizeof(sockaddr_in) + 16,
 		sizeof(sockaddr_in) + 16,
 		&dwByte,
-		overlappedPtr->GetOverlapped());
+		acceptOverlapped->GetOverlapped());
 
 	if (FALSE == result)
 	{
@@ -274,7 +288,7 @@ void TCPListener::AsyncAccept()
 		}
 	}
 
-	overlappedPtr.release();
+	m_IocpAcceptExOverlappedPool.Push(acceptOverlapped);
 }
 
 void TCPListener::CloseSession(const PtrSTCPSession& tcpSession)

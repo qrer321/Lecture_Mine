@@ -4,6 +4,8 @@
 // 용도 : 
 // 분류 :
 // 첨언 :
+
+/////////////////////// GameServerOverlapped ///////////////////////
 class GameServerOverlapped
 {
 protected: // Member Var
@@ -27,6 +29,8 @@ public: // Member Function
 	virtual void Execute(BOOL result, DWORD byteSize) {}
 };
 
+
+/////////////////////// AcceptExOverlapped ///////////////////////
 class AcceptExOverlapped : public GameServerOverlapped
 {
 private:
@@ -34,7 +38,7 @@ private:
 	PtrSTCPSession	m_TCPSession;
 
 public:
-	AcceptExOverlapped() = delete;
+	AcceptExOverlapped();
 	AcceptExOverlapped(PtrSTCPSession tcpSession);
 	~AcceptExOverlapped() override;
 
@@ -50,19 +54,22 @@ public:
 	PtrSTCPSession GetTCPSession() { return m_TCPSession; }
 
 public:
+	void SetTCPSession(PtrSTCPSession tcpSession);
 	void Execute(BOOL result, DWORD byteSize) override;
 };
 
+
+/////////////////////// SendOverlapped ///////////////////////
 class SendOverlapped : public GameServerOverlapped
 {
 private:
 	std::vector<char>	m_Buffer;
 	WSABUF				m_wsaBuffer;
-	PtrSTCPSession		m_TCPSession;
+	TCPSession*			m_TCPSession;
 
 public:
 	SendOverlapped();
-	SendOverlapped(PtrSTCPSession tcpSession);
+	SendOverlapped(TCPSession* tcpSession);
 	~SendOverlapped() override;
 
 	SendOverlapped(const SendOverlapped& other) = delete;
@@ -77,23 +84,25 @@ public:
 	int GetMaxBufferLength() const;
 
 public:
-	void SetTCPSession(PtrSTCPSession tcpSession);
+	void SetTCPSession(TCPSession* tcpSession);
 	void New(size_t maxBufferLength);
 	void CopyFrom(const std::vector<char>& from);
 
 	void Execute(BOOL result, DWORD byteSize) override;
 };
 
+
+/////////////////////// RecvOverlapped ///////////////////////
 class RecvOverlapped : public GameServerOverlapped
 {
 private:
 	char			m_Buffer[1024];
 	WSABUF			m_wsaBuffer;
-	PtrSTCPSession	m_TCPSession;
+	TCPSession*		m_TCPSession;
 
 public:
 	RecvOverlapped() = delete;
-	RecvOverlapped(PtrSTCPSession tcpSession);
+	RecvOverlapped(TCPSession* tcpSession);
 	~RecvOverlapped() override;
 
 	RecvOverlapped(const RecvOverlapped& other) = delete;
@@ -105,7 +114,7 @@ public:
 
 
 public:
-	PtrSTCPSession GetTCPSession() { return m_TCPSession; }
+	TCPSession* GetTCPSession() const { return m_TCPSession; }
 	void* GetBuffer() { return m_Buffer; }
 	LPWSABUF GetWSABuffer() { return &m_wsaBuffer;  }
 
@@ -114,14 +123,16 @@ public:
 	void Clear();
 };
 
+
+/////////////////////// DisconnectOverlapped ///////////////////////
 class DisconnectOverlapped : public GameServerOverlapped
 {
 private:
-	PtrSTCPSession	m_TCPSession;
+	TCPSession* m_TCPSession;
 
 public:
 	DisconnectOverlapped() = delete;
-	DisconnectOverlapped(PtrSTCPSession tcpSession);
+	DisconnectOverlapped(TCPSession* tcpSession);
 	~DisconnectOverlapped() override;
 
 	DisconnectOverlapped(const DisconnectOverlapped& other) = delete;

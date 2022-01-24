@@ -8,33 +8,33 @@
 // 첨언 :
 class TCPSession;
 class GameServerQueue;
+class AcceptExOverlapped;
 class TCPListener : public GameServerObjectBase
 {
 	friend TCPSession;
 
 private:
-	SOCKET										m_ListenSocket;
-	IPEndPoint									m_ListenEndPoint;
+	SOCKET											m_ListenSocket;
+	IPEndPoint										m_ListenEndPoint;
 
-	/*
-	 * GameServerQueue 내부의 IOCP에 m_ListenSocket을 등록시키고
-	 * IOCP를 이용하여 접속자 이벤트를 처리한다.
-	 */
-	const GameServerQueue*						m_TaskQueue;
-
-	std::function<void(PtrSTCPSession)>			m_AcceptCallBack;
 	
+	// GameServerQueue 내부의 IOCP에 m_ListenSocket을 등록시키고
+	// IOCP를 이용하여 접속자 이벤트를 처리한다.
+	const GameServerQueue*							m_TaskQueue;
+	std::function<void(PtrSTCPSession)>				m_AcceptCallBack;
 
-	/*
-	 * 미리 n개의 세션을 만들어둔다.
-	 * AcceptEx를 호출하면 호출한 횟수만큼 백로그가 생기는 시스템.
-	 */
-	std::deque<PtrSTCPSession>					m_ConnectionPool;
-	std::mutex									m_ConnectionPoolLock;
+	// IOCP에 맡겨져있는 AcceptExOverlapped의 메모리들
+	GameServerObjectFindPool<AcceptExOverlapped>	m_IocpAcceptExOverlappedPool;
+	GameServerObjectPool<AcceptExOverlapped>		m_AcceptExOverlappedPool;
+
+	// 미리 n개의 세션을 만들어둔다.
+	// AcceptEx를 호출하면 호출한 횟수만큼 백로그가 생기는 시스템.
+	std::deque<PtrSTCPSession>						m_ConnectionPool;
+	std::mutex										m_ConnectionPoolLock;
 
 	// __int64 : ConnectionId
-	std::unordered_map<__int64, PtrSTCPSession>	m_Connections;
-	std::mutex									m_ConnectionLock;
+	std::unordered_map<__int64, PtrSTCPSession>		m_Connections;
+	std::mutex										m_ConnectionLock;
 
 public: // Default
 	TCPListener();

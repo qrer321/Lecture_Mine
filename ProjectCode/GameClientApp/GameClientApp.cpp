@@ -1,29 +1,47 @@
 #include "PreCompile.h"
-#include <GameServerBase/GameServerDebug.h>
-
-#pragma comment (lib, "GameServerBase.lib")
+#include "tchar.h"
+#include <string>
 
 std::mutex g_Lock;
 std::thread g_recvThread;
 
 bool g_Check = true;
+std::string g_recvString;
+
 void RecvFunc(SOCKET sessionSocket)
 {
 	while (g_Check)
 	{
-		char buffer[1024] = {};
+		char charBuffer[1024] = {};
+		wchar_t shortBuffer[1024] = {};
 
-		int result = recv(sessionSocket, buffer, static_cast<int>(sizeof(buffer)), 0);
+		int result = recv(sessionSocket, charBuffer, static_cast<int>(sizeof(charBuffer)), 0);
 		if (SOCKET_ERROR == result)
 			return;
 
-		std::cout << buffer << std::endl;
+		g_recvString += *charBuffer;
+
+		{
+			std::lock_guard lock(g_Lock);
+			if (std::string::npos != g_recvString.find("!!"))
+			{
+				system("cls");
+				std::cout << g_recvString << std::endl;
+				g_recvString.clear();
+			}
+			else
+			{
+			 	std::cout << charBuffer << std::endl;
+			}
+		}
 	}
 }
 
 
 int main()
 {
+	_wsetlocale(LC_ALL, L"korean");
+
 	WSADATA wsa;
 
 	if (0 != WSAStartup(MAKEWORD(2, 2), &wsa))
@@ -47,7 +65,7 @@ int main()
 	else if ("W" == Ip
 		|| "w" == Ip)
 	{
-		Ip = "61.98.125.214";
+		Ip = "58.150.30.210";
 	}
 
 	SOCKADDR_IN Add = { 0, };
@@ -59,7 +77,6 @@ int main()
 
 	if (SOCKET_ERROR == connect(sessionSocket, reinterpret_cast<const sockaddr*>(&Add), sizeof(SOCKADDR_IN)))
 	{
-		GameServerDebug::GetLastErrorPrint();
 		return 0;
 	}
 

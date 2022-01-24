@@ -89,9 +89,7 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkDefault(const std::shared_ptr
 		{
 			// @desc
 			// task go to : TCPListener::OnAccept()
-			//				TCPListener::OnCallBack()
-			//				TCPSession::OnSendComplete()
-			//				TCPSession::OnRecv()
+			//				TCPSession::OnCallBack()
 			OverlappedTask* overTask = work->GetConvertCompletionKey<OverlappedTask*>();
 			overTask->task(returnType, work->GetNumberOfBytes(), work->GetOverlappedPtr());
 		}
@@ -158,7 +156,7 @@ bool GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(BOOL, 
 	}
 
 	std::unique_ptr<OverlappedTask> overTask = std::make_unique<OverlappedTask>();
-	overTask->task = callback;
+	overTask->task = callback;	
 
 	if (false == m_Iocp.Bind(reinterpret_cast<HANDLE>(socket), reinterpret_cast<ULONG_PTR>(overTask.get())))
 	{
@@ -166,6 +164,7 @@ bool GameServerQueue::NetworkBind(SOCKET socket, const std::function<void(BOOL, 
 		return false;
 	}
 
+	m_IocpOverlappedTaskPool.Push(overTask.get());
 	overTask.release();
 
 	return true;

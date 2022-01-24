@@ -23,6 +23,12 @@ void GameServerOverlapped::ResetOverlapped()
 }
 
 ///////////////////////////// AcceptExOverlapped /////////////////////////////
+AcceptExOverlapped::AcceptExOverlapped()
+	: m_Buffer{}
+	, m_TCPSession(nullptr)
+{
+}
+
 AcceptExOverlapped::AcceptExOverlapped(PtrSTCPSession tcpSession)
 	: m_Buffer{}
 	, m_TCPSession(std::move(tcpSession))
@@ -31,6 +37,17 @@ AcceptExOverlapped::AcceptExOverlapped(PtrSTCPSession tcpSession)
 
 AcceptExOverlapped::~AcceptExOverlapped()
 = default;
+
+void AcceptExOverlapped::SetTCPSession(PtrSTCPSession tcpSession)
+{
+	if (nullptr == tcpSession)
+	{
+		GameServerDebug::AssertDebugMsg("nullptr 세션을 세팅하려고 시도하였습니다");
+		return;
+	}
+
+	m_TCPSession = std::move(tcpSession);
+}
 
 void AcceptExOverlapped::Execute(BOOL result, DWORD byteSize)
 {
@@ -112,9 +129,9 @@ SendOverlapped::SendOverlapped()
 {
 }
 
-SendOverlapped::SendOverlapped(PtrSTCPSession tcpSession)
+SendOverlapped::SendOverlapped(TCPSession* tcpSession)
 	: m_wsaBuffer()
-	, m_TCPSession(std::move(tcpSession))
+	, m_TCPSession(tcpSession)
 {
 }
 
@@ -131,7 +148,7 @@ int SendOverlapped::GetMaxBufferLength() const
 	return static_cast<int>(m_Buffer.size());
 }
 
-void SendOverlapped::SetTCPSession(PtrSTCPSession tcpSession)
+void SendOverlapped::SetTCPSession(TCPSession* tcpSession)
 {
 	if (nullptr == tcpSession)
 	{
@@ -139,7 +156,7 @@ void SendOverlapped::SetTCPSession(PtrSTCPSession tcpSession)
 		return;
 	}
 
-	m_TCPSession = std::move(tcpSession);
+	m_TCPSession = tcpSession;
 }
 
 void SendOverlapped::New(size_t maxBufferLength)
@@ -168,10 +185,10 @@ void SendOverlapped::Execute(BOOL result, DWORD byteSize)
 
 
 ///////////////////////////// RecvOverlapped /////////////////////////////
-RecvOverlapped::RecvOverlapped(PtrSTCPSession tcpSession)
+RecvOverlapped::RecvOverlapped(TCPSession* tcpSession)
 	: m_Buffer{}
 	, m_wsaBuffer()
-	, m_TCPSession(std::move(tcpSession))
+	, m_TCPSession(tcpSession)
 {
 	Clear();
 }
@@ -203,8 +220,8 @@ void RecvOverlapped::Execute(BOOL result, DWORD byteSize)
 
 
 ///////////////////////////// DisconnectOverlapped /////////////////////////////
-DisconnectOverlapped::DisconnectOverlapped(PtrSTCPSession tcpSession)
-	: m_TCPSession(std::move(tcpSession))
+DisconnectOverlapped::DisconnectOverlapped(TCPSession* tcpSession)
+	: m_TCPSession(tcpSession)
 {
 }
 

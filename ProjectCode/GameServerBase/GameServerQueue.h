@@ -2,6 +2,7 @@
 
 #include "GameServerNameBase.h"
 #include "GameServerIocp.h"
+#include "GameServerObjectPool.h"
 
 // 용도 : 
 // 분류 :
@@ -53,6 +54,8 @@ private:
 
 		// 0 이상인 경우 서버 메시지
 	};
+
+	mutable GameServerObjectFindPool<OverlappedTask> m_IocpOverlappedTaskPool;
 
 private:
 	GameServerIocp m_Iocp;
