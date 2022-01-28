@@ -37,6 +37,9 @@
     <ClInclude Include="GameServerObjectPool.h">
       <Filter>Memory</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerString.h">
+      <Filter>String</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -75,6 +78,9 @@
     <ClCompile Include="GameServerObjectPool.cpp">
       <Filter>Memory</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerString.cpp">
+      <Filter>String</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -94,6 +100,9 @@
     </Filter>
     <Filter Include="Memory">
       <UniqueIdentifier>{56ff567f-208e-4fd4-b7dd-f316dd8ba98c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="String">
+      <UniqueIdentifier>{549a888c-9c59-481f-9916-7b9ed3852a1e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
