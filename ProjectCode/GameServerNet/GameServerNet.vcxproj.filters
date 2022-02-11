@@ -32,7 +32,7 @@
       <Filter>NetObject</Filter>
     </ClInclude>
     <ClInclude Include="GameServerOverlapped.h">
-      <Filter>IO</Filter>
+      <Filter>IOCP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +61,7 @@
       <Filter>NetObject</Filter>
     </ClCompile>
     <ClCompile Include="GameServerOverlapped.cpp">
-      <Filter>IO</Filter>
+      <Filter>IOCP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -80,7 +80,7 @@
     <Filter Include="NetObject">
       <UniqueIdentifier>{b97da892-4aa6-4731-b1f2-3be73795a5de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="IO">
+    <Filter Include="IOCP">
       <UniqueIdentifier>{584a7ab3-2163-4c36-a83f-b69649df3d51}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

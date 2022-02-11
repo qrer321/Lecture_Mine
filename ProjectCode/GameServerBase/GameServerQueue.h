@@ -27,13 +27,13 @@ public:
 
 private:
 	// 일을 시키기
-	struct PostTask : public enable_shared_from_this<PostTask>
+	struct PostTask : enable_shared_from_this<PostTask>
 	{
 		std::function<void()> task;
 	};
 
 	// 비동기 파일 입출력
-	struct OverlappedTask : public enable_shared_from_this<OverlappedTask>
+	struct OverlappedTask : enable_shared_from_this<OverlappedTask>
 	{
 		// BOOL			: 성공/실패
 		// DWORD		: 받은 패킷이나 처리한 데이터의 길이

@@ -1,7 +1,9 @@
 #pragma once
 #include "IPEndPoint.h"
 #include "TypeDefine.h"
+#include <GameServerBase/GameServerObjectBase.h>
 #include <GameServerBase/GameServerObjectPool.h>
+#include <GameServerBase/GameServerQueue.h>
 
 // 용도 : 
 // 분류 :
@@ -30,11 +32,11 @@ private: // Member Var
 	RecvOverlapped*							m_RecvOverlapped;
 	DisconnectOverlapped*					m_DisconnectOverlapped;
 
-	std::function<void(PtrSTCPSession, const std::vector<char>&)>	m_RecvCallBack;
-	std::function<void(PtrSTCPSession)>								m_CloseCallBack;
-	bool															m_CallClose;
+	std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>	m_RecvCallBack;
+	std::function<void(PtrSTCPSession)>										m_CloseCallBack;
+	bool																	m_CallClose;
 
-	using RecvCallBack = std::function<void(PtrSTCPSession, const std::vector<char>&)>;
+	using RecvCallBack = std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>;
 	using CloseCallBack = std::function<void(PtrSTCPSession)>;
 
 public: // Default
@@ -68,7 +70,7 @@ public:
 	__int64 GetConnectId()	const { return m_ConnectId; }
 
 public: // Member Function
-	bool Send(const std::vector<char>& buffer);
+	bool Send(const std::vector<unsigned char>& buffer);
 
 	void SetCallBack(const RecvCallBack& recvCallBack, const CloseCallBack& closeCallBack);
 	void UnRegisterSession();

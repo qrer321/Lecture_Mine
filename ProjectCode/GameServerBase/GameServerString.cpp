@@ -191,3 +191,12 @@ bool GameServerString::AnsiToUTF8(const std::string& ansi, std::string& utf8)
 
 	return true;
 }
+
+void GameServerString::ToUpper(std::string& string)
+{
+	std::transform(string.begin(), string.end(), string.begin(), 
+		[](unsigned char c)
+		{
+			return static_cast<unsigned char>(std::toupper(c));
+		});
+}

@@ -25,5 +25,7 @@ public:
 
 	static bool UTF8ToAnsi(const std::string& utf8, std::string& ansi);
 	static bool AnsiToUTF8(const std::string& ansi, std::string& utf8);
+
+	static void ToUpper(std::string& string);
 };
 

@@ -166,7 +166,7 @@ void SendOverlapped::New(size_t maxBufferLength)
 	m_wsaBuffer.len = static_cast<ULONG>(m_Buffer.size());
 }
 
-void SendOverlapped::CopyFrom(const std::vector<char>& from)
+void SendOverlapped::CopyFrom(const std::vector<unsigned char>& from)
 {
 	New(from.size());
 	std::copy(from.begin(), from.end(), m_Buffer.begin());

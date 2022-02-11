@@ -8,6 +8,29 @@
 #include <GameServerNet/TCPListener.h>
 #include <GameServerNet/TCPSession.h>
 #include <GameServerNet/ServerHelper.h>
+#include <GameServerMessage/Messages.h>
+#include <GameServerMessage/MessageConverter.h>
+#include <GameServerMessage/Dispatcher.h>
+#include "ThreadHandlerLoginMessage.h"
+#include "DBQueue.h"
+#include "NetQueue.h"
+
+
+Dispatcher<TCPSession> g_dispatcher;
+
+template <typename MessageHandler, typename MessageType>
+void OnMessageProcess(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)
+{
+	std::shared_ptr<MessageType> convert_message = std::dynamic_pointer_cast<MessageType>(std::move(message));
+	if (nullptr == convert_message)
+	{
+		GameServerDebug::LogError("Login MessageConvert Error");
+		return;
+	}
+
+	std::shared_ptr<MessageHandler> message_handler = std::make_shared<MessageHandler>(std::move(tcp_session), std::move(convert_message));
+	message_handler->Start();
+}
 
 int main()
 {
@@ -16,18 +39,32 @@ int main()
 	ServerHelper::StartEngineStartUp();
 	GameServerDebug::Initialize();
 
+	DBQueue::Init();
+	NetQueue::Init();
+
+	g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::Login),
+		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)
+		{
+			return OnMessageProcess<ThreadHandlerLoginMessage, LoginMessage>(std::move(tcp_session), std::move(message));
+		});
+
+	g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::Chat),
+		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)
+		{
+			return OnMessageProcess<ThreadHandlerLoginMessage, LoginMessage>(std::move(tcp_session), std::move(message));
+		});
+
 	// 접속자를 받기 위한 비동기 소켓 초기화
 	PtrSTCPListener listener = std::make_shared<TCPListener>();
-	listener->Initialize(IPEndPoint(IPAddress::Parse("0.0.0.0"), 30001), [](PtrSTCPSession s)
+	listener->Initialize(IPEndPoint(IPAddress::Parse("0.0.0.0"), 30001), [](const PtrSTCPSession& s)
 		{
-			s->SetCallBack([](const PtrSTCPSession& session, const std::vector<char>& value)
+			s->SetCallBack([&](PtrSTCPSession session, const std::vector<unsigned char>& value)
 				{
-					std::string utf8 = &value[0];
-					std::string ansi;
-					GameServerString::UTF8ToAnsi(utf8, ansi);
+					MessageConverter converter = MessageConverter(value);
+					MessageHandler<TCPSession> handler;
+					g_dispatcher.GetHandler(converter.GetMessageType_UINT(), handler);
 
-					session->Send(value);
-					GameServerDebug::LogInfo(ansi + "test");
+					handler(std::move(session), std::move(converter.GetServerMessage()));
 				},
 				[](const PtrSTCPSession& session)
 				{
@@ -39,16 +76,16 @@ int main()
 			GameServerDebug::LogInfo(logText + " 접속자가 있습니다");
 		});
 
-	GameServerQueue networkQueue;
-	networkQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 8, "Network");
-	listener->BindQueue(networkQueue);
+	listener->BindQueue(NetQueue::GetQueue());
 	listener->StartAccept(10);
 
 	GameServerDebug::LogInfo("서버 시작");
 
 	_getch();
 
-	networkQueue.Destroy();
+	DBQueue::Destroy();
+	NetQueue::Destroy();
+
 	GameServerDebug::Destroy();
 	
 	return 0;

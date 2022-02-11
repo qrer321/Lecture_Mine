@@ -4,11 +4,18 @@
     <ClInclude Include="PreCompile.h">
       <Filter>PreCompile</Filter>
     </ClInclude>
+    <ClInclude Include="Dispatcher.h" />
+    <ClInclude Include="Messages.h" />
+    <ClInclude Include="MessageConverter.h" />
+    <ClInclude Include="MessageTypeEnum.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
       <Filter>PreCompile</Filter>
     </ClCompile>
+    <ClCompile Include="Dispatcher.cpp" />
+    <ClCompile Include="Messages.cpp" />
+    <ClCompile Include="MessageConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

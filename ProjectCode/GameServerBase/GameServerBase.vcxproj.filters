@@ -40,6 +40,18 @@
     <ClInclude Include="GameServerString.h">
       <Filter>String</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerSerializer.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerPath.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerDirectory.h">
+      <Filter>IO</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerFile.h">
+      <Filter>IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -81,6 +93,18 @@
     <ClCompile Include="GameServerString.cpp">
       <Filter>String</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerSerializer.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerPath.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerDirectory.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerFile.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -103,6 +127,9 @@
     </Filter>
     <Filter Include="String">
       <UniqueIdentifier>{549a888c-9c59-481f-9916-7b9ed3852a1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{3b17361d-3628-4ed9-9fee-7e1a566ae093}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

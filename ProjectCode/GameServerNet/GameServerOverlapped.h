@@ -86,7 +86,7 @@ public:
 public:
 	void SetTCPSession(TCPSession* tcpSession);
 	void New(size_t maxBufferLength);
-	void CopyFrom(const std::vector<char>& from);
+	void CopyFrom(const std::vector<unsigned char>& from);
 
 	void Execute(BOOL result, DWORD byteSize) override;
 };

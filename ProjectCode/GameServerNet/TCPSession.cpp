@@ -53,7 +53,6 @@ bool TCPSession::Initialize()
 	}
 
 	int error = 0;
-
 	// NoDelay 옵션
 	{
 		constexpr BOOL noDelayOption = TRUE;
@@ -131,7 +130,7 @@ void TCPSession::OnSendComplete(SendOverlapped* sendOverlapped)
 	m_SendOverlappedPool.Push(sendOverlapped);
 }
 
-bool TCPSession::Send(const std::vector<char>& buffer)
+bool TCPSession::Send(const std::vector<unsigned char>& buffer)
 {
 	if (buffer.empty())
 		return false;
@@ -164,7 +163,7 @@ void TCPSession::OnRecv(const char* data, DWORD byteSize)
 {
 	// 프로토콜 처리
 	// byteSize만큼 vector resize
-	std::vector<char> outputBuffer = std::vector<char>(byteSize);
+	std::vector<unsigned char> outputBuffer = std::vector<unsigned char>(byteSize);
 	memcpy_s(&outputBuffer[0], byteSize, data, byteSize);
 
 	if (nullptr != m_RecvCallBack)

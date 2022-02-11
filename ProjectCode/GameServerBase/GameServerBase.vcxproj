@@ -25,6 +25,14 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerDirectory.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="GameServerFile.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="GameServerIocp.h">
       <SubType>
       </SubType>
@@ -41,7 +49,15 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerPath.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="GameServerQueue.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="GameServerSerializer.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -67,6 +83,14 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerDirectory.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerFile.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="GameServerIocp.cpp">
       <SubType>
       </SubType>
@@ -83,7 +107,15 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerPath.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="GameServerQueue.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerSerializer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
