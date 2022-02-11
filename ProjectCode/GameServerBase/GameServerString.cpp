@@ -175,6 +175,22 @@ bool GameServerString::UTF8ToAnsi(const std::string& utf8, std::string& ansi)
 	return true;
 }
 
+std::string GameServerString::UTF8ToAnsi(const std::string& utf8)
+{
+	std::string ansi;
+	std::wstring unicode;
+	if (false == UTF8ToUnicode(utf8, unicode))
+	{
+		GameServerDebug::AssertDebugMsg("UTF8 => Unicode Convert Error");
+	}
+	if (false == UnicodeToAnsi(unicode, ansi))
+	{
+		GameServerDebug::AssertDebugMsg("Unicode => Ansi Convert Error");
+	}
+
+	return ansi;
+}
+
 bool GameServerString::AnsiToUTF8(const std::string& ansi, std::string& utf8)
 {
 	std::wstring unicode;

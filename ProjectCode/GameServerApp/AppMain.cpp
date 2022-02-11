@@ -12,6 +12,7 @@
 #include <GameServerMessage/MessageConverter.h>
 #include <GameServerMessage/Dispatcher.h>
 #include "ThreadHandlerLoginMessage.h"
+#include "ThreadHandlerChatMessage.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
 
@@ -51,7 +52,7 @@ int main()
 	g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::Chat),
 		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)
 		{
-			return OnMessageProcess<ThreadHandlerLoginMessage, LoginMessage>(std::move(tcp_session), std::move(message));
+			return OnMessageProcess<ThreadHandlerChatMessage, ChatMessage>(std::move(tcp_session), std::move(message));
 		});
 
 	// 접속자를 받기 위한 비동기 소켓 초기화

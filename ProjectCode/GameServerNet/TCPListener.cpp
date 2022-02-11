@@ -26,13 +26,13 @@ TCPListener::TCPListener(TCPListener&& other) noexcept
 	other.m_TaskQueue = nullptr;
 }
 
-bool TCPListener::Initialize(const IPEndPoint& endPoint, const std::function<void(std::shared_ptr<TCPSession>)>& acceptCallback)
+bool TCPListener::Initialize(const IPEndPoint& end_point, const std::function<void(std::shared_ptr<TCPSession>)>& accept_callback)
 {
 	// WSAStartUp
 	ServerHelper::StartEngineStartUp();
 
 	// 주소에 담긴 값을 패킷으로 보내기 위해 바이트 단위로 직렬화한다.
-	SocketAddress address = endPoint.Serialize();
+	SocketAddress address = end_point.Serialize();
 
 	// 비동기 액셉트를 하려는 소켓 설정
 	m_ListenSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, nullptr, NULL, WSA_FLAG_OVERLAPPED);
@@ -69,15 +69,15 @@ bool TCPListener::Initialize(const IPEndPoint& endPoint, const std::function<voi
 		return false;
 	}
 
-	m_ListenEndPoint = endPoint;
-	m_AcceptCallBack = acceptCallback;
+	m_ListenEndPoint = end_point;
+	m_AcceptCallBack = accept_callback;
 
 	return true;
 }
 
-bool TCPListener::BindQueue(const GameServerQueue& taskQueue)
+bool TCPListener::BindQueue(const GameServerQueue& task_queue)
 {
-	m_TaskQueue = &taskQueue;
+	m_TaskQueue = &task_queue;
 
 	// 숨겨놓은 함수로 연결
 	// NetworkBind는 비동기 파일 입출력 OverlappedTask로 통하는 함수이다.
@@ -110,7 +110,21 @@ bool TCPListener::StartAccept(int backlog)
 	return true;
 }
 
-void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
+void TCPListener::BroadCast(const std::vector<unsigned char>& data, const std::shared_ptr<TCPSession>& ignore_session)
+{
+	std::lock_guard lock(m_ConnectionLock);
+	for (auto& session : m_Connections)
+	{
+		if (ignore_session == session.second)
+		{
+			continue;
+		}
+
+		session.second->Send(data);
+	}
+}
+
+void TCPListener::OnAccept(BOOL result, DWORD byte_size, LPOVERLAPPED overlapped)
 {
 	// 접속대기자 한 명이 소켓연결이 되어
 	// 소켓을 들고갔으니 새로운 접속대기 소켓을 생성한다
@@ -129,7 +143,7 @@ void TCPListener::OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped)
 
 	if (0 != result)
 	{
-		overlappedPtr->Execute(TRUE, byteSize);
+		overlappedPtr->Execute(TRUE, byte_size);
 
 		// 이미 Bind된 Socket이 재활용되어 OnAccept 함수에 들어왔을 때
 		// IOCP와 다시 Bind 하지 않도록 막아준다
@@ -291,7 +305,7 @@ void TCPListener::AsyncAccept()
 	m_IocpAcceptExOverlappedPool.Push(acceptOverlapped);
 }
 
-void TCPListener::CloseSession(const PtrSTCPSession& tcpSession)
+void TCPListener::CloseSession(const PtrSTCPSession& tcp_session)
 {
 	// CloseSession 함수까지 오게 된 세션은
 	// 연결끊기 동작이 완료된 소켓
@@ -299,14 +313,14 @@ void TCPListener::CloseSession(const PtrSTCPSession& tcpSession)
 		// 현재 연결 중인 세션에 대한 hash_map에서 빠지게 되었으니
 		// CloseSession에 들어온 tcpSession을 해당 맵에서 지워준다
 		std::lock_guard lock(m_ConnectionLock);
-		m_Connections.erase(tcpSession->GetConnectId());
+		m_Connections.erase(tcp_session->GetConnectId());
 	}
 
 	{
 		// Disconnect된 Socket은 지워지는 것이 아닌
 		// 재활용을 위해 ConnectionPool에 담아둔다
 		std::lock_guard lock(m_ConnectionPoolLock);
-		m_ConnectionPool.push_back(tcpSession);
+		m_ConnectionPool.push_back(tcp_session);
 	}
 }
 

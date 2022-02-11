@@ -21,12 +21,12 @@ public:
 	GameServerObjectBase& operator=(GameServerObjectBase&& other) = delete;
 
 private:
-	GameServerObjectBase*				m_Parent;
-	std::vector<GameServerObjectBase*>	m_LinkObject;
+	GameServerObjectBase*								m_Parent;
+	std::vector<std::shared_ptr<GameServerObjectBase>>	m_LinkObject;
 
 public:
 	void SetParent(GameServerObjectBase* parent) { m_Parent = parent; }
-	void SetLink(GameServerObjectBase* link) { m_LinkObject.push_back(link); }
+	void SetLink(std::shared_ptr<GameServerObjectBase> link) { m_LinkObject.push_back(std::move(link)); }
 
 public:
 	template<typename ParentType>

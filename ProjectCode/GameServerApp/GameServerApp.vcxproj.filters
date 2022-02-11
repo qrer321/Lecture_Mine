@@ -16,6 +16,9 @@
     <ClInclude Include="ThreadHandlerChatMessage.h">
       <Filter>ThreadHandler\Chat</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerUser.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -34,6 +37,9 @@
     <ClCompile Include="ThreadHandlerChatMessage.cpp">
       <Filter>ThreadHandler\Chat</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerUser.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -50,6 +56,9 @@
     </Filter>
     <Filter Include="ThreadHandler\Chat">
       <UniqueIdentifier>{fed21b39-a6f2-469d-b43a-69f852f6834f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Contents">
+      <UniqueIdentifier>{4f0f31f3-cf44-4682-9376-94dd8e2a2f24}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -23,6 +23,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerUser.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="NetQueue.h">
       <SubType>
       </SubType>
@@ -40,6 +44,10 @@
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="DBQueue.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerUser.cpp">
       <SubType>
       </SubType>
     </ClCompile>

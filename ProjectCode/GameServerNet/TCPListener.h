@@ -48,15 +48,17 @@ public:
 	TCPListener& operator=(TCPListener&& other) = delete;
 
 private:
-	void OnAccept(BOOL result, DWORD byteSize, LPOVERLAPPED overlapped);
+	void OnAccept(BOOL result, DWORD byte_size, LPOVERLAPPED overlapped);
 	void AsyncAccept();
 
-	void CloseSession(const PtrSTCPSession& tcpSession);
+	void CloseSession(const PtrSTCPSession& tcp_session);
 
 public: // Member Function
-	bool Initialize(const IPEndPoint& endPoint, const std::function<void(PtrSTCPSession)>& acceptCallback);
-	bool BindQueue(const GameServerQueue& taskQueue);
+	bool Initialize(const IPEndPoint& end_point, const std::function<void(PtrSTCPSession)>& accept_callback);
+	bool BindQueue(const GameServerQueue& task_queue);
 	bool StartAccept(int backlog);
+
+	void BroadCast(const std::vector<unsigned char>& data, const std::shared_ptr<TCPSession>& ignore_session);
 
 	void Close();
 };

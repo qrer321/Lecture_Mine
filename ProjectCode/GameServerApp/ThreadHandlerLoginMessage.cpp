@@ -1,6 +1,8 @@
 #include "PreCompile.h"
 #include "ThreadHandlerLoginMessage.h"
+#include <GameServerBase/GameServerString.h>
 #include <GameServerBase/GameServerDebug.h>
+#include "GameServerUser.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
 
@@ -30,6 +32,11 @@ void ThreadHandlerLoginMessage::DBCheck()
 
 void ThreadHandlerLoginMessage::ResultSend()
 {
+	std::shared_ptr<GameServerUser> new_user = std::make_shared<GameServerUser>();
+	GameServerString::UTF8ToAnsi(m_LoginMessage->m_ID, new_user->m_ID);
+
+	m_TCPSession->SetLink(std::move(new_user));
+
 	GameServerSerializer serializer;
 	m_LoginResultMessage.Serialize(serializer);
 	m_TCPSession->Send(serializer.GetData());
