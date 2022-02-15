@@ -1,6 +1,7 @@
 #include "PreCompile.h"
 #include "GameServerString.h"
 #include "GameServerDebug.h"
+#include <sstream>
 
 bool GameServerString::UTF8ToUnicode(const std::string& utf8, std::wstring& unicode)
 {
@@ -215,4 +216,18 @@ void GameServerString::ToUpper(std::string& string)
 		{
 			return static_cast<unsigned char>(std::toupper(c));
 		});
+}
+
+std::vector<std::string> GameServerString::Split(const std::string& input, char delimiter)
+{
+	std::vector<std::string> result;
+	std::stringstream ss(input);
+	std::string temp;
+
+	while(getline(ss, temp, delimiter))
+	{
+		result.push_back(temp);
+	}
+
+	return result;
 }

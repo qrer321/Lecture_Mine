@@ -23,5 +23,7 @@ public:
 	[[nodiscard]] MessageType GetMessageType() const;
 	[[nodiscard]] uint32_t GetMessageType_UINT() const;
 	std::shared_ptr<GameServerMessage>& GetServerMessage();
+
+	[[nodiscard]] bool IsValid() const;
 };
 

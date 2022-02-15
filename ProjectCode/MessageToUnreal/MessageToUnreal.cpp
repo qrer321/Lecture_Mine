@@ -105,4 +105,60 @@ int main()
 			save_file.Write(file_code.c_str(), file_code.size());
 		}
 	}
+
+	{
+		// MessageType Enum 분석
+		GameServerDirectory file_dir;
+		file_dir.MoveToParent();
+		file_dir.MoveToChild("GameServerMessage");
+
+		GameServerFile load_file = { file_dir.AddFileNameToPath("MessageTypeEnum.h"), "rt" };
+		std::string file_code = load_file.GetString();
+
+		std::vector<std::string> message_code = GameServerString::Split(file_code, ',');
+
+		std::vector<std::string> C2S_string;
+		std::vector<std::string> SC2SC_string;
+		std::vector<std::string> S2C_string;
+		std::map<std::string, std::vector<std::string>> message_map;
+
+		message_map.insert(std::make_pair("C2S_Start", std::vector<std::string>()));
+		message_map.insert(std::make_pair("SC2SC_Start", std::vector<std::string>()));
+		message_map.insert(std::make_pair("S2C_Start", std::vector<std::string>()));
+
+		std::vector<std::string>* find_pointer = nullptr;
+		for (size_t i = 0; i < message_code.size(); ++i)
+		{
+			std::string type_check = message_code[i];
+			if (std::string::npos != type_check.find("//"))
+			{
+				std::string text = type_check.substr(type_check.find("//") + strlen("//"), type_check.size());
+				if (message_map.end() != message_map.find(text))
+				{
+					find_pointer = &message_map[text];
+
+					++i;
+					type_check = message_code[i];
+				}
+			}
+
+			if (std::string::npos != type_check.find("End"))
+			{
+				find_pointer = nullptr;
+			}
+
+			if (nullptr != find_pointer)
+			{
+				find_pointer->push_back(type_check);
+			}
+		}
+
+		/*{
+			std::vector<std::string>& c2s = message_map["C2S_Start"];
+			for (size_t i = 0; i < c2s.size(); ++i)
+			{
+				c2s[i].replace(c2s[i].begin(), c2s[i].end(), "\t", "");
+			}
+		}*/
+	}
 }

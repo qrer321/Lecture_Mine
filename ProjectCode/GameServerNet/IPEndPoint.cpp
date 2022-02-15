@@ -54,7 +54,7 @@ AddressFamily IPEndPoint::GetAddressFamily() const
 
 SocketAddress IPEndPoint::Serialize() const
 {
-	return SocketAddress(m_Address, m_Port);
+	return { m_Address, m_Port };
 }
 
 uint64_t IPEndPoint::GetHashCode() const

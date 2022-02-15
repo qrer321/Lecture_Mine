@@ -123,3 +123,25 @@ void ChatMessage::Deserialize(GameServerSerializer& serializer)
 	serializer >> m_ID;
 	serializer >> m_Message;
 }
+
+
+/////////////////////////////// ServerDestroyMessage ///////////////////////////////
+ServerDestroyMessage::ServerDestroyMessage()
+	: GameServerMessage(MessageType::ServerDestroy)
+{
+}
+
+int ServerDestroyMessage::SizeCheck()
+{
+	return 0;
+}
+
+void ServerDestroyMessage::Serialize(GameServerSerializer& serializer)
+{
+	GameServerMessage::Serialize(serializer);
+}
+
+void ServerDestroyMessage::Deserialize(GameServerSerializer& serializer)
+{
+	GameServerMessage::Deserialize(serializer);
+}

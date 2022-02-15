@@ -2,7 +2,6 @@
 #include <GameServerBase/GameServerSerializer.h>
 #include "MessageTypeEnum.h"
 
-
 enum class EGameServerCode
 {
 	OK,
@@ -99,6 +98,24 @@ public:
 
 	ChatMessage& operator=(const ChatMessage& other) = delete;
 	ChatMessage& operator=(ChatMessage&& other) = delete;
+
+public:
+	int SizeCheck() override;
+	void Serialize(GameServerSerializer& serializer) override;
+	void Deserialize(GameServerSerializer& serializer) override;
+};
+
+class ServerDestroyMessage : public GameServerMessage
+{
+public:
+	ServerDestroyMessage();
+	~ServerDestroyMessage() override = default;
+
+	ServerDestroyMessage(const ServerDestroyMessage& other) = delete;
+	ServerDestroyMessage(ServerDestroyMessage&& other) noexcept = delete;
+
+	ServerDestroyMessage& operator=(const ServerDestroyMessage& other) = delete;
+	ServerDestroyMessage& operator=(ServerDestroyMessage&& other) = delete;
 
 public:
 	int SizeCheck() override;

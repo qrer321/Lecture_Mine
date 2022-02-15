@@ -29,5 +29,6 @@ public:
 	static bool AnsiToUTF8(const std::string& ansi, std::string& utf8);
 
 	static void ToUpper(std::string& string);
+	static std::vector<std::string> Split(const std::string& input, char delimiter);
 };
 

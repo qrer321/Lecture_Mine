@@ -10,17 +10,32 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	memcpy_s(&id, sizeof(MessageType), &buffer[0], sizeof(MessageType));
 	switch (id)
 	{
+		// Client To Server
 	case MessageType::Login:
 		m_Message = std::make_shared<LoginMessage>();
 		break;
-	case MessageType::LoginResult:
-		m_Message = std::make_shared<LoginResultMessage>();
+	case MessageType::Quit:
 		break;
+
+		// Server To Client And Client To Server
 	case MessageType::Chat:
 		m_Message = std::make_shared<ChatMessage>();
 		break;
-	default:
+	case MessageType::Attack:
 		break;
+
+		// Server To Client
+	case MessageType::LoginResult:
+		m_Message = std::make_shared<LoginResultMessage>();
+		break;
+	case MessageType::ServerDestroy:
+		m_Message = std::make_shared<ServerDestroyMessage>();
+		break;
+
+	case MessageType::MAX:
+		return;
+	default:
+		return;
 	}
 
 	if (nullptr == m_Message)
@@ -50,4 +65,9 @@ uint32_t MessageConverter::GetMessageType_UINT() const
 std::shared_ptr<GameServerMessage>& MessageConverter::GetServerMessage()
 {
 	return m_Message;
+}
+
+bool MessageConverter::IsValid() const
+{
+	return nullptr != m_Message;
 }

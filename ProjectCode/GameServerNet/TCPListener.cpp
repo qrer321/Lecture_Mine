@@ -29,7 +29,7 @@ TCPListener::TCPListener(TCPListener&& other) noexcept
 bool TCPListener::Initialize(const IPEndPoint& end_point, const std::function<void(std::shared_ptr<TCPSession>)>& accept_callback)
 {
 	// WSAStartUp
-	ServerHelper::StartEngineStartUp();
+	ServerHelper::ServerStartup();
 
 	// 주소에 담긴 값을 패킷으로 보내기 위해 바이트 단위로 직렬화한다.
 	SocketAddress address = end_point.Serialize();
@@ -42,7 +42,7 @@ bool TCPListener::Initialize(const IPEndPoint& end_point, const std::function<vo
 		return false;
 	}
 	
-	int error = ::bind(m_ListenSocket, reinterpret_cast<const sockaddr*>(address.GetBuffer()), static_cast<int>(address.GetBufferLength()));
+	int error = bind(m_ListenSocket, reinterpret_cast<const sockaddr*>(address.GetBuffer()), static_cast<int>(address.GetBufferLength()));
 	if (SOCKET_ERROR == error)
 	{
 		GameServerDebug::GetLastErrorPrint();

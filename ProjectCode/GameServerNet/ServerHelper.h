@@ -1,26 +1,17 @@
 #pragma once
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
 class ServerHelper
 {
 public:
-	static void StartEngineStartUp();
+	static void ServerStartup();
 
 public: // Default
-	ServerHelper();
-	~ServerHelper();
+	ServerHelper() = default;
+	~ServerHelper() = default;
 
 	ServerHelper(const ServerHelper& other) = delete;
-	ServerHelper(ServerHelper&& other) noexcept;
+	ServerHelper(ServerHelper&& other) noexcept = delete;
 
-public:
 	ServerHelper& operator=(const ServerHelper& other) = delete;
 	ServerHelper& operator=(ServerHelper&& other) = delete;
-
-private:
-
-public: // Member Function
 };
-
