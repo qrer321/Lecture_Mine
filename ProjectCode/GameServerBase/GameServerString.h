@@ -25,10 +25,14 @@ public:
 
 	static bool UTF8ToAnsi(const std::string& utf8, std::string& ansi);
 	static std::string UTF8ToAnsi(const std::string& utf8);
-
 	static bool AnsiToUTF8(const std::string& ansi, std::string& utf8);
 
-	static void ToUpper(std::string& string);
 	static std::vector<std::string> Split(const std::string& input, char delimiter);
+	static void Replace(std::string& source, const std::string& find_string, const std::string& replace_string, int replace_count = 0);
+	static void Insert(std::string& source, int index, const std::string& insert_text);
+	static void TrimRemove(std::string& source);
+	static void ToUpper(std::string& source);
+	static void Remove(std::string& source, const std::string& delete_text);
+	static void TextClear(std::string& source);
 };
 

@@ -52,6 +52,9 @@
     <ClInclude Include="GameServerFile.h">
       <Filter>IO</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -105,6 +108,9 @@
     <ClCompile Include="GameServerFile.cpp">
       <Filter>IO</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerMath.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -130,6 +136,9 @@
     </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{3b17361d-3628-4ed9-9fee-7e1a566ae093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{3d1fd21b-c625-46b7-99f6-11267c9271f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,0 +1,7 @@
+|LoginResult-
+EGameServerCode m_Code;
+
+|ServerDestroy-
+
+|MonsterCreate-
+ServerVector m_Pos;

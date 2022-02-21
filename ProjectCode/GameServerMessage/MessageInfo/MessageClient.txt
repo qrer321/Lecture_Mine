@@ -1,0 +1,9 @@
+|Login-
+std::string m_ID;
+std::string m_PW;
+
+|Quit-
+std::string m_ID;
+
+|Attack-
+int m_Att;

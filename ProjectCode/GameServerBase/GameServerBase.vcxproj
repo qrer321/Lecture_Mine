@@ -37,6 +37,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerMath.h" />
     <ClInclude Include="GameServerNameBase.h">
       <SubType>
       </SubType>
@@ -95,6 +96,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerMath.cpp" />
     <ClCompile Include="GameServerNameBase.cpp">
       <SubType>
       </SubType>

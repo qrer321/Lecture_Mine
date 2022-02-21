@@ -22,8 +22,23 @@ public: // Default
 public:
 	[[nodiscard]] MessageType GetMessageType() const;
 	[[nodiscard]] uint32_t GetMessageType_UINT() const;
-	std::shared_ptr<GameServerMessage>& GetServerMessage();
+	std::shared_ptr<GameServerMessage>& GetServerMessage() { return m_Message; }
 
-	[[nodiscard]] bool IsValid() const;
+	[[nodiscard]] bool IsValid() const { return nullptr != m_Message; };
 };
 
+inline MessageConverter::MessageConverter(MessageConverter&& other) noexcept
+	: m_Buffer(other.m_Buffer)
+	, m_Message(std::move(other.m_Message))
+{
+}
+
+inline MessageType MessageConverter::GetMessageType() const
+{
+	return m_Message->GetType();
+}
+
+inline uint32_t MessageConverter::GetMessageType_UINT() const
+{
+	return static_cast<uint32_t>(GetMessageType());
+}

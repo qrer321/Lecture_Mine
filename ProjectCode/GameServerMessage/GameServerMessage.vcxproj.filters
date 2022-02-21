@@ -8,18 +8,46 @@
     <ClInclude Include="Messages.h" />
     <ClInclude Include="MessageConverter.h" />
     <ClInclude Include="MessageTypeEnum.h" />
+    <ClInclude Include="ServerAndClient.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerToClient.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientToServer.h">
+      <Filter>Message</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerMessage.h">
+      <Filter>Message</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
       <Filter>PreCompile</Filter>
     </ClCompile>
     <ClCompile Include="Dispatcher.cpp" />
-    <ClCompile Include="Messages.cpp" />
     <ClCompile Include="MessageConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
       <UniqueIdentifier>{3279ae6f-94f3-4e16-ad46-52daa8edb4a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Message">
+      <UniqueIdentifier>{637023da-4702-4869-8304-8612b2d8c4bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="MessageInfo">
+      <UniqueIdentifier>{dbd01988-5202-4ac5-ae8d-9b1d2a92a5f8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="MessageInfo\MessageServerAndClient.txt">
+      <Filter>MessageInfo</Filter>
+    </Text>
+    <Text Include="MessageInfo\MessageClient.txt">
+      <Filter>MessageInfo</Filter>
+    </Text>
+    <Text Include="MessageInfo\MessageServer.txt">
+      <Filter>MessageInfo</Filter>
+    </Text>
   </ItemGroup>
 </Project>

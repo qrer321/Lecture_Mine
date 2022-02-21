@@ -209,15 +209,6 @@ bool GameServerString::AnsiToUTF8(const std::string& ansi, std::string& utf8)
 	return true;
 }
 
-void GameServerString::ToUpper(std::string& string)
-{
-	std::transform(string.begin(), string.end(), string.begin(), 
-		[](unsigned char c)
-		{
-			return static_cast<unsigned char>(std::toupper(c));
-		});
-}
-
 std::vector<std::string> GameServerString::Split(const std::string& input, char delimiter)
 {
 	std::vector<std::string> result;
@@ -230,4 +221,63 @@ std::vector<std::string> GameServerString::Split(const std::string& input, char 
 	}
 
 	return result;
+}
+
+void GameServerString::Replace(std::string& source, const std::string& find_string, const std::string& replace_string, int replace_count /*= 0*/)
+{
+	std::string::size_type string_pos = 0;
+	int count = 0;
+
+	while ((string_pos = source.find(find_string)) != std::string::npos)
+	{
+		source.replace(string_pos, find_string.length(), replace_string);
+
+		if (++count == replace_count)
+		{
+			break;
+		}
+	}
+}
+
+void GameServerString::Insert(std::string& source, int index, const std::string& insert_text)
+{
+	if (static_cast<int>(source.length()) < index || 0 > index)
+	{
+		return;
+	}
+
+	source.insert(index, insert_text);
+}
+
+// ' ' 공백제거
+void GameServerString::TrimRemove(std::string& source)
+{
+	Replace(source, " ", "");
+}
+
+// 한글이 섞여있어도 알파벳 전부 upper
+void GameServerString::ToUpper(std::string& source)
+{
+	std::transform(source.begin(), source.end(), source.begin(),
+		[](char word)
+		{
+			/*
+			 * __NTH (toupper (int __c))
+			 * {
+			 *	return __c >= -128 && __c < 256 ? (*__ctype_toupper_loc ())[__c] : __c;
+			 * }
+			 */
+			return static_cast<char>(std::toupper(word));
+		});
+}
+
+void GameServerString::Remove(std::string& source, const std::string& delete_text)
+{
+	Replace(source, delete_text, "");
+}
+
+void GameServerString::TextClear(std::string& source)
+{
+	Replace(source, "\t", "");
+	Replace(source, "\n", "");
 }
