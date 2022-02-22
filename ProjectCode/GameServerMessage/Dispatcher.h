@@ -1,4 +1,5 @@
 #pragma once
+#include <GameServerNet/TCPSession.h>
 #include "Messages.h"
 
 // MessageOwner -> 패킷을 받은 Session

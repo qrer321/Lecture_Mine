@@ -40,13 +40,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="MessageInfo\MessageServerAndClient.txt">
+    <Text Include="MessageInfo\ServerAndClient.txt">
       <Filter>MessageInfo</Filter>
     </Text>
-    <Text Include="MessageInfo\MessageClient.txt">
+    <Text Include="MessageInfo\ClientToServer.txt">
       <Filter>MessageInfo</Filter>
     </Text>
-    <Text Include="MessageInfo\MessageServer.txt">
+    <Text Include="MessageInfo\ServerToClient.txt">
       <Filter>MessageInfo</Filter>
     </Text>
   </ItemGroup>

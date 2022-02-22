@@ -7,6 +7,4 @@ enum class MessageType
 	ServerDestroy,
 	MonsterCreate,
 	Login,
-	Quit,
-	Attack,
 };

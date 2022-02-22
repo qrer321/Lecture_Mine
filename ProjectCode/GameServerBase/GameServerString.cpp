@@ -217,6 +217,11 @@ std::vector<std::string> GameServerString::Split(const std::string& input, char 
 
 	while(getline(ss, temp, delimiter))
 	{
+		if (true == temp.empty())
+		{
+			continue;
+		}
+
 		result.push_back(temp);
 	}
 

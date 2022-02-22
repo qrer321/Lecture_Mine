@@ -32,6 +32,11 @@ public:
 	const std::vector<unsigned char>& GetData() { return m_Data; }
 
 public:
+	template <typename T>
+	void ReadEnum(T& value) { Read(reinterpret_cast<void*>(&value), static_cast<unsigned int>(sizeof(T))); }
 	void Read(void* data, unsigned int size);
+
+	template <typename T>
+	void WriteEnum(const T value) { Write(reinterpret_cast<const void*>(&value), static_cast<unsigned int>(sizeof(T))); }
 	void Write(const void* data, unsigned int size);
 };

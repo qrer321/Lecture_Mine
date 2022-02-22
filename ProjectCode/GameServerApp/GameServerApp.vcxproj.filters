@@ -19,6 +19,9 @@
     <ClInclude Include="GameServerUser.h">
       <Filter>Contents</Filter>
     </ClInclude>
+    <ClInclude Include="ServerDispatcher.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -38,6 +41,9 @@
       <Filter>ThreadHandler\Chat</Filter>
     </ClCompile>
     <ClCompile Include="GameServerUser.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerDispatcher.cpp">
       <Filter>Contents</Filter>
     </ClCompile>
   </ItemGroup>
