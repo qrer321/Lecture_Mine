@@ -21,6 +21,7 @@ public:
 	[[nodiscard]] bool IsRootDirectory() const;
 
 public:
+	void MoveToRootDirectory();
 	void MoveToParent();
 	bool MoveToParent(const std::string& dir_name);
 	bool MoveToChild(const std::string& dir_name);

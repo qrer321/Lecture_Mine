@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "GameServerMathStruct.h"
 
 class GameServerSerializer
 {
@@ -23,10 +24,12 @@ public:
 	void operator<<(const std::string& value);
 	void operator<<(const int value);
 	void operator<<(const unsigned int value);
+	void operator<<(const FVector& value);
 
 	void operator>>(std::string& value);
 	void operator>>(int& value);
 	void operator>>(unsigned int& value);
+	void operator>>(FVector& value);
 
 public:
 	const std::vector<unsigned char>& GetData() { return m_Data; }

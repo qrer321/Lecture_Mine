@@ -1,13 +1,6 @@
 #pragma once
 #include <random>
 
-struct ServerVector
-{
-	float X;
-	float Y;
-	float Z;
-};
-
 class GameServerMath
 {
 

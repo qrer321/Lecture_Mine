@@ -62,6 +62,11 @@ void GameServerSerializer::operator<<(const unsigned int value)
 	Write(&value, sizeof(unsigned int));
 }
 
+void GameServerSerializer::operator<<(const FVector& value)
+{
+	Write(&value, sizeof(FVector));
+}
+
 /*
  * GameServerSerializer 객체의 m_Data 정보를
  * int(4) 바이트만큼 읽어와 value에 값을 넣는다
@@ -82,4 +87,9 @@ void GameServerSerializer::operator>>(int& value)
 void GameServerSerializer::operator>>(unsigned int& value)
 {
 	Read(&value, sizeof(unsigned int));
+}
+
+void GameServerSerializer::operator>>(FVector& value)
+{
+	Read(&value, sizeof(FVector));
 }

@@ -1,8 +1,4 @@
-﻿// MessageToUnreal.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
-//
-
-#include <iostream>
-#include <GameServerBase/GameServerDebug.h>
+﻿#include <GameServerBase/GameServerDebug.h>
 #include <GameServerBase/GameServerFile.h>
 #include <GameServerBase/GameServerString.h>
 #include <GameServerBase/GameServerDirectory.h>
@@ -10,7 +6,7 @@
 #pragma comment (lib, "GameServerBase.lib")
 
 // 폴더에 따라 변경해서 사용
-#define UNREAL_CLIENT_DIR "UnrealClient\\Source\\HonorProject\\Message"
+#define UNREAL_CLIENT_MESSAGE_DIR "UnrealProject_Mine\\HonorProject 4.27\\Source\\HonorProject\\Message"
 
 struct MemberInfo
 {
@@ -35,6 +31,10 @@ void SerializerTypeCheck(std::string& source, const MemberInfo& member_info)
 	{
 		source += "		serializer << " + member_info.Name + ";\n";
 	}
+	else if (member_info.Type == "FVector")
+	{
+		source += "		serializer << " + member_info.Name + ";\n";
+	}
 	else
 	{
 		if (member_info.Type[0] == 'E')
@@ -55,6 +55,10 @@ void DeserializerTypeCheck(std::string& source, const MemberInfo& member_info)
 		source += "		serializer >> " + member_info.Name + ";\n";
 	}
 	else if (member_info.Type == "int")
+	{
+		source += "		serializer >> " + member_info.Name + ";\n";
+	}
+	else if (member_info.Type == "FVector")
 	{
 		source += "		serializer >> " + member_info.Name + ";\n";
 	}
@@ -212,7 +216,8 @@ int main()
 	std::vector<MessageInfo> client_message;
 
 	//						path		 text
-	std::unordered_map<std::string, std::string> file_save_map;
+	std::unordered_map<std::string, std::string> server_save_map;
+	std::unordered_map<std::string, std::string> client_save_map;
 	
 
 	/////////////////////////////////////////////////////////////////////////////////////////////////
@@ -290,7 +295,7 @@ int main()
 				//GameServerFile save_file = { enum_file_dir.AddFileNameToPath("MessageTypeEnum.h"), "wt" };
 				//save_file.Write(enum_file_text.c_str(), enum_file_text.size());
 
-				file_save_map.insert(make_pair(enum_file_dir.AddFileNameToPath("MessageTypeEnum.h"), enum_file_text));
+				server_save_map.insert(make_pair(enum_file_dir.AddFileNameToPath("MessageTypeEnum.h"), enum_file_text));
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -336,7 +341,7 @@ int main()
 				//GameServerFile save_file = { convert_file_dir.AddFileNameToPath("MessageConverter.cpp"), "wt" };
 				//save_file.Write(convert_file_text.c_str(), convert_file_text.size());
 
-				file_save_map.insert(make_pair(convert_file_dir.AddFileNameToPath("MessageConverter.cpp"), convert_file_text));
+				server_save_map.insert(make_pair(convert_file_dir.AddFileNameToPath("MessageConverter.cpp"), convert_file_text));
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////
 		}
@@ -356,9 +361,9 @@ int main()
 				CreateMessageHeader(server_message, server_text);
 				CreateMessageHeader(client_message, client_text);
 
-				file_save_map.insert(make_pair(header_file_dir.AddFileNameToPath("ServerAndClient.h"), server_client_text));
-				file_save_map.insert(make_pair(header_file_dir.AddFileNameToPath("ServerToClient.h"), server_text));
-				file_save_map.insert(make_pair(header_file_dir.AddFileNameToPath("ClientToServer.h"), client_text));
+				server_save_map.insert(make_pair(header_file_dir.AddFileNameToPath("ServerAndClient.h"), server_client_text));
+				server_save_map.insert(make_pair(header_file_dir.AddFileNameToPath("ServerToClient.h"), server_text));
+				server_save_map.insert(make_pair(header_file_dir.AddFileNameToPath("ClientToServer.h"), client_text));
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -374,8 +379,17 @@ int main()
 				dispatcher_text += "#include \"ServerDispatcher.h\"																												\n";
 				dispatcher_text += "#include <GameServerBase/GameServerDebug.h>																									\n";
 				dispatcher_text += "																																			\n";
-				dispatcher_text += "#include \"ThreadHandlerLoginMessage.h\"																									\n";
-				dispatcher_text += "#include \"ThreadHandlerChatMessage.h\"																										\n";
+
+				for (const MessageInfo& server_client_element : server_client_message)
+				{
+					dispatcher_text += "#include \"ThreadHandler" + server_client_element.MessageName + "Message.h\"															\n";
+				}
+
+				for (const MessageInfo& client_element : client_message)
+				{
+					dispatcher_text += "#include \"ThreadHandler" + client_element.MessageName + "Message.h\"																	\n";
+				}
+
 				dispatcher_text += "																																			\n";
 				dispatcher_text += "Dispatcher<TCPSession> g_dispatcher;																										\n";
 				dispatcher_text += "																																			\n";
@@ -423,22 +437,14 @@ int main()
 				//GameServerFile save_file = { dispatcher_file_dir.AddFileNameToPath("ServerDispatcher.cpp"), "wt" };
 				//save_file.Write(dispatcher_text.c_str(), dispatcher_text.size());
 
-				file_save_map.insert(make_pair(dispatcher_file_dir.AddFileNameToPath("ServerDispatcher.cpp"), dispatcher_text));
+				server_save_map.insert(make_pair(dispatcher_file_dir.AddFileNameToPath("ServerDispatcher.cpp"), dispatcher_text));
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 	}
-
-	for (const auto& map_element : file_save_map)
-	{
-		GameServerFile save_file = { map_element.first, "wt" };
-		save_file.Write(map_element.second.c_str(), map_element.second.size());
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////// End Server File ///////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////// End Server File //////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -446,167 +452,244 @@ int main()
 	//////////////////////////////////////// Generate Unreal File ////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	{
-		
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////// End Unreal File ///////////////////////////////////////////
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	return 0;
-
-
-
-
-
-
-
-	// 단순복사
-	{
-		GameServerDirectory file_dir;
-		file_dir.MoveToParent("ProjectCode");
-		file_dir.MoveToChild("GameServerBase");
-
-		GameServerDirectory save_dir;
-		save_dir.MoveToParent("ProjectCode");
-		save_dir.MoveToParent();
-		save_dir.MoveToChild(UNREAL_CLIENT_DIR);
-
-
-		/////////////////////////////////////// GameServerSerializer ///////////////////////////////////////
+		/////////////////////////////////////// Copy GameServerBase //////////////////////////////////////
 		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("GameServerSerializer.h"), "rt" };
-			std::string file_code = load_file.GetString();
+			GameServerDirectory server_base_dir;
+			server_base_dir.MoveToParent("ProjectCode");
+			server_base_dir.MoveToChild("GameServerBase");
 
-			GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerSerializer.h"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
+			GameServerDirectory save_dir;
+			save_dir.MoveToRootDirectory();
+			save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR);
 
-		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("GameServerSerializer.cpp"), "rt" };
-			std::string file_code = load_file.GetString();
-
-			file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
-
-			GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerSerializer.cpp"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
-	}
-
-	{
-		GameServerDirectory file_dir;
-		file_dir.MoveToParent();
-		file_dir.MoveToChild("GameServerMessage");
-
-		GameServerDirectory save_dir;
-		save_dir.MoveToParent();
-		save_dir.MoveToParent();
-		save_dir.MoveToParent();
-		save_dir.MoveToParent();
-		save_dir.MoveToChild(R"(UnrealProject_Mine\HonorProject 4.27\Source\HonorProject\Message)");
-
-		/////////////////////////////////////// Messages ///////////////////////////////////////
-		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("Messages.h"), "rt" };
-			std::string file_code = load_file.GetString();
-
-			file_code.replace(file_code.find("#include <GameServerBase/GameServerSerializer.h>\n")
-				, strlen("#include <GameServerBase/GameServerSerializer.h>\n"), "#include \"GameServerSerializer.h\"\n");
-
-			GameServerFile save_file = { save_dir.AddFileNameToPath("Messages.h"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
-
-		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("Messages.cpp"), "rt" };
-			std::string file_code = load_file.GetString();
-
-			file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
-
-			GameServerFile save_file = { save_dir.AddFileNameToPath("Messages.cpp"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
-
-		/////////////////////////////////////// MessageTypeEnum ///////////////////////////////////////
-		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("MessageTypeEnum.h"), "rt" };
-			std::string file_code = load_file.GetString();
-
-			GameServerFile save_file = { save_dir.AddFileNameToPath("MessageTypeEnum.h"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
-
-		/////////////////////////////////////// MessageConverter ///////////////////////////////////////
-		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("MessageConverter.h"), "rt" };
-			std::string file_code = load_file.GetString();
-
-			GameServerFile save_file = { save_dir.AddFileNameToPath("MessageConverter.h"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
-
-		{
-			GameServerFile load_file = { file_dir.AddFileNameToPath("MessageConverter.cpp"), "rt" };
-			std::string file_code = load_file.GetString();
-
-			file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
-
-			GameServerFile save_file = { save_dir.AddFileNameToPath("MessageConverter.cpp"), "wt" };
-			save_file.Write(file_code.c_str(), file_code.size());
-		}
-	}
-
-	{
-		// MessageType Enum 분석
-		GameServerDirectory file_dir;
-		file_dir.MoveToParent();
-		file_dir.MoveToChild("GameServerMessage");
-
-		GameServerFile load_file = { file_dir.AddFileNameToPath("MessageTypeEnum.h"), "rt" };
-		std::string file_code = load_file.GetString();
-
-		std::vector<std::string> message_code = GameServerString::Split(file_code, ',');
-
-		std::vector<std::string> C2S_string;
-		std::vector<std::string> SC2SC_string;
-		std::vector<std::string> S2C_string;
-		std::map<std::string, std::vector<std::string>> message_map;
-
-		message_map.insert(std::make_pair("C2S_Start", std::vector<std::string>()));
-		message_map.insert(std::make_pair("SC2SC_Start", std::vector<std::string>()));
-		message_map.insert(std::make_pair("S2C_Start", std::vector<std::string>()));
-
-		std::vector<std::string>* find_pointer = nullptr;
-		for (size_t i = 0; i < message_code.size(); ++i)
-		{
-			std::string type_check = message_code[i];
-			if (std::string::npos != type_check.find("//"))
+			/////////////////////////////////////// Copy GameServerSerializer //////////////////////////////////////
 			{
-				std::string text = type_check.substr(type_check.find("//") + strlen("//"), type_check.size());
-				if (message_map.end() != message_map.find(text))
 				{
-					find_pointer = &message_map[text];
+					GameServerFile load_file = { server_base_dir.AddFileNameToPath("GameServerSerializer.h"), "rt" };
+					std::string file_code = load_file.GetString();
 
-					++i;
-					type_check = message_code[i];
+					file_code.replace(file_code.find("#include \"GameServerMathStruct.h\"\n")
+						, strlen("#include \"GameServerMathStruct.h\"\n"), "\n");
+
+					//GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerSerializer.h"), "wt" };
+					//save_file.Write(file_code.c_str(), file_code.size());
+
+					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerSerializer.h"), file_code));
+				}
+
+				{
+					GameServerFile load_file = { server_base_dir.AddFileNameToPath("GameServerSerializer.cpp"), "rt" };
+					std::string file_code = load_file.GetString();
+
+					file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
+
+					//GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerSerializer.cpp"), "wt" };
+					//save_file.Write(file_code.c_str(), file_code.size());
+
+					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerSerializer.cpp"), file_code));
 				}
 			}
-
-			if (std::string::npos != type_check.find("End"))
+			/////////////////////////////////////// End GameServerSerializer //////////////////////////////////////
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		////////////////////////////////////// Copy GameServerMessage ////////////////////////////////////
+		{
 			{
-				find_pointer = nullptr;
-			}
+				GameServerDirectory server_message_dir;
+				server_message_dir.MoveToParent("ProjectCode");
+				server_message_dir.MoveToChild("GameServerMessage");
 
-			if (nullptr != find_pointer)
-			{
-				find_pointer->push_back(type_check);
+				GameServerDirectory save_dir;
+				save_dir.MoveToRootDirectory();
+				save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR);
+
+				///////////////////////////////////// Copy Messages ////////////////////////////////////////
+				{
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("Messages.h"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("Messages.h"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("Messages.h"), file_code));
+					}
+
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("GameServerMessage.h"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						file_code.replace(file_code.find("#include <GameServerBase/GameServerSerializer.h>\n")
+							, strlen("#include <GameServerBase/GameServerSerializer.h>\n"), "#include \"GameServerSerializer.h\"\n");
+
+						file_code.replace(file_code.find("#include <GameServerBase/GameServerMathStruct.h>\n")
+							, strlen("#include <GameServerBase/GameServerMathStruct.h>\n"), "\n");
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerMessage.h"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerMessage.h"), file_code));
+					}
+
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("ServerAndClient.h"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("ServerAndClient.h"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ServerAndClient.h"), file_code));
+					}
+
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("ServerToClient.h"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("ServerToClient.h"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ServerToClient.h"), file_code));
+					}
+
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("ClientToServer.h"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("ClientToServer.h"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ClientToServer.h"), file_code));
+					}
+				}
+				////////////////////////////////////////////////////////////////////////////////////////////
+
+				///////////////////////////////////// Copy MessageTypeEnum /////////////////////////////////
+				{
+					GameServerFile load_file = { server_message_dir.AddFileNameToPath("MessageTypeEnum.h"), "rt" };
+					std::string file_code = load_file.GetString();
+
+					//GameServerFile save_file = { save_dir.AddFileNameToPath("MessageTypeEnum.h"), "wt" };
+					//save_file.Write(file_code.c_str(), file_code.size());
+
+					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("MessageTypeEnum.h"), file_code));
+				}
+				////////////////////////////////////////////////////////////////////////////////////////////
+
+				///////////////////////////////////// Copy MessageConverter ////////////////////////////////
+				{
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("MessageConverter.h"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("MessageConverter.h"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("MessageConverter.h"), file_code));
+					}
+
+					{
+						GameServerFile load_file = { server_message_dir.AddFileNameToPath("MessageConverter.cpp"), "rt" };
+						std::string file_code = load_file.GetString();
+
+						file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
+
+						//GameServerFile save_file = { save_dir.AddFileNameToPath("MessageConverter.cpp"), "wt" };
+						//save_file.Write(file_code.c_str(), file_code.size());
+
+						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("MessageConverter.cpp"), file_code));
+					}
+				}
+				////////////////////////////////////////////////////////////////////////////////////////////
+				
+				///////////////////////////////////// Create Client Dispatcher//////////////////////////////
+				{
+					std::string dispatcher_text;
+
+					dispatcher_text += "#pragma once																															 \n";
+					dispatcher_text += "																																		 \n";
+
+					for (const MessageInfo& server_client_element : server_client_message)
+					{
+						dispatcher_text += "#include \"ThreadHandler" + server_client_element.MessageName + "Message.h\"														\n";
+					}
+
+					for (const MessageInfo& server_element : server_message)
+					{
+						dispatcher_text += "#include \"ThreadHandler" + server_element.MessageName + "Message.h\"																\n";
+					}
+
+					dispatcher_text += "																																		 \n";
+					dispatcher_text += "template <typename MessageHandler, typename MessageType>																				 \n";
+					dispatcher_text += "void OnMessageProcess(std::shared_ptr<GameServerMessage> Message, UWorld* World)														 \n";
+					dispatcher_text += "{																																		 \n";
+					dispatcher_text += "	std::shared_ptr<MessageType> ConvertMessage = std::static_pointer_cast<MessageType>(MoveTemp(Message));								 \n";
+					dispatcher_text += "	if (nullptr == ConvertMessage)																										 \n";
+					dispatcher_text += "	{																																	 \n";
+					dispatcher_text += "		return;																															 \n";
+					dispatcher_text += "	}																																	 \n";
+					dispatcher_text += "																																		 \n";
+					dispatcher_text += "	UHonorProjectGameInstance* GameInstance = Cast<UHonorProjectGameInstance>(World->GetGameInstance());								 \n";
+					dispatcher_text += "																																		 \n";
+					dispatcher_text += "	MessageHandler Handler = MessageHandler(MoveTempIfPossible(ConvertMessage));														 \n";
+					dispatcher_text += "	Handler.Initialize(GameInstance, World);																							 \n";
+					dispatcher_text += "	Handler.Start();																													 \n";
+					dispatcher_text += "}																																		 \n";
+					dispatcher_text += "																																		 \n";
+					dispatcher_text += "inline void AddGlobalHandler(Dispatcher& Dis, UWorld* World)																			 \n";
+					dispatcher_text += "{																																		   ";
+
+					for (const MessageInfo& server_client_element : server_client_message)
+					{
+						dispatcher_text += "\n";
+						dispatcher_text += "	Dis.AddHandler(MessageType::" + server_client_element.MessageName + ",\n";
+						dispatcher_text += "	               [World](std::shared_ptr<GameServerMessage> GameServerMessage)\n";
+						dispatcher_text += "	               {\n";
+						dispatcher_text += "		               OnMessageProcess<ThreadHandler" + server_client_element.MessageName
+																+ "Message, " + server_client_element.MessageName
+																+ "Message>(MoveTemp(GameServerMessage), World);\n";
+						dispatcher_text += "	               });\n";
+					}
+
+					for (const MessageInfo& server_element : server_message)
+					{
+						dispatcher_text += "																																	\n";
+						dispatcher_text += "	Dis.AddHandler(MessageType::" + server_element.MessageName + ",																	\n";
+						dispatcher_text += "	               [World](std::shared_ptr<GameServerMessage> GameServerMessage)													\n";
+						dispatcher_text += "	               {																												\n";
+						dispatcher_text += "		               OnMessageProcess<ThreadHandler" + server_element.MessageName
+																	+ "Message, " + server_element.MessageName
+																	+ "Message>(MoveTemp(GameServerMessage), World);															\n";
+						dispatcher_text += "	               });																												\n";
+					}
+
+					dispatcher_text += "}																																  		 \n";
+
+					//GameServerFile save_file = { save_dir.AddFileNameToPath("Handler\\HandlerHeader.h"), "wt" };
+					//save_file.Write(dispatcher_text.c_str(), dispatcher_text.size());
+
+					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("HandlerHeader.h"), dispatcher_text));
+				}
+				////////////////////////////////////////////////////////////////////////////////////////////
 			}
 		}
-
-		/*{
-			std::vector<std::string>& c2s = message_map["C2S_Start"];
-			for (size_t i = 0; i < c2s.size(); ++i)
-			{
-				c2s[i].replace(c2s[i].begin(), c2s[i].end(), "\t", "");
-			}
-		}*/
+		//////////////////////////////////////////////////////////////////////////////////////////////////
 	}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////// End Unreal File //////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	for (const std::pair<const std::string, std::string>& save_element : server_save_map)
+	{
+		GameServerFile save_file = { save_element.first, "wt" };
+		save_file.Write(save_element.second.c_str(), save_element.second.size());
+	}
+
+	for (const std::pair<const std::string, std::string>& save_element : client_save_map)
+	{
+		GameServerFile save_file = { save_element.first, "wt" };
+		save_file.Write(save_element.second.c_str(), save_element.second.size());
+	}
+
+	return 0;
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <GameServerBase/GameServerSerializer.h>
+#include <GameServerBase/GameServerMathStruct.h>
 #include "MessageTypeEnum.h"
 
 enum class EGameServerCode

@@ -2,8 +2,8 @@
 #include "ServerDispatcher.h"																												
 #include <GameServerBase/GameServerDebug.h>																									
 																																			
-#include "ThreadHandlerLoginMessage.h"																									
-#include "ThreadHandlerChatMessage.h"																										
+#include "ThreadHandlerChatMessage.h"															
+#include "ThreadHandlerLoginMessage.h"																	
 																																			
 Dispatcher<TCPSession> g_dispatcher;																										
 																																			

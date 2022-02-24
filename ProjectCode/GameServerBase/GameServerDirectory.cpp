@@ -48,6 +48,11 @@ bool GameServerDirectory::IsRootDirectory() const
 	return m_Path == m_Path.root_directory();
 }
 
+void GameServerDirectory::MoveToRootDirectory()
+{
+	m_Path = m_Path.root_directory();
+}
+
 void GameServerDirectory::MoveToParent()
 {
 	m_Path = m_Path.parent_path();
@@ -80,6 +85,7 @@ bool GameServerDirectory::MoveToChild(const std::string& dir_name)
 
 	return true;
 }
+
 
 std::string GameServerDirectory::AddFileNameToPath(const std::string& file_name)
 {
