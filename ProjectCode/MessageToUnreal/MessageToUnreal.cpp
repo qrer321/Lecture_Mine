@@ -81,14 +81,14 @@ void CreateMessageHeader(std::vector<MessageInfo>& collection, std::string& sour
 	source += "#include \"GameServerMessage.h\"																					\n";
 	source += "																													\n";
 
-	for (auto& element : collection)
+	for (MessageInfo& element : collection)
 	{
 		source += "class " + element.MessageName + "Message : public GameServerMessage											\n";
 		source += "{																											\n";
 		source += "public:																										\n";
 
 		std::vector<MemberInfo>& member_list = element.MemberVariable;
-		for (auto& member_element : member_list)
+		for (MemberInfo& member_element : member_list)
 		{
 			source += "	" + member_element.MemberText + ";\n";
 		}
@@ -98,7 +98,7 @@ void CreateMessageHeader(std::vector<MessageInfo>& collection, std::string& sour
 		source += "	" + element.MessageName + "Message()																		\n";
 		source += "		: GameServerMessage(MessageType::" + element.MessageName + ")											\n";
 
-		for (auto& member_element : member_list)
+		for (MemberInfo& member_element : member_list)
 		{
 			source += "		, " + member_element.Name + "()																		\n";
 		}
@@ -159,15 +159,12 @@ void CreateMessageHeader(std::vector<MessageInfo>& collection, std::string& sour
 		source += "	}																											\n";
 		source += "};																											\n\n";
 	}
-
-	//GameServerFile save_file = GameServerFile{ path, "wt" };
-	//save_file.Write(source.c_str(), source.size());
 }
 
 void MessageReflection(std::vector<MessageInfo>& collection, const std::string& code)
 {
 	const std::vector<std::string> message_list = GameServerString::Split(code, '|');
-	for (const auto& message_element : message_list)
+	for (const std::string& message_element : message_list)
 	{
 		if (true == message_element.empty())
 		{
@@ -186,7 +183,7 @@ void MessageReflection(std::vector<MessageInfo>& collection, const std::string& 
 		}
 
 		std::vector<std::string> member_list = GameServerString::Split(name_and_members[1], ';');
-		for (auto& member_element : member_list)
+		for (std::string& member_element : member_list)
 		{
 			GameServerString::TextClear(member_element);
 			if (true == member_element.empty())
@@ -226,7 +223,7 @@ int main()
 	{
 		GameServerDirectory file_dir;
 		file_dir.MoveToParent("ProjectCode");
-		file_dir.MoveToChild(R"(GameServerMessage\MessageInfo)");
+		file_dir.MoveToChild("GameServerMessage\\MessageInfo");
 
 		{
 			GameServerFile load_file = { file_dir.AddFileNameToPath("ServerAndClient.txt"), "rt" };
@@ -290,10 +287,10 @@ int main()
 					enum_file_text += "\t" + message_element.MessageName + ",\n";
 				}
 
+				enum_file_text += "\t";
+				enum_file_text += "MAX";
+				enum_file_text += "\n";
 				enum_file_text += "};";
-
-				//GameServerFile save_file = { enum_file_dir.AddFileNameToPath("MessageTypeEnum.h"), "wt" };
-				//save_file.Write(enum_file_text.c_str(), enum_file_text.size());
 
 				server_save_map.insert(make_pair(enum_file_dir.AddFileNameToPath("MessageTypeEnum.h"), enum_file_text));
 			}
@@ -337,9 +334,6 @@ int main()
 				convert_file_text += "																				\n";
 				convert_file_text += "	m_Message->Deserialize(serializer);											\n";
 				convert_file_text += "}";
-
-				//GameServerFile save_file = { convert_file_dir.AddFileNameToPath("MessageConverter.cpp"), "wt" };
-				//save_file.Write(convert_file_text.c_str(), convert_file_text.size());
 
 				server_save_map.insert(make_pair(convert_file_dir.AddFileNameToPath("MessageConverter.cpp"), convert_file_text));
 			}
@@ -434,9 +428,6 @@ int main()
 
 				dispatcher_text += "}																																		     ";
 
-				//GameServerFile save_file = { dispatcher_file_dir.AddFileNameToPath("ServerDispatcher.cpp"), "wt" };
-				//save_file.Write(dispatcher_text.c_str(), dispatcher_text.size());
-
 				server_save_map.insert(make_pair(dispatcher_file_dir.AddFileNameToPath("ServerDispatcher.cpp"), dispatcher_text));
 			}
 			////////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,9 +462,6 @@ int main()
 					file_code.replace(file_code.find("#include \"GameServerMathStruct.h\"\n")
 						, strlen("#include \"GameServerMathStruct.h\"\n"), "\n");
 
-					//GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerSerializer.h"), "wt" };
-					//save_file.Write(file_code.c_str(), file_code.size());
-
 					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerSerializer.h"), file_code));
 				}
 
@@ -482,9 +470,6 @@ int main()
 					std::string file_code = load_file.GetString();
 
 					file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
-
-					//GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerSerializer.cpp"), "wt" };
-					//save_file.Write(file_code.c_str(), file_code.size());
 
 					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerSerializer.cpp"), file_code));
 				}
@@ -510,9 +495,6 @@ int main()
 						GameServerFile load_file = { server_message_dir.AddFileNameToPath("Messages.h"), "rt" };
 						std::string file_code = load_file.GetString();
 
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("Messages.h"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
-
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("Messages.h"), file_code));
 					}
 
@@ -526,18 +508,12 @@ int main()
 						file_code.replace(file_code.find("#include <GameServerBase/GameServerMathStruct.h>\n")
 							, strlen("#include <GameServerBase/GameServerMathStruct.h>\n"), "\n");
 
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("GameServerMessage.h"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
-
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerMessage.h"), file_code));
 					}
 
 					{
 						GameServerFile load_file = { server_message_dir.AddFileNameToPath("ServerAndClient.h"), "rt" };
 						std::string file_code = load_file.GetString();
-
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("ServerAndClient.h"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
 
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ServerAndClient.h"), file_code));
 					}
@@ -546,18 +522,12 @@ int main()
 						GameServerFile load_file = { server_message_dir.AddFileNameToPath("ServerToClient.h"), "rt" };
 						std::string file_code = load_file.GetString();
 
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("ServerToClient.h"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
-
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ServerToClient.h"), file_code));
 					}
 
 					{
 						GameServerFile load_file = { server_message_dir.AddFileNameToPath("ClientToServer.h"), "rt" };
 						std::string file_code = load_file.GetString();
-
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("ClientToServer.h"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
 
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ClientToServer.h"), file_code));
 					}
@@ -569,10 +539,16 @@ int main()
 					GameServerFile load_file = { server_message_dir.AddFileNameToPath("MessageTypeEnum.h"), "rt" };
 					std::string file_code = load_file.GetString();
 
-					//GameServerFile save_file = { save_dir.AddFileNameToPath("MessageTypeEnum.h"), "wt" };
-					//save_file.Write(file_code.c_str(), file_code.size());
-
 					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("MessageTypeEnum.h"), file_code));
+				}
+				////////////////////////////////////////////////////////////////////////////////////////////
+				
+				///////////////////////////////////// Copy ContentsEnum ////////////////////////////////////
+				{
+					GameServerFile load_file = { server_message_dir.AddFileNameToPath("ContentsEnums.h"), "rt" };
+					std::string file_code = load_file.GetString();
+
+					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ContentsEnums.h"), file_code));
 				}
 				////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -582,9 +558,6 @@ int main()
 						GameServerFile load_file = { server_message_dir.AddFileNameToPath("MessageConverter.h"), "rt" };
 						std::string file_code = load_file.GetString();
 
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("MessageConverter.h"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
-
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("MessageConverter.h"), file_code));
 					}
 
@@ -593,9 +566,6 @@ int main()
 						std::string file_code = load_file.GetString();
 
 						file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
-
-						//GameServerFile save_file = { save_dir.AddFileNameToPath("MessageConverter.cpp"), "wt" };
-						//save_file.Write(file_code.c_str(), file_code.size());
 
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("MessageConverter.cpp"), file_code));
 					}
@@ -665,10 +635,7 @@ int main()
 
 					dispatcher_text += "}																																  		 \n";
 
-					//GameServerFile save_file = { save_dir.AddFileNameToPath("Handler\\HandlerHeader.h"), "wt" };
-					//save_file.Write(dispatcher_text.c_str(), dispatcher_text.size());
-
-					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("HandlerHeader.h"), dispatcher_text));
+					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("Handler\\HandlerHeader.h"), dispatcher_text));
 				}
 				////////////////////////////////////////////////////////////////////////////////////////////
 			}

@@ -19,8 +19,8 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::ServerDestroy:
 		m_Message = std::make_shared<ServerDestroyMessage>();
 		break;
-	case MessageType::MonsterCreate:
-		m_Message = std::make_shared<MonsterCreateMessage>();
+	case MessageType::AIUpdate:
+		m_Message = std::make_shared<AIUpdateMessage>();
 		break;
 	case MessageType::Login:
 		m_Message = std::make_shared<LoginMessage>();

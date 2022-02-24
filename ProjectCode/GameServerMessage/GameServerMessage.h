@@ -2,6 +2,7 @@
 #include <GameServerBase/GameServerSerializer.h>
 #include <GameServerBase/GameServerMathStruct.h>
 #include "MessageTypeEnum.h"
+#include "ContentsEnums.h"
 
 enum class EGameServerCode
 {

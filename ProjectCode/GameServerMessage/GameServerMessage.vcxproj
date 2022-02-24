@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClientToServer.h" />
+    <ClInclude Include="ContentsEnums.h" />
     <ClInclude Include="Dispatcher.h">
       <SubType>
       </SubType>

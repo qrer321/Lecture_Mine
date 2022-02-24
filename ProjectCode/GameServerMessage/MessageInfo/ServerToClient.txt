@@ -3,4 +3,9 @@ EGameServerCode m_Code;
 
 |ServerDestroy-
 
-|MonsterCreate-
+|AIUpdate-
+int m_ObjectID;
+int m_AIType;
+EAIUpdateType m_UpdateType;
+FVector m_Pos;
+FVector m_Dir;

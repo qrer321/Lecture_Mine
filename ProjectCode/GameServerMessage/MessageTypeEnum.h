@@ -5,6 +5,7 @@ enum class MessageType
 	Chat,
 	LoginResult,
 	ServerDestroy,
-	MonsterCreate,
+	AIUpdate,
 	Login,
+	MAX
 };
