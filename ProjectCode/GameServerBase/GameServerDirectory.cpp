@@ -70,6 +70,7 @@ bool GameServerDirectory::MoveToParent(const std::string& dir_name)
 		MoveToParent();
 	}
 
+	GameServerDebug::AssertDebugMsg("존재하지 않는 경로로 이동했습니다.");
 	return false;
 }
 

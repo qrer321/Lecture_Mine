@@ -222,8 +222,14 @@ int main()
 	/////////////////////////////////////////////////////////////////////////////////////////////////
 	{
 		GameServerDirectory file_dir;
-		file_dir.MoveToParent("ProjectCode");
-		file_dir.MoveToChild("GameServerMessage\\MessageInfo");
+		if (false == file_dir.MoveToParent("ProjectCode"))
+		{
+			return 1;
+		}
+		if (false == file_dir.MoveToChild("GameServerMessage\\MessageInfo"))
+		{
+			return 1;
+		}
 
 		{
 			GameServerFile load_file = { file_dir.AddFileNameToPath("ServerAndClient.txt"), "rt" };
@@ -273,8 +279,14 @@ int main()
 			/////////////////////////////////////// Create Enum File ///////////////////////////////////////
 			{
 				GameServerDirectory enum_file_dir;
-				enum_file_dir.MoveToParent("ProjectCode");
-				enum_file_dir.MoveToChild("GameServerMessage");
+				if (false == enum_file_dir.MoveToParent("ProjectCode"))
+				{
+					return 1;
+				}
+				if (false == enum_file_dir.MoveToChild("GameServerMessage"))
+				{
+					return 1;
+				}
 
 				std::string enum_file_text;
 				enum_file_text += "#pragma once\n";
@@ -282,7 +294,7 @@ int main()
 				enum_file_text += "enum class MessageType\n";
 				enum_file_text += "{\n";
 
-				for (const auto& message_element : all_message)
+				for (const MessageInfo& message_element : all_message)
 				{
 					enum_file_text += "\t" + message_element.MessageName + ",\n";
 				}
@@ -299,8 +311,14 @@ int main()
 			///////////////////////////////////// Create Convert File //////////////////////////////////////
 			{
 				GameServerDirectory convert_file_dir;
-				convert_file_dir.MoveToParent("ProjectCode");
-				convert_file_dir.MoveToChild("GameServerMessage");
+				if (false == convert_file_dir.MoveToParent("ProjectCode"))
+				{
+					return 1;
+				}
+				if (false == convert_file_dir.MoveToChild("GameServerMessage"))
+				{
+					return 1;
+				}
 
 				std::string convert_file_text;
 				convert_file_text += "#include \"PreCompile.h\"														\n";
@@ -344,8 +362,14 @@ int main()
 			//////////////////////////////////////// Message Header ////////////////////////////////////////
 			{
 				GameServerDirectory header_file_dir;
-				header_file_dir.MoveToParent("ProjectCode");
-				header_file_dir.MoveToChild("GameServerMessage");
+				if (false == header_file_dir.MoveToParent("ProjectCode"))
+				{
+					return 1;
+				}
+				if (false == header_file_dir.MoveToChild("GameServerMessage"))
+				{
+					return 1;
+				}
 
 				std::string server_client_text;
 				std::string server_text;
@@ -364,8 +388,14 @@ int main()
 			/////////////////////////////////// Create Server Dispatcher ///////////////////////////////////
 			{
 				GameServerDirectory dispatcher_file_dir;
-				dispatcher_file_dir.MoveToParent("ProjectCode");
-				dispatcher_file_dir.MoveToChild("GameServerApp");
+				if (false == dispatcher_file_dir.MoveToParent("ProjectCode"))
+				{
+					return 1;
+				}
+				if (false == dispatcher_file_dir.MoveToChild("GameServerApp"))
+				{
+					return 1;
+				}
 
 				std::string dispatcher_text;
 
@@ -446,12 +476,21 @@ int main()
 		/////////////////////////////////////// Copy GameServerBase //////////////////////////////////////
 		{
 			GameServerDirectory server_base_dir;
-			server_base_dir.MoveToParent("ProjectCode");
-			server_base_dir.MoveToChild("GameServerBase");
+			if (false == server_base_dir.MoveToParent("ProjectCode"))
+			{
+				return 1;
+			}
+			if (false == server_base_dir.MoveToChild("GameServerBase"))
+			{
+				return 1;
+			}
 
 			GameServerDirectory save_dir;
 			save_dir.MoveToRootDirectory();
-			save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR);
+			if (false == save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR))
+			{
+				return 1;
+			}
 
 			/////////////////////////////////////// Copy GameServerSerializer //////////////////////////////////////
 			{
@@ -459,9 +498,11 @@ int main()
 					GameServerFile load_file = { server_base_dir.AddFileNameToPath("GameServerSerializer.h"), "rt" };
 					std::string file_code = load_file.GetString();
 
-					file_code.replace(file_code.find("#include \"GameServerMathStruct.h\"\n")
-						, strlen("#include \"GameServerMathStruct.h\"\n"), "\n");
-
+					if (std::string::size_type find_pos; std::string::npos != (find_pos = file_code.find("#include \"GameServerMathStruct.h\"\n")))
+					{
+						file_code.replace(find_pos, strlen("#include \"GameServerMathStruct.h\"\n"), "\n");
+					}
+					
 					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerSerializer.h"), file_code));
 				}
 
@@ -469,12 +510,15 @@ int main()
 					GameServerFile load_file = { server_base_dir.AddFileNameToPath("GameServerSerializer.cpp"), "rt" };
 					std::string file_code = load_file.GetString();
 
-					file_code.erase(0, strlen("#include \"PreCompile.h\"") + 1);
+					if (std::string::size_type find_pos; std::string::npos != (find_pos = file_code.find("#include \"PreCompile.h\"")))
+					{
+						file_code.erase(find_pos, strlen("#include \"PreCompile.h\"") + 1);
+					}
 
 					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerSerializer.cpp"), file_code));
 				}
 			}
-			/////////////////////////////////////// End GameServerSerializer //////////////////////////////////////
+			////////////////////////////////////////////////////////////////////////////////////////////////////////
 		}
 		//////////////////////////////////////////////////////////////////////////////////////////////////
 		
@@ -482,12 +526,21 @@ int main()
 		{
 			{
 				GameServerDirectory server_message_dir;
-				server_message_dir.MoveToParent("ProjectCode");
-				server_message_dir.MoveToChild("GameServerMessage");
+				if (false == server_message_dir.MoveToParent("ProjectCode"))
+				{
+					return 1;
+				}
+				if (false == server_message_dir.MoveToChild("GameServerMessage"))
+				{
+					return 1;
+				}
 
 				GameServerDirectory save_dir;
 				save_dir.MoveToRootDirectory();
-				save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR);
+				if (false == save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR))
+				{
+					return 1;
+				}
 
 				///////////////////////////////////// Copy Messages ////////////////////////////////////////
 				{
@@ -502,11 +555,15 @@ int main()
 						GameServerFile load_file = { server_message_dir.AddFileNameToPath("GameServerMessage.h"), "rt" };
 						std::string file_code = load_file.GetString();
 
-						file_code.replace(file_code.find("#include <GameServerBase/GameServerSerializer.h>\n")
-							, strlen("#include <GameServerBase/GameServerSerializer.h>\n"), "#include \"GameServerSerializer.h\"\n");
-
-						file_code.replace(file_code.find("#include <GameServerBase/GameServerMathStruct.h>\n")
-							, strlen("#include <GameServerBase/GameServerMathStruct.h>\n"), "\n");
+						if (std::string::size_type find_pos; std::string::npos != (find_pos = file_code.find("#include <GameServerBase/GameServerSerializer.h>\n")))
+						{
+							file_code.replace(find_pos, strlen("#include <GameServerBase/GameServerSerializer.h>\n"), "#include \"GameServerSerializer.h\"\n");
+						}
+						
+						if (std::string::size_type find_pos; std::string::npos != (find_pos = file_code.find("#include <GameServerBase/GameServerMathStruct.h>\n")))
+						{
+							file_code.replace(find_pos, strlen("#include <GameServerBase/GameServerMathStruct.h>\n"), "\n");
+						}
 
 						client_save_map.insert(make_pair(save_dir.AddFileNameToPath("GameServerMessage.h"), file_code));
 					}
