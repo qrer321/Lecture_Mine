@@ -3,9 +3,6 @@
 #include "GameServerDebug.h"
 #include "GameServerThread.h"
 
-GameServerQueue::GameServerQueue()
-= default;
-
 GameServerQueue::GameServerQueue(WORK_TYPE type, int threadCount, const std::string& threadName)
 {
 	Initialize(type, threadCount, threadName);
@@ -16,18 +13,16 @@ GameServerQueue::~GameServerQueue()
 	Destroy();
 }
 
-GameServerQueue::GameServerQueue(GameServerQueue&& other) noexcept
-{
-
-}
-
 void GameServerQueue::QueueFunction(const std::shared_ptr<GameServerIocpWorker>& work, GameServerQueue* self,
 	const std::string& threadName)
 {
 	if (nullptr == self)
-		GameServerDebug::AssertDebugMsg("큐 스레드 생성에 실패했습니다");
+	{
+		GameServerDebug::AssertDebugMsg("Failed To Create Thread Socket");
+		return;
+	}
 
-	GameServerThread::ThreadNameSetting(threadName + std::to_string(work->GetIndex()));
+	GameServerThread::SetThreadName(threadName + std::to_string(work->GetIndex()));
 	
 	/*
 	 * GameServerQueue를 Initialize 할 때, 정적함수 QueueFunction이 호출되고
@@ -109,25 +104,31 @@ GameServerQueue::QUEUE_RETURN GameServerQueue::WorkExtension(const std::shared_p
 	return QUEUE_RETURN::OK;
 }
 
-void GameServerQueue::SetWorkType(WORK_TYPE type)
+void GameServerQueue::SetWorkType(const WORK_TYPE type)
 {
+	// auto&& work : 보편참조
+	//				 LValue가 될 수도 있고 RValue가 될 수도 있음을 의미
+	// std::forward : perfect forwarding(완벽한 전달), 있는 그대로 전달해준다라고 이해하면 된다
 	switch (type)
 	{
 	case WORK_TYPE::Default:
-		m_WorkFunction = std::bind(&GameServerQueue::WorkDefault, this, std::placeholders::_1);
+		m_WorkFunction = [&](auto&& work) { return WorkDefault(std::forward<decltype(work)>(work)); };
 		break;
 	case WORK_TYPE::Extension:
-		m_WorkFunction = std::bind(&GameServerQueue::WorkExtension, this, std::placeholders::_1);
+		m_WorkFunction = [&](auto&& work) { return WorkExtension(std::forward<decltype(work)>(work)); };
 		break;
 	default: 
 		break;
 	}
 }
 
-void GameServerQueue::Initialize(WORK_TYPE type, int threadCount, const std::string& threadName)
+void GameServerQueue::Initialize(const WORK_TYPE type, const int thread_count, const std::string& thread_name)
 {
 	SetWorkType(type);
-	m_Iocp.Initialize(std::bind(QueueFunction, std::placeholders::_1, this, threadName), threadCount, INFINITE);
+	m_Iocp.Initialize([&](const auto& worker)
+		{
+			QueueFunction(std::move(worker), this, thread_name);
+		}, thread_count, INFINITE);
 }
 
 // 동기 파일 입출력
@@ -135,7 +136,7 @@ void GameServerQueue::EnQueue(const std::function<void()>& callback)
 {
 	if (nullptr == callback)
 	{
-		GameServerDebug::AssertDebugMsg("콜백이 nullptr 입니다");
+		GameServerDebug::AssertDebugMsg("Callback Is Null");
 		return;
 	}
 

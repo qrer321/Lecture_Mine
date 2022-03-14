@@ -15,8 +15,14 @@ public: // Default
 	DBConnecterBase& operator=(DBConnecterBase&& other) = delete;
 
 private:
+	MYSQL* m_mysql;
 
 public: // Member Function
-	MYSQL* m_mysql;	
+	void Connect(
+		const std::string& host,
+		const std::string& id,
+		const std::string& pw,
+		const std::string& schema,
+		unsigned int port);
 };
 

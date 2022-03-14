@@ -4,25 +4,19 @@
 
 GameServerIocpWorker::GameServerIocpWorker(HANDLE iocpHandle, DWORD time, size_t index)
 	: IocpHandle(iocpHandle)
-	, NumberOfBytesTransferred(0)
-	, CompletionKey(0)
-	, lpOverlapped(nullptr)
-	, Time(time)
-	, Index(index)
-	, LastWaitValue(FALSE)
+	  , NumberOfBytesTransferred(0)
+	  , CompletionKey(0)
+	  , lpOverlapped(nullptr)
+	  , Time(time)
+	  , Index(index)
+	  , LastWaitValue(FALSE)
 {
 }
 
 BOOL GameServerIocpWorker::Wait()
 {
-	/*void(*Ptr)() = reinterpret_cast<void(*)()>(CompletionKey);
-	Ptr();*/
-	
 	return GetQueuedCompletionStatus(IocpHandle, &NumberOfBytesTransferred, &CompletionKey, &lpOverlapped, Time);
 }
-
-GameServerIocp::GameServerIocp()
-= default;
 
 /*
  * std::function<void(std::shared_ptr<GameServerIocpWorker>)> func와
@@ -34,18 +28,17 @@ GameServerIocp::GameServerIocp()
  * 결국 성능이 증가하기에 사용한다
  */
 
-GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount)
+GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count)
 {
-	Initialize(func, threadCount, INFINITE);
+	Initialize(func, thread_count, INFINITE);
 }
 
-GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount,
-                               DWORD time)
+GameServerIocp::GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count, DWORD time)
 {
-	Initialize(func, threadCount, time);
+	Initialize(func, thread_count, time);
 }
 
-GameServerIocp::~GameServerIocp() 
+GameServerIocp::~GameServerIocp()
 {
 	for (const auto& element : m_ThreadList)
 	{
@@ -53,45 +46,40 @@ GameServerIocp::~GameServerIocp()
 	}
 }
 
-GameServerIocp::GameServerIocp(GameServerIocp&& other) noexcept
+void GameServerIocp::Initialize(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count, DWORD time)
 {
-}
-
-void GameServerIocp::Initialize(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount,
-                                DWORD time)
-{
-	if (128 <= threadCount)
+	if (128 <= thread_count)
 		return;
 
-	if (0 >= threadCount)
+	if (0 >= thread_count)
 	{
 		SYSTEM_INFO info;
 		GetSystemInfo(&info);
-		threadCount = static_cast<int>(info.dwNumberOfProcessors);
+		thread_count = static_cast<int>(info.dwNumberOfProcessors);
 	}
 
 	// IOCP 핸들 생성
-	m_IocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, NULL, threadCount);
+	m_IocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, NULL, thread_count);
 
-	for (size_t i = 0; i < static_cast<size_t>(threadCount); ++i)
+	for (int i = 0; i < thread_count; ++i)
 	{
-		AddThread(func, time);
+		AddThread(func, time, i);
 	}
 }
 
-void GameServerIocp::AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time)
+void GameServerIocp::AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time, unsigned int order)
 {
 	// vector에 들어가는 thread list는 thread safe 하여야 한다.
 	// thread safe 하지 않으면 AddThread 함수가 동시에 호출되어 문제가 발생할 가능성이 존재
 	// mutex lock을 통해 한 번에 하나의 thread만 접근이 가능하도록 설정
-	m_IocpLock.lock();
+	std::lock_guard lock(m_IocpLock);
 
-	std::shared_ptr<GameServerIocpWorker> newWork = std::make_shared<GameServerIocpWorker>(m_IocpHandle, time, static_cast<DWORD>(m_ThreadWorkerList.size()));
-	m_ThreadWorkerList.push_back(newWork);
-	m_ThreadList.push_back(std::make_shared<GameServerThread>(func, newWork));
+	auto new_work = std::make_shared<GameServerIocpWorker>(m_IocpHandle, time, static_cast<DWORD>(m_ThreadWorkerList.size()));
+	auto new_thread = std::make_shared<GameServerThread>(func, new_work);
+	new_thread->SetThreadOrder(order);
 
-	// lock 함수 호출 이후에는 반드시 unlock을 호출해주어야 한다.
-	m_IocpLock.unlock();
+	m_ThreadWorkerList.push_back(new_work);
+	m_ThreadList.push_back(new_thread);
 }
 
 void GameServerIocp::Post(DWORD byteSize, ULONG_PTR data)

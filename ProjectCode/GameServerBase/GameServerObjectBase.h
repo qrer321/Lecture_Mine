@@ -36,6 +36,6 @@ public:
 	LinkType* GetLink(int index = 0) { return dynamic_cast<LinkType>(m_LinkObject[index]); }
 
 public: // Member Function
-	bool IsLowLevelValid();
+	bool IsValidLowLevel();
 };
 

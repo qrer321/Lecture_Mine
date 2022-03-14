@@ -1,22 +1,15 @@
 #include "PreCompile.h"
 #include "GameServerDebug.h"
+#include "GameServerIocp.h"
 #include <Windows.h>
 #include <iostream>
 
-const char* GameServerDebug::s_TypeText[4] = { "ERROR	: ", "WARNING	: ", "INFO	: ", "LASTERROR	: "};
-GameServerIocp GameServerDebug::s_LogIocp;
-std::atomic<int> GameServerDebug::s_LogCount;
-
-GameServerDebug::GameServerDebug()
-= default;
+const char*			GameServerDebug::s_TypeText[4] = { "ERROR	: ", "WARNING	: ", "INFO	: ", "LASTERROR	: "};
+GameServerIocp*		GameServerDebug::s_LogIocp = nullptr;
+std::atomic<int>	GameServerDebug::s_LogCount;
 
 GameServerDebug::~GameServerDebug()
 = default;
-
-GameServerDebug::GameServerDebug(GameServerDebug&& other) noexcept
-{
-
-}
 
 void GameServerDebug::LogThread(const std::shared_ptr<GameServerIocpWorker>& worker)
 {
@@ -36,12 +29,13 @@ void GameServerDebug::LogThread(const std::shared_ptr<GameServerIocpWorker>& wor
 
 void GameServerDebug::Initialize()
 {
-	s_LogIocp.Initialize(LogThread, 1, INFINITE);
+	s_LogIocp->Initialize(LogThread, 1, INFINITE);
 }
 
 void GameServerDebug::Destroy()
 {
-	s_LogIocp.Post(-1, 0);
+	s_LogIocp->Post(-1, 0);
+	delete s_LogIocp;
 	Sleep(1);
 }
 
@@ -51,7 +45,7 @@ void GameServerDebug::Log(LOGTYPE type, const std::string& text)
 
 	logPtr->m_Type = type;
 	logPtr->m_LogText = text;
-	s_LogIocp.Post(0, reinterpret_cast<ULONG_PTR>(logPtr.get()));
+	s_LogIocp->Post(0, reinterpret_cast<ULONG_PTR>(logPtr.get()));
 
 	logPtr.release();
 }

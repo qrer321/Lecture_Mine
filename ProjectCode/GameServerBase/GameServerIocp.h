@@ -51,26 +51,25 @@ private: // Member Var
 	std::vector<std::shared_ptr<GameServerIocpWorker>> m_ThreadWorkerList;
 
 public: // Default
-	GameServerIocp();
-	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount);
-	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount, DWORD time);
+	GameServerIocp() = default;
+	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count);
+	GameServerIocp(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count, DWORD time);
 	~GameServerIocp() override;
 
 	GameServerIocp(const GameServerIocp& other) = delete;
-	GameServerIocp(GameServerIocp&& other) noexcept;
+	GameServerIocp(GameServerIocp&& other) noexcept = delete;
 
 public:
 	GameServerIocp& operator=(const GameServerIocp& other) = delete;
 	GameServerIocp& operator=(GameServerIocp&& other) = delete;
 
 public:
-	void Initialize(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int threadCount, DWORD time);
+	size_t GetThreadCount() const { return m_ThreadList.size(); }
 
-public: // Member Function
-	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time);
+	void Initialize(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count, DWORD time);
+
+	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time, unsigned int order);
 	void Post(DWORD byteSize, ULONG_PTR data);
 	bool Bind(HANDLE handle, ULONG_PTR key) const;
-
-	size_t GetThreadCount() const { return m_ThreadList.size(); }
 };
 

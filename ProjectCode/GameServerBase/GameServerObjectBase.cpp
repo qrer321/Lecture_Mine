@@ -15,10 +15,10 @@ GameServerObjectBase::~GameServerObjectBase()
 GameServerObjectBase::GameServerObjectBase(GameServerObjectBase&& other) noexcept
     : m_Parent(other.m_Parent)
 {
-
+    other.m_Parent = nullptr;
 }
 
-bool GameServerObjectBase::IsLowLevelValid()
+bool GameServerObjectBase::IsValidLowLevel()
 {
     if (nullptr == this)
     {

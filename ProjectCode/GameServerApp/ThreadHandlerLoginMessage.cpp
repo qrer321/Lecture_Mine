@@ -6,6 +6,11 @@
 #include "DBQueue.h"
 #include "NetQueue.h"
 
+class DBConnecter
+{
+	
+};
+
 /*
  * DB로의 접속, 메시지 검증, 결과 패킷을 보내는 모든 일들은
  * ThreadHandlerLoginMessage 클래스 내부에서 이루어져야하고
@@ -21,6 +26,13 @@ ThreadHandlerLoginMessage::ThreadHandlerLoginMessage(std::shared_ptr<TCPSession>
 
 void ThreadHandlerLoginMessage::DBCheck()
 {
+	// GameServerThread에서 thread_local을 통해
+	// 각각의 스레드가 가질 local 변수를 만들었기에
+	// 코드 상으로 해당 thread의 Name을 얻어올 수 있게 되었다.
+	std::string thread_name = GameServerThread::GetName();
+	// DBConnecter* db_connecter = GameServerThread::GetLocalData<DBConnecter>();
+	TestClass* test_class = GameServerThread::GetLocalData<TestClass>();
+
 	m_LoginResultMessage.m_Code = EGameServerCode::OK;
 
 	// NetThread에서 동작할 ResultSend 콜백함수 등록
@@ -49,6 +61,8 @@ void ThreadHandlerLoginMessage::Start()
 		GameServerDebug::LogError("Login TCPSession Error");
 		return;
 	}
+
+	std::string thread_name = GameServerThread::GetName();
 
 	// LoginResultMessage 값 LoginError로 초기화
 	m_LoginResultMessage.m_Code = EGameServerCode::LoginError;

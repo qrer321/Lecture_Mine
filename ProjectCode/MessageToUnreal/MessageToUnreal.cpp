@@ -2,6 +2,7 @@
 #include <GameServerBase/GameServerFile.h>
 #include <GameServerBase/GameServerString.h>
 #include <GameServerBase/GameServerDirectory.h>
+#include <unordered_map>
 
 #pragma comment (lib, "GameServerBase.lib")
 

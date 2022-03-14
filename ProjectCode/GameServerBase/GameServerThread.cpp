@@ -2,20 +2,23 @@
 #include "GameServerThread.h"
 #include <Windows.h>
 
-GameServerThread::GameServerThread() = default;
+thread_local std::string			GameServerThread::m_Name;
+thread_local unsigned int			GameServerThread::m_Order;
+thread_local const std::type_info*	GameServerThread::m_LocalDataType = nullptr;
+thread_local std::vector<char>		GameServerThread::m_Data;
 
-GameServerThread::~GameServerThread() = default;
-
-GameServerThread::GameServerThread(GameServerThread&& other) noexcept
+void GameServerThread::SetThreadName(const std::string& name)
 {
+	m_Name = name;
 
+	std::wstring thread_name;
+	thread_name.assign(name.begin(), name.end());
+	SetThreadDescription(GetCurrentThread(), thread_name.c_str());
 }
 
-void GameServerThread::ThreadNameSetting(const std::string& name)
+void GameServerThread::SetThreadOrder(unsigned int order)
 {
-	std::wstring wName;
-	wName.assign(name.begin(), name.end());
-	SetThreadDescription(GetCurrentThread(), wName.c_str());
+	m_Order = order;
 }
 
 void GameServerThread::join()

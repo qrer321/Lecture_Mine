@@ -1,11 +1,8 @@
 #pragma once
-
 #include "GameServerNameBase.h"
 #include "GameServerIocp.h"
 #include "GameServerObjectPool.h"
 
-// 용도 : 
-// 분류 :
 // 첨언 : IOCP를 한번 감싸서 기본 규칙을 정의한 Queue
 //		  관리되는 IOCP라고 본다.
 
@@ -62,12 +59,12 @@ private:
 	std::function<QUEUE_RETURN(std::shared_ptr<GameServerIocpWorker> work)> m_WorkFunction;
 
 public: // Default
-	GameServerQueue();
+	GameServerQueue() = default;
 	GameServerQueue(WORK_TYPE type, int threadCount, const std::string& threadName = "");
 	~GameServerQueue() override;
 
 	GameServerQueue(const GameServerQueue& other) = delete;
-	GameServerQueue(GameServerQueue&& other) noexcept;
+	GameServerQueue(GameServerQueue&& other) noexcept = delete;
 
 public:
 	GameServerQueue& operator=(const GameServerQueue& other) = delete;
@@ -84,11 +81,36 @@ private:
 	void SetWorkType(WORK_TYPE type);
 
 public: // Member Function
-	void Initialize(WORK_TYPE type, int threadCount, const std::string& threadName);
+	void Initialize(WORK_TYPE type, int thread_count, const std::string& thread_name);
 
 	void EnQueue(const std::function<void()>& callback);
 	bool NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback) const;
 
 	void Destroy();
+
+	template <typename LocalDataType>
+	void InitializeLocalData(const WORK_TYPE type, int thread_count, const std::string& thread_name)
+	{
+		SetWorkType(type);
+		m_Iocp.Initialize([&](const auto& worker)
+			{
+				QueueFunction(std::move(worker), this, thread_name);
+			}, thread_count, INFINITE);
+	}
+
+	template <typename LocalDataType>
+	static void QueueFunctionLocalData(const std::shared_ptr<GameServerIocpWorker>& work, GameServerQueue* self, const std::string& threadName)
+	{
+		if (nullptr == self)
+		{
+			GameServerDebug::AssertDebugMsg("Failed To Create Thread Socket");
+			return;
+		}
+
+		GameServerThread::SetThreadName(threadName + " " + std::to_string(work->GetIndex()));
+		GameServerThread::CreateThreadLocalData<LocalDataType>();
+
+		self->Run(work);
+	}
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include "GameServerIocp.h"
+#include <atomic>
+#include <memory>
 
 enum class LOGTYPE
 {
@@ -10,30 +11,29 @@ enum class LOGTYPE
 	LOGTYPE_LASTERROR
 };
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
+class GameServerIocp;
+class GameServerIocpWorker;
 class GameServerDebug
 {
 private:
 	class LogTask
 	{
 	public:
-		LOGTYPE m_Type;
+		LOGTYPE		m_Type;
 		std::string m_LogText;
 	};
 
 private: // Member Var
 	static const char*		s_TypeText[4];
-	static GameServerIocp	s_LogIocp;
+	static GameServerIocp*	s_LogIocp;
 	static std::atomic<int> s_LogCount;
 
 public: // Default
-	GameServerDebug();
+	GameServerDebug() = default;
 	virtual ~GameServerDebug() = 0;
 
 	GameServerDebug(const GameServerDebug& other) = delete;
-	GameServerDebug(GameServerDebug&& other) noexcept;
+	GameServerDebug(GameServerDebug&& other) noexcept = delete;
 
 public:
 	GameServerDebug& operator=(const GameServerDebug& other) = delete;
