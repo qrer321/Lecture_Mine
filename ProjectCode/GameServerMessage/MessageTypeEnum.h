@@ -5,7 +5,8 @@ enum class MessageType
 	Chat,
 	LoginResult,
 	ServerDestroy,
-	AIUpdate,
+	ObjectDestroy,
+	EnemyUpdate,
 	Login,
 	MAX
 };

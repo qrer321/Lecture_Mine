@@ -77,37 +77,29 @@ public:
 	}																											
 };																											
 
-class AIUpdateMessage : public GameServerMessage											
+class ObjectDestroyMessage : public GameServerMessage											
 {																											
 public:																										
 	int m_ObjectID;
-	int m_AIType;
-	EAIUpdateType m_UpdateType;
-	FVector m_Pos;
-	FVector m_Dir;
 																												
 public:																										
-	AIUpdateMessage()																		
-		: GameServerMessage(MessageType::AIUpdate)											
+	ObjectDestroyMessage()																		
+		: GameServerMessage(MessageType::ObjectDestroy)											
 		, m_ObjectID()																		
-		, m_AIType()																		
-		, m_UpdateType()																		
-		, m_Pos()																		
-		, m_Dir()																		
 	{																											
 	}																											
-	~AIUpdateMessage() override = default;													
+	~ObjectDestroyMessage() override = default;													
 																												
-	AIUpdateMessage(const AIUpdateMessage& other) = delete;				
-	AIUpdateMessage(AIUpdateMessage&& other) noexcept = delete;			
+	ObjectDestroyMessage(const ObjectDestroyMessage& other) = delete;				
+	ObjectDestroyMessage(ObjectDestroyMessage&& other) noexcept = delete;			
 																												
-	AIUpdateMessage& operator=(const AIUpdateMessage& other) = delete;	
-	AIUpdateMessage& operator=(AIUpdateMessage&& other) = delete;			
+	ObjectDestroyMessage& operator=(const ObjectDestroyMessage& other) = delete;	
+	ObjectDestroyMessage& operator=(ObjectDestroyMessage&& other) = delete;			
 																												
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_ObjectID) + DataSizeCheck(m_AIType) + DataSizeCheck(m_UpdateType) + DataSizeCheck(m_Pos) + DataSizeCheck(m_Dir);
+		return DataSizeCheck(m_ObjectID);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
@@ -115,7 +107,55 @@ public:
 		GameServerMessage::Serialize(serializer);																
 																												
 		serializer << m_ObjectID;
-		serializer << m_AIType;
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer >> m_ObjectID;
+	}																											
+};																											
+
+class EnemyUpdateMessage : public GameServerMessage											
+{																											
+public:																										
+	int m_ObjectID;
+	int m_EnemyType;
+	EEnemyState m_UpdateType;
+	FVector m_Pos;
+	FVector m_Dir;
+																												
+public:																										
+	EnemyUpdateMessage()																		
+		: GameServerMessage(MessageType::EnemyUpdate)											
+		, m_ObjectID()																		
+		, m_EnemyType()																		
+		, m_UpdateType()																		
+		, m_Pos()																		
+		, m_Dir()																		
+	{																											
+	}																											
+	~EnemyUpdateMessage() override = default;													
+																												
+	EnemyUpdateMessage(const EnemyUpdateMessage& other) = delete;				
+	EnemyUpdateMessage(EnemyUpdateMessage&& other) noexcept = delete;			
+																												
+	EnemyUpdateMessage& operator=(const EnemyUpdateMessage& other) = delete;	
+	EnemyUpdateMessage& operator=(EnemyUpdateMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_ObjectID) + DataSizeCheck(m_EnemyType) + DataSizeCheck(m_UpdateType) + DataSizeCheck(m_Pos) + DataSizeCheck(m_Dir);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer << m_ObjectID;
+		serializer << m_EnemyType;
 		serializer.WriteEnum(m_UpdateType);
 		serializer << m_Pos;
 		serializer << m_Dir;
@@ -126,7 +166,7 @@ public:
 		GameServerMessage::Deserialize(serializer);																
 																												
 		serializer >> m_ObjectID;
-		serializer >> m_AIType;
+		serializer >> m_EnemyType;
 		serializer.ReadEnum(m_UpdateType);
 		serializer >> m_Pos;
 		serializer >> m_Dir;

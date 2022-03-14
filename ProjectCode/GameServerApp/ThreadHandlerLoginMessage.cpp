@@ -21,13 +21,13 @@ ThreadHandlerLoginMessage::ThreadHandlerLoginMessage(std::shared_ptr<TCPSession>
 
 void ThreadHandlerLoginMessage::DBCheck()
 {
+	m_LoginResultMessage.m_Code = EGameServerCode::OK;
+
 	// NetThread에서 동작할 ResultSend 콜백함수 등록
 	NetQueue::Queue([self = shared_from_this()]
 		{
 			self->ResultSend();
 		});
-
-	m_LoginResultMessage.m_Code = EGameServerCode::OK;
 }
 
 void ThreadHandlerLoginMessage::ResultSend()
@@ -47,6 +47,7 @@ void ThreadHandlerLoginMessage::Start()
 	if (nullptr == m_TCPSession)
 	{
 		GameServerDebug::LogError("Login TCPSession Error");
+		return;
 	}
 
 	// LoginResultMessage 값 LoginError로 초기화

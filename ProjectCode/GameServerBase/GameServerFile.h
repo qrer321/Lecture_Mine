@@ -12,6 +12,7 @@ private: // Member Var
 
 public: // Default
 	GameServerFile();
+	GameServerFile(const char* path);
 	GameServerFile(const std::filesystem::path& path);
 	GameServerFile(const std::string& path);
 	GameServerFile(const std::string& path, const std::string& mode);

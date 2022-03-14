@@ -214,7 +214,7 @@ void TCPListener::AsyncAccept()
 			newSession->SetParent(this);
 
 			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
-			GameServerDebug::LogInfo(logText + " 소켓을 새로 생성하였습니다");
+			GameServerDebug::LogInfo(logText + " Created New Socket");
 		}
 		else
 		{
@@ -222,7 +222,7 @@ void TCPListener::AsyncAccept()
 			m_ConnectionPool.pop_front();
 
 			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
-			GameServerDebug::LogInfo(logText + " 소켓을 재활용하여 새로운 대기 소켓을 만들었습니다");
+			GameServerDebug::LogInfo(logText + " Created New Socket");
 		}
 	}
 

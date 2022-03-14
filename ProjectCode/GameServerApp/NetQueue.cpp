@@ -5,7 +5,7 @@ GameServerQueue NetQueue::s_TaskQueue = GameServerQueue();
 
 void NetQueue::Init()
 {
-	s_TaskQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 20, "NetThread");
+	s_TaskQueue.Initialize(GameServerQueue::WORK_TYPE::Default, 8, "NetThread");
 }
 
 void NetQueue::Queue(const std::function<void()>& callback)

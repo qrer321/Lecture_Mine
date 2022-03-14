@@ -7,6 +7,12 @@ GameServerFile::GameServerFile()
 {
 }
 
+GameServerFile::GameServerFile(const char* path)
+	: GameServerPath(path)
+	, m_FileHandle(nullptr)
+{
+}
+
 GameServerFile::GameServerFile(const std::filesystem::path& path)
 	: GameServerPath(path)
 	, m_FileHandle(nullptr)

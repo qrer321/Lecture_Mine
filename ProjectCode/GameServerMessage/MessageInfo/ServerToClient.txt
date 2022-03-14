@@ -3,9 +3,12 @@ EGameServerCode m_Code;
 
 |ServerDestroy-
 
-|AIUpdate-
+|ObjectDestroy-
 int m_ObjectID;
-int m_AIType;
-EAIUpdateType m_UpdateType;
+
+|EnemyUpdate-
+int m_ObjectID;
+int m_EnemyType;
+EEnemyState m_UpdateType;
 FVector m_Pos;
 FVector m_Dir;
