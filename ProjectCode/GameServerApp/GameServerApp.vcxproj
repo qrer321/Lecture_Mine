@@ -19,6 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CharacterTable.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="DBQueue.h">
       <SubType>
       </SubType>
@@ -41,9 +45,17 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="UserTable.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="CharacterTable.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="DBQueue.cpp">
       <SubType>
       </SubType>
@@ -68,6 +80,10 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="ThreadHandlerLoginMessage.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="UserTable.cpp">
       <SubType>
       </SubType>
     </ClCompile>

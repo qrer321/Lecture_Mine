@@ -2,14 +2,10 @@
 #include "ThreadHandlerLoginMessage.h"
 #include <GameServerBase/GameServerString.h>
 #include <GameServerBase/GameServerDebug.h>
+#include <GameServerNet/DBConnecter.h>
 #include "GameServerUser.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
-
-class DBConnecter
-{
-	
-};
 
 /*
  * DB로의 접속, 메시지 검증, 결과 패킷을 보내는 모든 일들은
@@ -18,9 +14,9 @@ class DBConnecter
  *
  * DBQueue와 NetQueue는 GameServerQueue를 통해 동작한다
  */
-ThreadHandlerLoginMessage::ThreadHandlerLoginMessage(std::shared_ptr<TCPSession> tcpSession, std::shared_ptr<LoginMessage> loginMessage)
-	: m_TCPSession(std::move(tcpSession))
-	, m_LoginMessage(std::move(loginMessage))
+ThreadHandlerLoginMessage::ThreadHandlerLoginMessage(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<LoginMessage> login_message)
+	: m_TCPSession(std::move(tcp_session))
+	, m_LoginMessage(std::move(login_message))
 {
 }
 
@@ -30,8 +26,6 @@ void ThreadHandlerLoginMessage::DBCheck()
 	// 각각의 스레드가 가질 local 변수를 만들었기에
 	// 코드 상으로 해당 thread의 Name을 얻어올 수 있게 되었다.
 	std::string thread_name = GameServerThread::GetName();
-	// DBConnecter* db_connecter = GameServerThread::GetLocalData<DBConnecter>();
-	TestClass* test_class = GameServerThread::GetLocalData<TestClass>();
 
 	m_LoginResultMessage.m_Code = EGameServerCode::OK;
 

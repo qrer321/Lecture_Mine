@@ -112,10 +112,10 @@ void GameServerQueue::SetWorkType(const WORK_TYPE type)
 	switch (type)
 	{
 	case WORK_TYPE::Default:
-		m_WorkFunction = [&](auto&& work) { return WorkDefault(std::forward<decltype(work)>(work)); };
+		m_WorkFunction = [this](auto&& work) { return WorkDefault(std::forward<decltype(work)>(work)); };
 		break;
 	case WORK_TYPE::Extension:
-		m_WorkFunction = [&](auto&& work) { return WorkExtension(std::forward<decltype(work)>(work)); };
+		m_WorkFunction = [this](auto&& work) { return WorkExtension(std::forward<decltype(work)>(work)); };
 		break;
 	default: 
 		break;
@@ -125,7 +125,7 @@ void GameServerQueue::SetWorkType(const WORK_TYPE type)
 void GameServerQueue::Initialize(const WORK_TYPE type, const int thread_count, const std::string& thread_name)
 {
 	SetWorkType(type);
-	m_Iocp.Initialize([&](const auto& worker)
+	m_Iocp.Initialize([=](const auto& worker)
 		{
 			QueueFunction(std::move(worker), this, thread_name);
 		}, thread_count, INFINITE);

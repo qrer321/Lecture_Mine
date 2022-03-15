@@ -5,11 +5,10 @@
 #include <iostream>
 
 const char*			GameServerDebug::s_TypeText[4] = { "ERROR	: ", "WARNING	: ", "INFO	: ", "LASTERROR	: "};
-GameServerIocp*		GameServerDebug::s_LogIocp = nullptr;
+GameServerIocp*		GameServerDebug::s_LogIocp = new GameServerIocp;
 std::atomic<int>	GameServerDebug::s_LogCount;
 
-GameServerDebug::~GameServerDebug()
-= default;
+GameServerDebug::~GameServerDebug() = default;
 
 void GameServerDebug::LogThread(const std::shared_ptr<GameServerIocpWorker>& worker)
 {

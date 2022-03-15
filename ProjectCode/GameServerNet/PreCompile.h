@@ -9,7 +9,3 @@
 #include <GameServerBase/GameServerDebug.h>
 
 #include "Enums.h"
-
-#include <mysql\mysql.h>
-
-#pragma comment (lib, "libmysql.lib")

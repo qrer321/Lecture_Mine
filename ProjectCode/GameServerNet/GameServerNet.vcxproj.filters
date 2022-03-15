@@ -34,7 +34,10 @@
     <ClInclude Include="GameServerOverlapped.h">
       <Filter>IOCP</Filter>
     </ClInclude>
-    <ClInclude Include="DBConnecterBase.h">
+    <ClInclude Include="DBConnecter.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="DBTableBase.h">
       <Filter>DB</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,7 +69,10 @@
     <ClCompile Include="GameServerOverlapped.cpp">
       <Filter>IOCP</Filter>
     </ClCompile>
-    <ClCompile Include="DBConnecterBase.cpp">
+    <ClCompile Include="DBConnecter.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="DBTableBase.cpp">
       <Filter>DB</Filter>
     </ClCompile>
   </ItemGroup>

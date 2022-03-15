@@ -40,3 +40,7 @@
 // 라이브러리
 #pragma comment (lib, "ws2_32") // 서버통신용 구현이 들어있는 라이브러리
 #pragma comment (lib, "mswsock")
+
+// MYSQL
+#include <mysql\mysql.h>
+#pragma comment (lib, "libmysql.lib")

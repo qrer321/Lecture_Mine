@@ -19,7 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DBConnecterBase.h">
+    <ClInclude Include="DBConnecter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="DBTableBase.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -60,7 +64,11 @@
     <ClInclude Include="TypeDefine.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DBConnecterBase.cpp">
+    <ClCompile Include="DBConnecter.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="DBTableBase.cpp">
       <SubType>
       </SubType>
     </ClCompile>

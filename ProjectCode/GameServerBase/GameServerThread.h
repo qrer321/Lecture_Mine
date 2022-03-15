@@ -34,7 +34,7 @@ public: // Default
 	virtual ~GameServerThread() = default;
 
 	GameServerThread(const GameServerThread& other) = delete;
-	GameServerThread(GameServerThread&& other) noexcept = default;
+	GameServerThread(GameServerThread&& other) noexcept = delete;
 
 	GameServerThread& operator=(const GameServerThread& other) = delete;
 	GameServerThread& operator=(GameServerThread&& other) = delete;

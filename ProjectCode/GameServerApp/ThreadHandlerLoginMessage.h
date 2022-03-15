@@ -12,7 +12,7 @@ private: // Member Var
 
 public: // Default
 	ThreadHandlerLoginMessage() = delete;
-	ThreadHandlerLoginMessage(std::shared_ptr<TCPSession> tcpSession, std::shared_ptr<LoginMessage> loginMessage);
+	ThreadHandlerLoginMessage(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<LoginMessage> login_message);
 	~ThreadHandlerLoginMessage() = default;
 
 	ThreadHandlerLoginMessage(const ThreadHandlerLoginMessage& other) = delete;

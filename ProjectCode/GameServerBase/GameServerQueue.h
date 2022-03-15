@@ -89,17 +89,22 @@ public: // Member Function
 	void Destroy();
 
 	template <typename LocalDataType>
-	void InitializeLocalData(const WORK_TYPE type, int thread_count, const std::string& thread_name)
+	void InitializeLocalData(const WORK_TYPE type, int thread_count, const std::string& thread_name, std::function<void(LocalDataType*)> init_function = nullptr)
 	{
 		SetWorkType(type);
-		m_Iocp.Initialize([&](const auto& worker)
+		m_Iocp.Initialize([=](const auto& worker)
 			{
-				QueueFunction(std::move(worker), this, thread_name);
+				QueueFunctionLocalData<LocalDataType>(worker, this, thread_name, init_function);
 			}, thread_count, INFINITE);
+
+		//m_Iocp.Initialize(
+		//	std::bind(QueueFunctionLocalData<LocalDataType>, std::placeholders::_1, this, thread_name, init_function),
+		//	thread_count,
+		//	INFINITE);
 	}
 
 	template <typename LocalDataType>
-	static void QueueFunctionLocalData(const std::shared_ptr<GameServerIocpWorker>& work, GameServerQueue* self, const std::string& threadName)
+	static void QueueFunctionLocalData(const std::shared_ptr<GameServerIocpWorker>& work, GameServerQueue* self, const std::string& thread_name, std::function<void(LocalDataType*)> init_function)
 	{
 		if (nullptr == self)
 		{
@@ -107,10 +112,20 @@ public: // Member Function
 			return;
 		}
 
-		GameServerThread::SetThreadName(threadName + " " + std::to_string(work->GetIndex()));
-		GameServerThread::CreateThreadLocalData<LocalDataType>();
+		GameServerThread::SetThreadName(thread_name + " " + std::to_string(work->GetIndex()));
+		LocalDataType* local_data = GameServerThread::CreateThreadLocalData<LocalDataType>();
+
+		if (nullptr != init_function)
+		{
+			init_function(local_data);
+		}
 
 		self->Run(work);
+
+		/*if (nullptr != local_data)
+		{
+			delete local_data;
+		}*/
 	}
 };
 
