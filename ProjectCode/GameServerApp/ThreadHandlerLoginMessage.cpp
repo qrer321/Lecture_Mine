@@ -29,10 +29,17 @@ void ThreadHandlerLoginMessage::DBCheck()
 	// 코드 상으로 해당 thread의 Name을 얻어올 수 있게 되었다.
 	std::string thread_name = GameServerThread::GetName();
 
-	m_LoginResultMessage.m_Code = EGameServerCode::OK;
-
 	UserTable_SelectIDFromUserInfo select_query(m_LoginMessage->m_ID);
 	select_query.ExecuteQuery();
+
+	if (nullptr == select_query.m_RowDatum)
+	{
+		m_LoginResultMessage.m_Code = EGameServerCode::LoginError;
+	}
+	else
+	{
+		m_LoginResultMessage.m_Code = EGameServerCode::OK;
+	}
 
 	// NetThread에서 동작할 ResultSend 콜백함수 등록
 	NetQueue::Queue([self = shared_from_this()]

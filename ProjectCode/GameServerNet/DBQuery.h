@@ -4,8 +4,8 @@
 class DBQuery
 {
 protected: // Member Var
-	DBConnecter* m_DBConnecter;
-	const char* m_QueryString;
+	DBConnecter*	m_DBConnecter;
+	const char*		m_QueryString;
 
 public: // Default
 	DBQuery(const char* query);
