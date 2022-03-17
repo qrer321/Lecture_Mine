@@ -37,7 +37,7 @@
     <ClInclude Include="DBConnecter.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="DBTableBase.h">
+    <ClInclude Include="DBQuery.h">
       <Filter>DB</Filter>
     </ClInclude>
   </ItemGroup>
@@ -72,7 +72,7 @@
     <ClCompile Include="DBConnecter.cpp">
       <Filter>DB</Filter>
     </ClCompile>
-    <ClCompile Include="DBTableBase.cpp">
+    <ClCompile Include="DBQuery.cpp">
       <Filter>DB</Filter>
     </ClCompile>
   </ItemGroup>

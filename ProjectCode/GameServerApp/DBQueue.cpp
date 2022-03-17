@@ -20,8 +20,6 @@ void InitializeDBConnecter(DBConnecter* connecter)
 		GameServerDebug::AssertDebugMsg("DB Connection Error" + connecter->GetLastSQLError());
 		return;
 	}
-
-
 }
 
 void DBQueue::Init()

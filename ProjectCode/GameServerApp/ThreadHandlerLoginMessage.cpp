@@ -6,6 +6,8 @@
 #include "GameServerUser.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
+#include "UserTable.h"
+
 
 /*
  * DB로의 접속, 메시지 검증, 결과 패킷을 보내는 모든 일들은
@@ -28,6 +30,9 @@ void ThreadHandlerLoginMessage::DBCheck()
 	std::string thread_name = GameServerThread::GetName();
 
 	m_LoginResultMessage.m_Code = EGameServerCode::OK;
+
+	UserTable_SelectIDFromUserInfo select_query(m_LoginMessage->m_ID);
+	select_query.ExecuteQuery();
 
 	// NetThread에서 동작할 ResultSend 콜백함수 등록
 	NetQueue::Queue([self = shared_from_this()]

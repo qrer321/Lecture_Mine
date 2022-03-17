@@ -23,7 +23,7 @@
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="DBTableBase.h">
+    <ClInclude Include="DBQuery.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -68,7 +68,7 @@
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="DBTableBase.cpp">
+    <ClCompile Include="DBQuery.cpp">
       <SubType>
       </SubType>
     </ClCompile>

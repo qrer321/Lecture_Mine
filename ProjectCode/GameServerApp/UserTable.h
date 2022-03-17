@@ -1,4 +1,5 @@
 #pragma once
+#include <GameServerNet/DBQuery.h>
 
 class UserRow : std::enable_shared_from_this<UserRow>
 {
@@ -10,7 +11,9 @@ public:
 
 class UserTable
 {
-private: // Member Var
+protected:
+	static std::string	s_TableName;
+	std::string			m_Query;
 
 public: // Default
 	UserTable() = default;
@@ -24,7 +27,23 @@ public: // Default
 
 private:
 	std::shared_ptr<UserRow> GetUserData(const std::string& id);
-
-public: // Member Function
 };
 
+class UserTable_SelectIDFromUserInfo : public DBQuery, UserTable
+{
+private:
+	std::string m_ID;
+
+public: // Default
+	UserTable_SelectIDFromUserInfo(std::string id);
+	~UserTable_SelectIDFromUserInfo() override = default;
+
+	UserTable_SelectIDFromUserInfo(const UserTable_SelectIDFromUserInfo& other) = delete;
+	UserTable_SelectIDFromUserInfo(UserTable_SelectIDFromUserInfo&& other) noexcept = delete;
+
+	UserTable_SelectIDFromUserInfo& operator=(const UserTable_SelectIDFromUserInfo& other) = delete;
+	UserTable_SelectIDFromUserInfo& operator=(UserTable_SelectIDFromUserInfo&& other) = delete;
+
+public:
+	bool ExecuteQuery() override;
+};

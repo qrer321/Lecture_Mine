@@ -122,10 +122,6 @@ public: // Member Function
 
 		self->Run(work);
 
-		/*if (nullptr != local_data)
-		{
-			delete local_data;
-		}*/
 	}
 };
 
