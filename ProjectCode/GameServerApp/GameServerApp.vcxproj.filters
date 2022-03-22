@@ -28,6 +28,21 @@
     <ClInclude Include="UserTable.h">
       <Filter>DB</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerActor.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Contents</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerGame.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -58,6 +73,21 @@
     <ClCompile Include="UserTable.cpp">
       <Filter>DB</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerActor.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Contents</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerGame.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -80,6 +110,9 @@
     </Filter>
     <Filter Include="DB">
       <UniqueIdentifier>{5eac9627-2b07-49b8-9fc1-f03744e1c30c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{b6a49e2f-7119-46a8-b1d0-a47d799e0489}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

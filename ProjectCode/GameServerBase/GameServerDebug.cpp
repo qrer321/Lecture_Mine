@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <iostream>
 
-const char*			GameServerDebug::s_TypeText[4] = { "ERROR	: ", "WARNING	: ", "INFO	: ", "LASTERROR	: "};
+const char*			GameServerDebug::s_TypeText[4] = { "ERROR	: ", "WARNING	: ", "INFO	: ", "LAST_ERROR	: "};
 GameServerIocp*		GameServerDebug::s_LogIocp = new GameServerIocp;
 std::atomic<int>	GameServerDebug::s_LogCount;
 
@@ -49,6 +49,17 @@ void GameServerDebug::Log(LOGTYPE type, const std::string& text)
 	logPtr.release();
 }
 
+void GameServerDebug::LogAssert(LOGTYPE type, const std::string& text)
+{
+	Log(type, text);
+	AssertDebugMsg(text);
+}
+
+void GameServerDebug::LogErrorAssert(const std::string& text)
+{
+	LogAssert(LOGTYPE::LOGTYPE_ERROR, text);
+}
+
 void GameServerDebug::LogError(const std::string& text)
 {
 	Log(LOGTYPE::LOGTYPE_ERROR, text);
@@ -76,7 +87,7 @@ void GameServerDebug::AssertDebug()
 
 void GameServerDebug::AssertDebugMsg(const std::string& msg)
 {
-	MessageBoxA(nullptr, msg.c_str(), "∞Ê∞Ì√¢", MB_OK);
+	MessageBoxA(nullptr, msg.c_str(), "Caution", MB_OK);
 	AssertDebug();
 }
 

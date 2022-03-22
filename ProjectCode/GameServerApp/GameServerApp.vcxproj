@@ -27,15 +27,20 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerActor.h" />
+    <ClInclude Include="GameServerGame.h" />
     <ClInclude Include="GameServerUser.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="NetQueue.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PreCompile.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="ServerDispatcher.h" />
     <ClInclude Include="ThreadHandlerChatMessage.h">
       <SubType>
@@ -60,20 +65,25 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerActor.cpp" />
+    <ClCompile Include="GameServerGame.cpp" />
     <ClCompile Include="GameServerUser.cpp">
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="NetQueue.cpp">
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PreCompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Room.cpp" />
     <ClCompile Include="ServerDispatcher.cpp" />
     <ClCompile Include="ThreadHandlerChatMessage.cpp">
       <SubType>

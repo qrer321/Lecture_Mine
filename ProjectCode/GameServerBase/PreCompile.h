@@ -43,5 +43,8 @@
 #pragma comment (lib, "mswsock")
 
 // MYSQL
-#include <mysql\mysql.h>
+#include <mysql/mysql.h>
 #pragma comment (lib, "libmysql.lib")
+
+#include <tinyxml2.h>
+#pragma comment (lib, "tinyxml2.lib")

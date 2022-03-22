@@ -47,6 +47,8 @@ public: // Member Function
 	static void Destroy();
 
 	static void Log(LOGTYPE type, const std::string& text);
+	static void LogAssert(LOGTYPE type, const std::string& text);
+	static void LogErrorAssert(const std::string& text);
 	static void LogError(const std::string & text);
 	static void LogWarning(const std::string& text);
 	static void LogInfo(const std::string& text);
