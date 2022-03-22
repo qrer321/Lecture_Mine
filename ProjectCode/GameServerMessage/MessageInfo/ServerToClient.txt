@@ -1,6 +1,9 @@
 |LoginResult-
 EGameServerCode m_Code;
 
+|JoinResult-
+EGameServerCode m_Code;
+
 |ServerDestroy-
 
 |ObjectDestroy-

@@ -8,6 +8,7 @@ enum class EGameServerCode
 {
 	OK,
 	LoginError,
+	JoinError,
 	MAX,
 };
 

@@ -43,6 +43,9 @@
     <ClInclude Include="GameServerGame.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadHandlerJoinMessage.h">
+      <Filter>ThreadHandler\Join</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -88,6 +91,9 @@
     <ClCompile Include="GameServerGame.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerJoinMessage.cpp">
+      <Filter>ThreadHandler\Join</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -113,6 +119,9 @@
     </Filter>
     <Filter Include="Game">
       <UniqueIdentifier>{b6a49e2f-7119-46a8-b1d0-a47d799e0489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\Join">
+      <UniqueIdentifier>{1f36a673-84bb-45d8-9cab-a0c4899e50b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

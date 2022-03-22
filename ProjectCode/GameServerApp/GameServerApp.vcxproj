@@ -46,6 +46,7 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="ThreadHandlerJoinMessage.h" />
     <ClInclude Include="ThreadHandlerLoginMessage.h">
       <SubType>
       </SubType>
@@ -89,6 +90,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerJoinMessage.cpp" />
     <ClCompile Include="ThreadHandlerLoginMessage.cpp">
       <SubType>
       </SubType>

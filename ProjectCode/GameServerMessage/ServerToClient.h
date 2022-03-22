@@ -41,6 +41,46 @@ public:
 	}																											
 };																											
 
+class JoinResultMessage : public GameServerMessage											
+{																											
+public:																										
+	EGameServerCode m_Code;
+																												
+public:																										
+	JoinResultMessage()																		
+		: GameServerMessage(MessageType::JoinResult)											
+		, m_Code()																		
+	{																											
+	}																											
+	~JoinResultMessage() override = default;													
+																												
+	JoinResultMessage(const JoinResultMessage& other) = delete;				
+	JoinResultMessage(JoinResultMessage&& other) noexcept = delete;			
+																												
+	JoinResultMessage& operator=(const JoinResultMessage& other) = delete;	
+	JoinResultMessage& operator=(JoinResultMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_Code);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer.WriteEnum(m_Code);
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer.ReadEnum(m_Code);
+	}																											
+};																											
+
 class ServerDestroyMessage : public GameServerMessage											
 {																											
 public:																										

@@ -16,6 +16,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::LoginResult:
 		m_Message = std::make_shared<LoginResultMessage>();
 		break;
+	case MessageType::JoinResult:
+		m_Message = std::make_shared<JoinResultMessage>();
+		break;
 	case MessageType::ServerDestroy:
 		m_Message = std::make_shared<ServerDestroyMessage>();
 		break;
@@ -27,6 +30,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 		break;
 	case MessageType::Login:
 		m_Message = std::make_shared<LoginMessage>();
+		break;
+	case MessageType::Join:
+		m_Message = std::make_shared<JoinMessage>();
 		break;
 	default:																	
 		return;																	
