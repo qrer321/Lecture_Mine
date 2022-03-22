@@ -69,11 +69,12 @@ public:
 
 	// mysql_stmt_prepare에서 예약된 INSERT 또는 UPDATE 문에 의해 AUTO_INCREMENT 열에 생성된 값을 반환한다.
 	// AUTO_INCREMENT 필드가 포함된 테이블에서 예약된 INSERT 문을 실행한 후에 사용하는 함수
-	uint64_t GetInsertID() const { return mysql_stmt_insert_id(m_Statement); }
+	[[nodiscard]] uint64_t GetInsertID() const { return mysql_stmt_insert_id(m_Statement); }
 
 	// mysql_stmt_execute 함수에 의해 명령문 실행 직후에 호출 할 수 있다.
 	// UPDATE, DELETE, INSERT 문인 경우 변경, 삭제 또는 삽입된 행의 수를 반환한다.
-	uint64_t GetAffectedRow() const { return mysql_stmt_affected_rows(m_Statement); }
+	// 오류일 경우 -1을 반환한다.
+	[[nodiscard]] uint64_t GetAffectedRow() const { return mysql_stmt_affected_rows(m_Statement); }
 };
 
 class DBConnecter

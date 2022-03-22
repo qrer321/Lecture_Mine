@@ -4,13 +4,8 @@
 
 std::string s_TableName = "user";
 
-std::shared_ptr<UserRow> UserTable::GetUserData(const std::string& id)
-{
-	return nullptr;
-}
-
 UserTable_SelectIDFromUserInfo::UserTable_SelectIDFromUserInfo(std::string id)
-	: DBQuery("SELECT idx, ID, PW, FROM unreal_server.user WHERE ID = ?")
+	: DBQuery("SELECT idx, ID, PW, FROM unreal_server.user WHERE ID = ? LIMIT 1")
 	, m_ID(std::move(id))
 {
 }
@@ -40,12 +35,12 @@ bool UserTable_SelectIDFromUserInfo::ExecuteQuery()
 	return true;
 }
 
-UserTable_AllUserInfo::UserTable_AllUserInfo()
+UserTable_SelectAllUserInfo::UserTable_SelectAllUserInfo()
 	: DBQuery("SELECT * FROM unreal_server.user_info")
 {
 }
 
-bool UserTable_AllUserInfo::ExecuteQuery()
+bool UserTable_SelectAllUserInfo::ExecuteQuery()
 {
 	const std::unique_ptr<DBStatement> statement = m_DBConnecter->CreateStatement(m_QueryString);
 	const std::unique_ptr stmt_result(statement->Execute());
@@ -77,7 +72,7 @@ bool UserTable_InsertToUserInfo::ExecuteQuery()
 
 	statement->Execute();
 
-	if (0 == statement->GetAffectedRow())
+	if (static_cast<uint64_t>(-1) == statement->GetAffectedRow())
 	{
 		return false;
 	}

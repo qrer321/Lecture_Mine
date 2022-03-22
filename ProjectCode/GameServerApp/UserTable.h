@@ -39,7 +39,7 @@ public: // Default
 	UserTable& operator=(UserTable&& other) = delete;
 
 private:
-	std::shared_ptr<UserRow> GetUserData(const std::string& id);
+	std::shared_ptr<UserRow> GetUserData(const std::string& id) {}
 };
 
 class UserTable_SelectIDFromUserInfo : public DBQuery, UserTable
@@ -62,20 +62,20 @@ public:
 	bool ExecuteQuery() override;
 };
 
-class UserTable_AllUserInfo : public DBQuery, UserTable
+class UserTable_SelectAllUserInfo : public DBQuery, UserTable
 {
 public:
 	std::vector<std::shared_ptr<UserRow>>	m_RowData;
 
 public: // Default
-	explicit UserTable_AllUserInfo();
-	~UserTable_AllUserInfo() override = default;
+	explicit UserTable_SelectAllUserInfo();
+	~UserTable_SelectAllUserInfo() override = default;
 
-	UserTable_AllUserInfo(const UserTable_AllUserInfo& other) = delete;
-	UserTable_AllUserInfo(UserTable_AllUserInfo&& other) noexcept = delete;
+	UserTable_SelectAllUserInfo(const UserTable_SelectAllUserInfo& other) = delete;
+	UserTable_SelectAllUserInfo(UserTable_SelectAllUserInfo&& other) noexcept = delete;
 
-	UserTable_AllUserInfo& operator=(const UserTable_AllUserInfo& other) = delete;
-	UserTable_AllUserInfo& operator=(UserTable_AllUserInfo&& other) = delete;
+	UserTable_SelectAllUserInfo& operator=(const UserTable_SelectAllUserInfo& other) = delete;
+	UserTable_SelectAllUserInfo& operator=(UserTable_SelectAllUserInfo&& other) = delete;
 
 public:
 	bool ExecuteQuery() override;
