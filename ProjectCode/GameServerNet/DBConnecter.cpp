@@ -190,8 +190,17 @@ std::string DBConnecter::GetLastSQLError() const
 	return mysql_error(m_mysql);
 }
 
+void DBConnecter::Reset()
+{
+	m_mysql = nullptr;
+	m_Host = std::string();
+	m_ID = std::string();
+	m_PW = std::string();
+	m_Schema = std::string();
+}
+
 void DBConnecter::SetConnectInfo(const std::string& host, const std::string& id, const std::string& pw,
-	const std::string& schema, const unsigned int port)
+                                 const std::string& schema, const unsigned int port)
 {
 	m_Host = host;
 	m_ID = id;

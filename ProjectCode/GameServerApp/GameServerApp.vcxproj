@@ -47,6 +47,9 @@
       <Project>{ad556ca4-d2ec-4e73-a747-74e1c1415550}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\ServerConfig.xml" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

@@ -1,7 +1,7 @@
 #pragma once
 #include <GameServerCore/GameServerCore.h>
 
-class GameServerContentsCore
+class GameServerContentsCore : public GameServerCore
 {
 public: // Default
 	GameServerContentsCore() = default;
@@ -13,6 +13,11 @@ public: // Default
 	GameServerContentsCore& operator=(GameServerContentsCore&& other) = delete;
 
 public: // Member Function
-	void UserStart() {}
+	void UserStart();
+
+protected:
+	static void AcceptEvent(std::shared_ptr<TCPSession> session);
+	static void RecvEvent(std::shared_ptr<TCPSession> session, const std::vector<unsigned char>& value);
+	static void CloseEvent(std::shared_ptr<TCPSession> session);
 };
 

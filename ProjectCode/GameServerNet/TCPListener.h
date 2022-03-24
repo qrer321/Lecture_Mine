@@ -1,11 +1,9 @@
 #pragma once
 #include "IPEndPoint.h"
 #include "TypeDefine.h"
-#include <deque>
+#include <GameServerBase/GameServerObjectBase.h>
+#include <GameServerBase/GameServerObjectPool.h>
 
-// 용도 : 
-// 분류 :
-// 첨언 :
 class TCPSession;
 class GameServerQueue;
 class AcceptExOverlapped;

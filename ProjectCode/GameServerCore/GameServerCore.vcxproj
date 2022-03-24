@@ -184,6 +184,14 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="GameServerSection.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="GameServerSectionManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="NetQueue.h" />
     <ClInclude Include="PreCompile.h" />
     <ClInclude Include="ThreadHandlerBase.h">
@@ -195,6 +203,14 @@
     <ClCompile Include="DBQueue.cpp" />
     <ClCompile Include="GameServerActor.cpp" />
     <ClCompile Include="GameServerCore.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerSection.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="GameServerSectionManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>

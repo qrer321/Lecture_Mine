@@ -36,8 +36,8 @@ private: // Member Var
 	std::function<void(PtrSTCPSession)>										m_CloseCallBack;
 	bool																	m_CallClose;
 
-	using RecvCallBack = std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>;
-	using CloseCallBack = std::function<void(PtrSTCPSession)>;
+	// using RecvCallBack = std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>;
+	// using CloseCallBack = std::function<void(PtrSTCPSession)>;
 
 public: // Default
 	TCPSession();
@@ -69,10 +69,12 @@ public:
 	SOCKET	GetSocket()		const { return m_SessionSocket; }
 	__int64 GetConnectId()	const { return m_ConnectId; }
 
-public: // Member Function
 	bool Send(const std::vector<unsigned char>& buffer);
 
-	void SetCallBack(const RecvCallBack& recvCallBack, const CloseCallBack& closeCallBack);
+	void SetCallBack(const std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>& recv_callback, const std::function<void(PtrSTCPSession)>& close_callback);
+	void SetRecvCallBack(const std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>& callback);
+	void SetCloseCallBack(const std::function<void(PtrSTCPSession)>& callback);
+
 	void UnRegisterSession();
 };
 

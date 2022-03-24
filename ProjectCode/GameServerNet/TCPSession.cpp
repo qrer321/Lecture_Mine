@@ -208,15 +208,35 @@ void TCPSession::RecvRequest()
 	}
 }
 
-void TCPSession::SetCallBack(const RecvCallBack& recvCallBack, const CloseCallBack& closeCallBack)
+void TCPSession::SetCallBack(const std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>& recv_callback, const std::function<void(PtrSTCPSession)>& close_callback)
 {
-	if (nullptr == recvCallBack)
+	if (nullptr == recv_callback)
 	{
 		GameServerDebug::LogError("ReceiveCallBack Is NULL");
 	}
 
-	m_RecvCallBack = recvCallBack;
-	m_CloseCallBack = closeCallBack;
+	m_RecvCallBack = recv_callback;
+	m_CloseCallBack = close_callback;
+}
+
+void TCPSession::SetRecvCallBack(const std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>& callback)
+{
+	if (nullptr == callback)
+	{
+		GameServerDebug::LogError("Receive Callback Is Nullptr");
+	}
+
+	m_RecvCallBack = callback;
+}
+
+void TCPSession::SetCloseCallBack(const std::function<void(PtrSTCPSession)>& callback)
+{
+	if (nullptr == callback)
+	{
+		GameServerDebug::LogError("Close Callback Is Nullptr");
+	}
+
+	m_CloseCallBack = callback;
 }
 
 // Disconnect를 통한 등록해제

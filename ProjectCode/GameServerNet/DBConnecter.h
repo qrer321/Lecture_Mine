@@ -111,6 +111,7 @@ public: // Member Function
 	[[nodiscard]] bool IsConnected() const { return m_mysql != nullptr; }
 	[[nodiscard]] std::string GetLastSQLError() const;
 
+	void Reset();
 	bool Connect(
 		const std::string& host,
 		const std::string& id,

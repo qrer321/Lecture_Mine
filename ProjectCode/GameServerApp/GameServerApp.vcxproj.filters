@@ -15,5 +15,13 @@
     <Filter Include="PreCompile">
       <UniqueIdentifier>{3279ae6f-94f3-4e16-ad46-52daa8edb4a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{b877f1f2-7fd4-4bea-baaa-8a3b2c46d161}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\ServerConfig.xml">
+      <Filter>Config</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

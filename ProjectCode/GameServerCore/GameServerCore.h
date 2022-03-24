@@ -1,17 +1,19 @@
 #pragma once
+#include <GameServerNet/TCPListener.h>
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
+class TCPSession;
 class GameServerCore
 {
 protected:
-	static int			s_ServerPort;
-	static int			s_DBPort;
-	static std::string	s_DBHost;
-	static std::string	s_DBSchema;
-	static std::string	s_DBUser;
-	static std::string	s_DBPw;
+	static int												s_ServerPort;
+	static int												s_DBPort;
+	static std::string										s_DBHost;
+	static std::string										s_DBSchema;
+	static std::string										s_DBUser;
+	static std::string										s_DBPw;
+
+	static TCPListener										s_Listener;
+	static std::function<void(std::shared_ptr<TCPSession>)> s_AcceptCallback;
 
 public: // Default
 	GameServerCore() = default;
@@ -29,8 +31,12 @@ public: // Default
 	static std::string	GetDBUser()		{ return s_DBUser; }
 	static std::string	GetDBPw()		{ return s_DBPw; }
 
+protected:
+	void SetAcceptCallback(const std::function<void(std::shared_ptr<TCPSession>)>& callback);
+
 private:
 	static bool CoreInit();
+	static bool CoreRun();
 	static bool CoreEnd();
 
 	static bool CoreDataCheck();
@@ -43,6 +49,8 @@ public: // Member Function
 
 		UserGameType new_user_server = UserGameType(args...);
 		new_user_server.UserStart();
+
+		CoreRun();
 
 		CoreEnd();
 	}

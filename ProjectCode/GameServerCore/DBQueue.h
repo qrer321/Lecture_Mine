@@ -5,11 +5,13 @@
 class DBQueue
 {
 private:
-	static GameServerQueue s_TaskQueue;
+	static DBQueue* s_Inst;
+
+	GameServerQueue m_TaskQueue;
 
 public: // Default
 	DBQueue() = default;
-	~DBQueue() = default;
+	~DBQueue();
 
 	DBQueue(const DBQueue& other) = delete;
 	DBQueue(DBQueue&& other) noexcept = delete;

@@ -5,6 +5,7 @@
 #include <GameServerNet/ServerHelper.h>
 #include "DBQueue.h"
 #include "NetQueue.h"
+#include <conio.h>
 
 int			GameServerCore::s_ServerPort;
 int			GameServerCore::s_DBPort;
@@ -12,6 +13,9 @@ std::string	GameServerCore::s_DBHost;
 std::string	GameServerCore::s_DBSchema;
 std::string	GameServerCore::s_DBUser;
 std::string	GameServerCore::s_DBPw;
+
+TCPListener GameServerCore::s_Listener;
+std::function<void(std::shared_ptr<TCPSession>)> GameServerCore::s_AcceptCallback;
 
 bool GameServerCore::CoreDataCheck()
 {
@@ -26,6 +30,11 @@ bool GameServerCore::CoreDataCheck()
 	}
 
 	return true;
+}
+
+void GameServerCore::SetAcceptCallback(const std::function<void(std::shared_ptr<TCPSession>)>& callback)
+{
+	s_AcceptCallback = callback;
 }
 
 bool GameServerCore::CoreInit()
@@ -99,6 +108,28 @@ bool GameServerCore::CoreInit()
 	GameServerDebug::LogInfo("Server Initialize Done");
 
 	return true;
+}
+
+bool GameServerCore::CoreRun()
+{
+	if (nullptr == s_AcceptCallback)
+	{
+		GameServerDebug::LogErrorAssert("s_AcceptCallback Is Nullptr");
+		return false;
+	}
+
+	s_Listener.Initialize(IPEndPoint(IPAddress::Parse("0.0.0.0"), s_ServerPort), s_AcceptCallback);
+
+	s_Listener.BindQueue(NetQueue::GetQueue());
+	s_Listener.StartAccept(10);
+
+	while (true)
+	{
+		if ('`' == _getch())
+		{
+			return true;
+		}
+	}
 }
 
 bool GameServerCore::CoreEnd()
