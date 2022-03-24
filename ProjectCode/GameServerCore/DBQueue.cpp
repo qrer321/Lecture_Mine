@@ -1,6 +1,7 @@
 #include "PreCompile.h"
 #include "DBQueue.h"
 #include <GameServerNet/DBConnecter.h>
+#include "GameServerCore.h"
 
 GameServerQueue DBQueue::s_TaskQueue = GameServerQueue();
 
@@ -15,7 +16,12 @@ void InitializeDBConnecter(DBConnecter* connecter)
 		return;
 	}
 
-	if (false == connecter->Connect("127.0.0.1", "root", "1234", "unreal_server", 3306))
+	if (false == connecter->Connect(
+		GameServerCore::GetDBHost(),
+		GameServerCore::GetDBUser(),
+		GameServerCore::GetDBPw(),
+		GameServerCore::GetDBSchema(),
+		GameServerCore::GetDBPort()))
 	{
 		GameServerDebug::AssertDebugMsg("DB Connection Error" + connecter->GetLastSQLError());
 		return;

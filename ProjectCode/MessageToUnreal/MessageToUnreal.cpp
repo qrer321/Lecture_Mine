@@ -393,7 +393,7 @@ int main()
 				{
 					return 1;
 				}
-				if (false == dispatcher_file_dir.MoveToChild("GameServerApp"))
+				if (false == dispatcher_file_dir.MoveToChild("GameServerContents"))
 				{
 					return 1;
 				}
@@ -428,7 +428,8 @@ int main()
 				dispatcher_text += "		return;																																\n";
 				dispatcher_text += "	}																																		\n";
 				dispatcher_text += "																																			\n";
-				dispatcher_text += "	std::shared_ptr<MessageHandler> message_handler = std::make_shared<MessageHandler>(std::move(tcp_session), std::move(convert_message));	\n";
+				dispatcher_text += "	std::shared_ptr<MessageHandler> message_handler = std::make_shared<MessageHandler>();													\n";
+				dispatcher_text += "	message_handler->Init(std::move(tcp_session), std::move(convert_message));																\n";
 				dispatcher_text += "	message_handler->Start();																												\n";
 				dispatcher_text += "}																																			\n";
 				dispatcher_text += "																																			\n";

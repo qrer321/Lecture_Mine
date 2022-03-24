@@ -1,19 +1,15 @@
 #pragma once
-#include <GameServerNet/TCPSession.h>
-#include <GameServerMessage/Messages.h>
+#include <GameServerCore/ThreadHandlerBase.h>
 
 // 용도 : Login 패킷에 대한 모든걸 처리할 ThreadHandlerLoginMessage 클래스
-class ThreadHandlerLoginMessage final : public std::enable_shared_from_this<ThreadHandlerLoginMessage>
+class ThreadHandlerLoginMessage final : public ThreadHandlerBase<LoginMessage>
 {
 private: // Member Var
-	std::shared_ptr<TCPSession>		m_TCPSession;			// 패킷을 보낸 TCPSession
-	std::shared_ptr<LoginMessage>	m_LoginMessage;			// TCPSession이 보낸 LoginMessage
 	LoginResultMessage				m_LoginResultMessage;	// 처리한 결과
 
 public: // Default
-	ThreadHandlerLoginMessage() = delete;
-	ThreadHandlerLoginMessage(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<LoginMessage> login_message);
-	~ThreadHandlerLoginMessage() = default;
+	ThreadHandlerLoginMessage() = default;
+	~ThreadHandlerLoginMessage() override = default;
 
 	ThreadHandlerLoginMessage(const ThreadHandlerLoginMessage& other) = delete;
 	ThreadHandlerLoginMessage(ThreadHandlerLoginMessage&& other) noexcept = delete;
@@ -30,6 +26,6 @@ private:
 
 public:
 	// 메시지를 처음 받았을 때 실행되는 함수
-	void Start();
+	void Start() override;
 };
 

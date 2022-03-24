@@ -18,7 +18,8 @@ void OnMessageProcess(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<G
 		return;																																
 	}																																		
 																																			
-	std::shared_ptr<MessageHandler> message_handler = std::make_shared<MessageHandler>(std::move(tcp_session), std::move(convert_message));	
+	std::shared_ptr<MessageHandler> message_handler = std::make_shared<MessageHandler>();													
+	message_handler->Init(std::move(tcp_session), std::move(convert_message));																
 	message_handler->Start();																												
 }																																			
 																																			

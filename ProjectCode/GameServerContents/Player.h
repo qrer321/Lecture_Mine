@@ -1,5 +1,5 @@
 #pragma once
-#include "GameServerActor.h"
+#include <GameServerCore/GameServerActor.h>
 
 class Player : public GameServerActor
 {

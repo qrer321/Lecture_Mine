@@ -4,124 +4,16 @@
     <ClInclude Include="PreCompile.h">
       <Filter>PreCompile</Filter>
     </ClInclude>
-    <ClInclude Include="ThreadHandlerLoginMessage.h">
-      <Filter>ThreadHandler\Login</Filter>
-    </ClInclude>
-    <ClInclude Include="DBQueue.h">
-      <Filter>Queue</Filter>
-    </ClInclude>
-    <ClInclude Include="NetQueue.h">
-      <Filter>Queue</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadHandlerChatMessage.h">
-      <Filter>ThreadHandler\Chat</Filter>
-    </ClInclude>
-    <ClInclude Include="GameServerUser.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerDispatcher.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
-    <ClInclude Include="CharacterTable.h">
-      <Filter>DB</Filter>
-    </ClInclude>
-    <ClInclude Include="UserTable.h">
-      <Filter>DB</Filter>
-    </ClInclude>
-    <ClInclude Include="GameServerActor.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Contents</Filter>
-    </ClInclude>
-    <ClInclude Include="GameServerGame.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadHandlerJoinMessage.h">
-      <Filter>ThreadHandler\Join</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
       <Filter>PreCompile</Filter>
     </ClCompile>
     <ClCompile Include="AppMain.cpp" />
-    <ClCompile Include="ThreadHandlerLoginMessage.cpp">
-      <Filter>ThreadHandler\Login</Filter>
-    </ClCompile>
-    <ClCompile Include="DBQueue.cpp">
-      <Filter>Queue</Filter>
-    </ClCompile>
-    <ClCompile Include="NetQueue.cpp">
-      <Filter>Queue</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadHandlerChatMessage.cpp">
-      <Filter>ThreadHandler\Chat</Filter>
-    </ClCompile>
-    <ClCompile Include="GameServerUser.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerDispatcher.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="CharacterTable.cpp">
-      <Filter>DB</Filter>
-    </ClCompile>
-    <ClCompile Include="UserTable.cpp">
-      <Filter>DB</Filter>
-    </ClCompile>
-    <ClCompile Include="GameServerActor.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>Contents</Filter>
-    </ClCompile>
-    <ClCompile Include="GameServerGame.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="ThreadHandlerJoinMessage.cpp">
-      <Filter>ThreadHandler\Join</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
       <UniqueIdentifier>{3279ae6f-94f3-4e16-ad46-52daa8edb4a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThreadHandler">
-      <UniqueIdentifier>{0e05e1c2-bacd-4227-858a-f8ff36a4d3ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThreadHandler\Login">
-      <UniqueIdentifier>{b47ba11f-cf2a-4445-9135-b21b57215d8a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Queue">
-      <UniqueIdentifier>{e54f0e8e-caa0-407b-aea4-e23ac7b32868}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThreadHandler\Chat">
-      <UniqueIdentifier>{fed21b39-a6f2-469d-b43a-69f852f6834f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Contents">
-      <UniqueIdentifier>{4f0f31f3-cf44-4682-9376-94dd8e2a2f24}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="DB">
-      <UniqueIdentifier>{5eac9627-2b07-49b8-9fc1-f03744e1c30c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game">
-      <UniqueIdentifier>{b6a49e2f-7119-46a8-b1d0-a47d799e0489}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ThreadHandler\Join">
-      <UniqueIdentifier>{1f36a673-84bb-45d8-9cab-a0c4899e50b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="PreCompile.cpp">
+      <Filter>PreCompile</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadHandlerChatMessage.cpp">
+      <Filter>ThreadHandler\Chat</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadHandlerJoinMessage.cpp">
+      <Filter>ThreadHandler\Join</Filter>
+    </ClCompile>
+    <ClCompile Include="ThreadHandlerLoginMessage.cpp">
+      <Filter>ThreadHandler\Login</Filter>
+    </ClCompile>
+    <ClCompile Include="CharacterTable.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="UserTable.cpp">
+      <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerContentsCore.cpp" />
+    <ClCompile Include="ServerDispatcher.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PreCompile.h">
+      <Filter>PreCompile</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadHandlerChatMessage.h">
+      <Filter>ThreadHandler\Chat</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadHandlerJoinMessage.h">
+      <Filter>ThreadHandler\Join</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadHandlerLoginMessage.h">
+      <Filter>ThreadHandler\Login</Filter>
+    </ClInclude>
+    <ClInclude Include="UserTable.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="CharacterTable.h">
+      <Filter>DB</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="GameServerContentsCore.h" />
+    <ClInclude Include="ServerDispatcher.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="PreCompile">
+      <UniqueIdentifier>{dee9fede-c6f9-49c8-b127-fb20ec4cc42e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler">
+      <UniqueIdentifier>{5f38bca6-6c63-46d8-b2ec-635557d842b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\Login">
+      <UniqueIdentifier>{ffcd8bb5-ac63-4ef7-9ae4-414a317a0220}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\Chat">
+      <UniqueIdentifier>{05a7cd0d-0899-45da-b9a8-04fb700f603c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\Join">
+      <UniqueIdentifier>{c075f800-4e37-4df0-be60-aae7de216961}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DB">
+      <UniqueIdentifier>{20a82b72-6dd4-45a9-9f26-7dbbb1c4cb5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Content">
+      <UniqueIdentifier>{00bf6dd0-90a4-4feb-98f4-6879120d8b38}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
