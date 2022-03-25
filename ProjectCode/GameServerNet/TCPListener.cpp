@@ -222,7 +222,7 @@ void TCPListener::AsyncAccept()
 			m_ConnectionPool.pop_front();
 
 			std::string logText = std::to_string(static_cast<int>(newSession->GetSocket()));
-			GameServerDebug::LogInfo(logText + " Created New Socket");
+			GameServerDebug::LogInfo(logText + " Socket Recycled");
 		}
 	}
 

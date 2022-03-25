@@ -11,11 +11,13 @@ void GameServerContentsCore::UserStart()
 	SetAcceptCallback(AcceptEvent);
 }
 
-void GameServerContentsCore::AcceptEvent(std::shared_ptr<TCPSession> session)
+void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& session)
 {
 	session->SetRecvCallBack(RecvEvent);
 	session->SetCloseCallBack(CloseEvent);
 
+	const std::string logText = std::to_string(static_cast<int>(session->GetSocket()));
+	GameServerDebug::LogInfo(logText + " Socket Connected");
 }
 
 void GameServerContentsCore::RecvEvent(std::shared_ptr<TCPSession> session, const std::vector<unsigned char>& value)

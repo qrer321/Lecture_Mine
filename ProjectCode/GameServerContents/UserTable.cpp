@@ -5,7 +5,7 @@
 std::string s_TableName = "user";
 
 UserTable_SelectIDFromUserInfo::UserTable_SelectIDFromUserInfo(std::string id)
-	: DBQuery("SELECT idx, ID, PW, FROM unreal_server.user WHERE ID = ? LIMIT 1")
+	: DBQuery("SELECT * FROM userver2.userinfo WHERE ID = ? LIMIT 1")
 	, m_ID(std::move(id))
 {
 }
@@ -36,7 +36,7 @@ bool UserTable_SelectIDFromUserInfo::ExecuteQuery()
 }
 
 UserTable_SelectAllUserInfo::UserTable_SelectAllUserInfo()
-	: DBQuery("SELECT * FROM unreal_server.user_info")
+	: DBQuery("SELECT * FROM userver2.userinfo")
 {
 }
 
@@ -57,7 +57,7 @@ bool UserTable_SelectAllUserInfo::ExecuteQuery()
 }
 
 UserTable_InsertToUserInfo::UserTable_InsertToUserInfo(std::string id, std::string pw)
-	: DBQuery("INSERT INTO unreal_server.user_info (ID, PW) VALUES(?, ?)")
+	: DBQuery("INSERT INTO userver2.userinfo (ID, PW) VALUES(?, ?)")
 	, m_ID(std::move(id))
 	, m_PW(std::move(pw))
 {

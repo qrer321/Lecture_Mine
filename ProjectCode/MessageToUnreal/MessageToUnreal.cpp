@@ -7,7 +7,7 @@
 #pragma comment (lib, "GameServerBase.lib")
 
 // 폴더에 따라 변경해서 사용
-#define UNREAL_CLIENT_MESSAGE_DIR "UnrealProject_Mine\\HonorProject 4.27\\Source\\HonorProject\\Message"
+#define UNREAL_CLIENT_MESSAGE_DIR "HonorEtude\\Source\\HonorProject\\Message"
 
 struct MemberInfo
 {
@@ -205,7 +205,7 @@ void MessageReflection(std::vector<MessageInfo>& collection, const std::string& 
 		collection.push_back(new_message);
 	}
 }
-
+	
 int main()
 {
 	std::vector<MessageInfo> all_message;
@@ -488,7 +488,9 @@ int main()
 			}
 
 			GameServerDirectory save_dir;
-			save_dir.MoveToRootDirectory();
+			//save_dir.MoveToRootDirectory();
+			save_dir.MoveToParent();
+			save_dir.MoveToParent();
 			if (false == save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR))
 			{
 				return 1;
@@ -538,7 +540,9 @@ int main()
 				}
 
 				GameServerDirectory save_dir;
-				save_dir.MoveToRootDirectory();
+				//save_dir.MoveToRootDirectory();
+				save_dir.MoveToParent();
+				save_dir.MoveToParent();
 				if (false == save_dir.MoveToChild(UNREAL_CLIENT_MESSAGE_DIR))
 				{
 					return 1;

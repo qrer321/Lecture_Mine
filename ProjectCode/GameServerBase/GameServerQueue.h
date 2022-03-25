@@ -92,7 +92,7 @@ public: // Member Function
 	void InitializeLocalData(const WORK_TYPE type, int thread_count, const std::string& thread_name, std::function<void(LocalDataType*)> init_function = nullptr)
 	{
 		SetWorkType(type);
-		m_Iocp.Initialize([this, &thread_name, &init_function](const auto& worker)
+		m_Iocp.Initialize([=](const auto& worker)
 			{
 				QueueFunctionLocalData<LocalDataType>(worker, this, thread_name, init_function);
 			}, thread_count, INFINITE);

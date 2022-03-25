@@ -4,35 +4,31 @@
 
 void ThreadHandlerJoinMessage::DBCheck()
 {
-	//UserTable_SelectIDFromUserInfo select_query(m_JoinMessage->m_ID);
-	//select_query.ExecuteQuery();
+	UserTable_SelectIDFromUserInfo select_query(m_Message->m_ID);
+	select_query.ExecuteQuery();
 
-	//if (nullptr != select_query.m_RowDatum)
-	//{
-	//	// select_query를 통해 이미 DB내에 해당 ID가 존재하는 경우 Error
-	//	m_JoinResultMessage.m_Code = EGameServerCode::JoinError;
-	//}
-	//else
-	//{
-	//	UserTable_InsertToUserInfo insert_query(m_JoinMessage->m_ID, m_JoinMessage->m_PW);
-	//	if (false == insert_query.ExecuteQuery())
-	//	{
-	//		// insert_query를 통해 DB에 INSERT 하였지만
-	//		// 영향을 받은 Row가 없는 경우 Error
-	//		m_JoinResultMessage.m_Code = EGameServerCode::JoinError;
-	//	}
-	//	else
-	//	{
-	//		// Insert 쿼리가 문제없이 동작했을 경우 Join OK
-	//		m_JoinResultMessage.m_Code = EGameServerCode::OK;
-	//	}
-	//}
+	if (nullptr != select_query.m_RowDatum)
+	{
+		// select_query를 통해 이미 DB내에 해당 ID가 존재하는 경우 Error
+		m_JoinResultMessage.m_Code = EGameServerCode::JoinError;
+	}
+	else
+	{
+		UserTable_InsertToUserInfo insert_query(m_Message->m_ID, m_Message->m_PW);
+		if (false == insert_query.ExecuteQuery())
+		{
+			// insert_query를 통해 DB에 INSERT 하였지만
+			// 영향을 받은 Row가 없는 경우 Error
+			m_JoinResultMessage.m_Code = EGameServerCode::JoinError;
+		}
+		else
+		{
+			// Insert 쿼리가 문제없이 동작했을 경우 Join OK
+			m_JoinResultMessage.m_Code = EGameServerCode::OK;
+		}
+	}
 
-	//// NetThread에서 동작할 ResultSend 콜백함수 등록
-	//NetQueue::Queue([self = shared_from_this()]
-	//	{
-	//		self->ResultSend();
-	//	});
+	NetWork(&ThreadHandlerJoinMessage::ResultSend);
 }
 
 void ThreadHandlerJoinMessage::ResultSend()

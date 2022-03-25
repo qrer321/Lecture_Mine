@@ -44,12 +44,13 @@ void DBStatement::ParamBind_String(const std::string_view& value)
 {
 	m_ParamLengthBuffer.emplace_back();
 	m_ParamIsNullBuffer.emplace_back();
-	m_ParamBindBuffer.resize(m_ParamBindBuffer.size() + value.size());
+	const size_t param_buffer_size = m_ParamBindBuffer.size();
+	m_ParamBindBuffer.resize(param_buffer_size + value.size());
 
 	MYSQL_BIND& bind = m_ParamBinds.emplace_back();
 	bind.buffer_type = MYSQL_TYPE_VARCHAR;
 
-	bind.buffer = &m_ParamBindBuffer[m_ParamBindBuffer.size()];
+	bind.buffer = &m_ParamBindBuffer[param_buffer_size];
 	memset(bind.buffer, 0x00, value.size() + 1);
 	memcpy_s(bind.buffer, value.length(), value.data(), value.length());
 
@@ -111,6 +112,8 @@ std::unique_ptr<DBStatementResult> DBStatement::Execute()
 			stmt_result->m_ResultIsNullBuffer.emplace_back();
 			stmt_result->m_ResultLengthBuffer.emplace_back();
 
+			const size_t result_buffer_size = stmt_result->m_ResultBindBuffer.size();
+
 			const MYSQL_FIELD& field = result_metadata->fields[i];
 			switch (field.type)
 			{
@@ -119,7 +122,7 @@ std::unique_ptr<DBStatementResult> DBStatement::Execute()
 
 				result_bind.buffer_type = MYSQL_TYPE_VAR_STRING;
 
-				result_bind.buffer = &stmt_result->m_ResultBindBuffer[stmt_result->m_ResultBindBuffer.size()];
+				result_bind.buffer = &stmt_result->m_ResultBindBuffer[result_buffer_size];
 				memset(result_bind.buffer, 0x00, field.length + 1);
 
 				result_bind.buffer_length = field.length + 1;
@@ -135,7 +138,7 @@ std::unique_ptr<DBStatementResult> DBStatement::Execute()
 
 				result_bind.buffer_type = MYSQL_TYPE_LONG;
 
-				result_bind.buffer = &stmt_result->m_ResultBindBuffer[stmt_result->m_ResultBindBuffer.size()];
+				result_bind.buffer = &stmt_result->m_ResultBindBuffer[result_buffer_size];
 				memset(result_bind.buffer, 0x00, sizeof(int));
 
 				result_bind.buffer_length = sizeof(int);
