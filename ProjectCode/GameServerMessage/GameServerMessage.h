@@ -1,26 +1,16 @@
 #pragma once
 #include <GameServerBase/GameServerSerializer.h>
 #include <GameServerBase/GameServerMathStruct.h>
-#include "MessageTypeEnum.h"
-#include "ContentsEnums.h"
-
-enum class EGameServerCode
-{
-	OK,
-	LoginError,
-	JoinError,
-	MAX,
-};
 
 class GameServerMessage
 {
 private: // Member Var
-	MessageType		m_Type;
+	uint32_t		m_Type;
 	unsigned int	m_Size;
 
 public: // Default
 	GameServerMessage() = delete;
-	explicit GameServerMessage(MessageType type);
+	explicit GameServerMessage(uint32_t type);
 	virtual ~GameServerMessage() = default;
 
 	GameServerMessage(const GameServerMessage& other) = delete;
@@ -30,7 +20,10 @@ public: // Default
 	GameServerMessage& operator=(GameServerMessage&& other) = delete;
 
 public:
-	[[nodiscard]] MessageType GetType() const { return m_Type; }
+	[[nodiscard]] uint32_t GetType() const { return m_Type; }
+
+	template <typename EnumType>
+	[[nodiscard]] EnumType GetType() { return static_cast<EnumType>(m_Type); }
 
 public: // Member Function
 	virtual int SizeCheck() = 0;
@@ -43,7 +36,7 @@ public: // Member Function
 	virtual void Deserialize(GameServerSerializer& serializer);
 };
 
-inline GameServerMessage::GameServerMessage(MessageType type)
+inline GameServerMessage::GameServerMessage(uint32_t type)
 	: m_Type(type)
 	, m_Size(-1)
 {
@@ -75,6 +68,6 @@ inline void GameServerMessage::Deserialize(GameServerSerializer& serializer)
 {
 	int type;
 	serializer >> type;
-	m_Type = static_cast<MessageType>(type);
+	m_Type = static_cast<uint32_t>(type);
 	serializer >> m_Size;
 }

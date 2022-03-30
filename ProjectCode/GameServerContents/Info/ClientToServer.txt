@@ -5,3 +5,6 @@ std::string m_PW;
 |Join-
 std::string m_ID;
 std::string m_PW;
+
+|CreateCharacter-
+std::string m_Nickname;

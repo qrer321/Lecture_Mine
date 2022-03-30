@@ -21,6 +21,9 @@
     <ClInclude Include="GameServerSectionManager.h">
       <Filter>Object\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerSectionThread.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServerCore.cpp" />
@@ -42,6 +45,9 @@
     </ClCompile>
     <ClCompile Include="GameServerSectionManager.cpp">
       <Filter>Object\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameServerSectionThread.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

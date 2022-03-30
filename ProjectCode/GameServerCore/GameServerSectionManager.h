@@ -8,11 +8,15 @@
 class GameServerSectionManager
 {
 private: // Member Var
-	std::vector<std::shared_ptr<GameServerThread>> m_SectionThread;
+	static GameServerSectionManager* m_Inst;
+
+	int m_NextSectionIndex;
+
+	std::mutex m_SectionLock;
 	std::unordered_map<uint32_t, std::shared_ptr<GameServerSection>> m_AllSection;
 
 public: // Default
-	GameServerSectionManager() = default;
+	GameServerSectionManager();
 	~GameServerSectionManager() = default;
 
 	GameServerSectionManager(const GameServerSectionManager& other) = delete;
@@ -24,5 +28,24 @@ public: // Default
 private:
 
 public: // Member Function
+	static GameServerSectionManager* GetInst() { return m_Inst; }
+
+	static void Destroy()
+	{
+		if (nullptr != m_Inst)
+		{
+			delete m_Inst;
+			m_Inst = nullptr;
+		}
+	}
+
+	template <typename SectionType, typename... Parameter>
+	uint32_t AddSection(Parameter... args)
+	{
+		return AddSection(std::make_shared<SectionType>(args...));
+	}
+
+	uint32_t AddSection(GameServerSection* section);
+	uint32_t RemoveSection(uint32_t section_number);
 };
 

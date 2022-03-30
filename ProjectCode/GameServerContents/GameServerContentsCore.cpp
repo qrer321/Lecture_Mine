@@ -35,7 +35,7 @@ void GameServerContentsCore::RecvEvent(std::shared_ptr<TCPSession> session, cons
 	// -> 메시지 처리한 시간을 기록하여야 한다.
 
 	MessageHandler<TCPSession> handler;
-	if (false == g_dispatcher.GetHandler(converter.GetMessageType_UINT(), handler))
+	if (false == g_dispatcher.GetHandler(converter.GetMessageType(), handler))
 	{
 		GameServerDebug::AssertDebugMsg("Invalid Handler");
 		return;

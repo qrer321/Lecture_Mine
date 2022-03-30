@@ -4,6 +4,10 @@ EGameServerCode m_Code;
 |JoinResult-
 EGameServerCode m_Code;
 
+|CreateCharacterResult-
+EGameServerCode m_Code;
+std::string m_Nickname;
+
 |ServerDestroy-
 
 |ObjectDestroy-

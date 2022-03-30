@@ -1,5 +1,8 @@
 #pragma once																										
-#include "GameServerMessage.h"																					
+#include <GameServerMessage/GameServerMessage.h>																	
+#include "MessageTypeEnum.h"
+#include "ContentsEnum.h"
+#include "ContentsStructure.h"
 																													
 class LoginMessage : public GameServerMessage											
 {																											
@@ -9,7 +12,7 @@ public:
 																												
 public:																										
 	LoginMessage()																		
-		: GameServerMessage(MessageType::Login)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::Login))					
 		, m_ID()																		
 		, m_PW()																		
 	{																											
@@ -53,7 +56,7 @@ public:
 																												
 public:																										
 	JoinMessage()																		
-		: GameServerMessage(MessageType::Join)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::Join))					
 		, m_ID()																		
 		, m_PW()																		
 	{																											
@@ -92,12 +95,12 @@ public:
 class CreateCharacterMessage : public GameServerMessage											
 {																											
 public:																										
-	std::string m_Name;
+	std::string m_Nickname;
 																												
 public:																										
 	CreateCharacterMessage()																		
-		: GameServerMessage(MessageType::CreateCharacter)											
-		, m_Name()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::CreateCharacter))					
+		, m_Nickname()																		
 	{																											
 	}																											
 	~CreateCharacterMessage() override = default;													
@@ -111,21 +114,21 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Name);
+		return DataSizeCheck(m_Nickname);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Serialize(serializer);																
 																												
-		serializer << m_Name;
+		serializer << m_Nickname;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Deserialize(serializer);																
 																												
-		serializer >> m_Name;
+		serializer >> m_Nickname;
 	}																											
 };																											
 

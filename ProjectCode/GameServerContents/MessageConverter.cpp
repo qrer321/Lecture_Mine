@@ -1,5 +1,9 @@
 #include "PreCompile.h"														
-#include "MessageConverter.h"												
+#include <GameServerMessage/MessageConverter.h>								
+#include "MessageTypeEnum.h"												
+#include "ServerAndClient.h"												
+#include "ServerToClient.h"													
+#include "ClientToServer.h"													
 																				
 MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)	
 	: m_Buffer(buffer)															
@@ -19,6 +23,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::JoinResult:
 		m_Message = std::make_shared<JoinResultMessage>();
 		break;
+	case MessageType::CreateCharacterResult:
+		m_Message = std::make_shared<CreateCharacterResultMessage>();
+		break;
 	case MessageType::ServerDestroy:
 		m_Message = std::make_shared<ServerDestroyMessage>();
 		break;
@@ -33,6 +40,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 		break;
 	case MessageType::Join:
 		m_Message = std::make_shared<JoinMessage>();
+		break;
+	case MessageType::CreateCharacter:
+		m_Message = std::make_shared<CreateCharacterMessage>();
 		break;
 	default:																	
 		return;																	

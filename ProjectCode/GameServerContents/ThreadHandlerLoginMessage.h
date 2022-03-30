@@ -1,11 +1,17 @@
 #pragma once
 #include <GameServerCore/ThreadHandlerBase.h>
+#include "ServerToClient.h"
+#include "ClientToServer.h"
 
 // 용도 : Login 패킷에 대한 모든걸 처리할 ThreadHandlerLoginMessage 클래스
+class UserRow;
 class ThreadHandlerLoginMessage final : public ThreadHandlerBase<LoginMessage>
 {
 private: // Member Var
-	LoginResultMessage				m_LoginResultMessage;	// 처리한 결과
+	LoginResultMessage				m_ResultMessage;	// 처리한 결과
+
+public:
+	std::shared_ptr<UserRow> m_RowDatum;
 
 public: // Default
 	ThreadHandlerLoginMessage() = default;

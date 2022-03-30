@@ -5,7 +5,10 @@
 // Ã·¾ð : 
 class GameServerSection
 {
+	friend class GameServerSectionManager;
+
 private: // Member Var
+	uint32_t m_SectionNumber;
 
 public: // Default
 	GameServerSection() = default;
@@ -17,7 +20,11 @@ public: // Default
 	GameServerSection& operator=(GameServerSection&& other) = delete;
 
 private:
+	void SetSectionNumber(uint32_t section_number) { m_SectionNumber = section_number; }
 
 public: // Member Function
+	uint32_t GetSectionNumber() const { return m_SectionNumber; }
+
+	bool Update();
 };
 

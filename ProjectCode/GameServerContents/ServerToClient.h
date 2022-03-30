@@ -1,5 +1,8 @@
 #pragma once																										
-#include "GameServerMessage.h"																					
+#include <GameServerMessage/GameServerMessage.h>																	
+#include "MessageTypeEnum.h"
+#include "ContentsEnum.h"
+#include "ContentsStructure.h"
 																													
 class LoginResultMessage : public GameServerMessage											
 {																											
@@ -8,7 +11,7 @@ public:
 																												
 public:																										
 	LoginResultMessage()																		
-		: GameServerMessage(MessageType::LoginResult)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::LoginResult))					
 		, m_Code()																		
 	{																											
 	}																											
@@ -48,7 +51,7 @@ public:
 																												
 public:																										
 	JoinResultMessage()																		
-		: GameServerMessage(MessageType::JoinResult)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::JoinResult))					
 		, m_Code()																		
 	{																											
 	}																											
@@ -85,11 +88,13 @@ class CreateCharacterResultMessage : public GameServerMessage
 {																											
 public:																										
 	EGameServerCode m_Code;
+	std::string m_Nickname;
 																												
 public:																										
 	CreateCharacterResultMessage()																		
-		: GameServerMessage(MessageType::CreateCharacterResult)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::CreateCharacterResult))					
 		, m_Code()																		
+		, m_Nickname()																		
 	{																											
 	}																											
 	~CreateCharacterResultMessage() override = default;													
@@ -103,7 +108,7 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Code);
+		return DataSizeCheck(m_Code) + DataSizeCheck(m_Nickname);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
@@ -111,6 +116,7 @@ public:
 		GameServerMessage::Serialize(serializer);																
 																												
 		serializer.WriteEnum(m_Code);
+		serializer << m_Nickname;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
@@ -118,6 +124,7 @@ public:
 		GameServerMessage::Deserialize(serializer);																
 																												
 		serializer.ReadEnum(m_Code);
+		serializer >> m_Nickname;
 	}																											
 };																											
 
@@ -127,7 +134,7 @@ public:
 																												
 public:																										
 	ServerDestroyMessage()																		
-		: GameServerMessage(MessageType::ServerDestroy)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::ServerDestroy))					
 	{																											
 	}																											
 	~ServerDestroyMessage() override = default;													
@@ -164,7 +171,7 @@ public:
 																												
 public:																										
 	ObjectDestroyMessage()																		
-		: GameServerMessage(MessageType::ObjectDestroy)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::ObjectDestroy))					
 		, m_ObjectID()																		
 	{																											
 	}																											
@@ -208,7 +215,7 @@ public:
 																												
 public:																										
 	EnemyUpdateMessage()																		
-		: GameServerMessage(MessageType::EnemyUpdate)											
+		: GameServerMessage(static_cast<uint32_t>(MessageType::EnemyUpdate))					
 		, m_ObjectID()																		
 		, m_EnemyType()																		
 		, m_UpdateType()																		

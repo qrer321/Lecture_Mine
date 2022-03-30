@@ -1,6 +1,8 @@
 #include "PreCompile.h"
 #include "ThreadHandlerLoginMessage.h"
 #include "UserTable.h"
+#include "ContentsSystemEnum.h"
+#include "ContentsUserData.h"
 
 /*
  * DB로의 접속, 메시지 검증, 결과 패킷을 보내는 모든 일들은
@@ -21,12 +23,14 @@ void ThreadHandlerLoginMessage::DBCheck()
 
 	if (nullptr == select_query.m_RowDatum)
 	{
-		m_LoginResultMessage.m_Code = EGameServerCode::LoginError;
+		m_ResultMessage.m_Code = EGameServerCode::LoginError;
 	}
 	else
 	{
-		m_LoginResultMessage.m_Code = EGameServerCode::OK;
+		m_ResultMessage.m_Code = EGameServerCode::OK;
 	}
+
+	m_RowDatum = select_query.m_RowDatum;
 
 	// 부모 클래스인 ThreadHandlerBase를 통해
 	// NetThread에서 동작할 ResultSend 콜백함수 등록
@@ -35,13 +39,12 @@ void ThreadHandlerLoginMessage::DBCheck()
 
 void ThreadHandlerLoginMessage::ResultSend()
 {
-	/*std::shared_ptr<GameServerUser> new_user = std::make_shared<GameServerUser>();
-	GameServerString::UTF8ToAnsi(m_LoginMessage->m_ID, new_user->m_ID);
-
-	m_TCPSession->SetLink(std::move(new_user));*/
+	const std::shared_ptr<ContentsUserData> user_data = std::make_shared<ContentsUserData>();
+	user_data->m_UserData = *m_RowDatum;
+	m_TCPSession->SetLink(EDataIndex::USER_DATA, user_data);
 
 	GameServerSerializer serializer;
-	m_LoginResultMessage.Serialize(serializer);
+	m_ResultMessage.Serialize(serializer);
 	m_TCPSession->Send(serializer.GetData());
 }
 
@@ -54,7 +57,7 @@ void ThreadHandlerLoginMessage::Start()
 	}
 
 	// LoginResultMessage 값 LoginError로 초기화
-	m_LoginResultMessage.m_Code = EGameServerCode::LoginError;
+	m_ResultMessage.m_Code = EGameServerCode::LoginError;
 
 	// 부모 클래스인 ThreadHandlerBase를 통해
 	// DBThread에서 동작할 DBCheck 콜백함수 등록

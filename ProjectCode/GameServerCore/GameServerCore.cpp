@@ -3,6 +3,7 @@
 #include <GameServerBase/GameServerDebug.h>
 #include <GameServerBase/GameServerDirectory.h>
 #include <GameServerNet/ServerHelper.h>
+#include "GameServerSectionManager.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
 #include <conio.h>
@@ -137,6 +138,7 @@ bool GameServerCore::CoreEnd()
 	DBQueue::Destroy();
 	NetQueue::Destroy();
 	GameServerDebug::Destroy();
+	GameServerSectionManager::Destroy();
 
 	return true;
 }

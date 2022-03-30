@@ -1,5 +1,4 @@
 #pragma once
 
-#include "ServerAndClient.h"
-#include "ServerToClient.h"
-#include "ClientToServer.h"
+#include "GameServerMessage.h"
+#include "MessageConverter.h"

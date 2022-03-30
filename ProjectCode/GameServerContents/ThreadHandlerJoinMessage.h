@@ -1,10 +1,12 @@
 #pragma once
 #include <GameServerCore/ThreadHandlerBase.h>
+#include "ServerToClient.h"
+#include "ClientToServer.h"
 
 class ThreadHandlerJoinMessage final : public ThreadHandlerBase<JoinMessage>
 {
 private: // Member Var
-	JoinResultMessage				m_JoinResultMessage;	// 처리한 결과
+	JoinResultMessage				m_ResultMessage;	// 처리한 결과
 
 public: // Default
 	ThreadHandlerJoinMessage() = default;

@@ -410,6 +410,4 @@ Plugins/*/Intermediate/*
 # Cache files for the editor to use
 DerivedDataCache/*
 
-/UnrealClient/Intermediate
-/UnrealClient/Binaries/Win64
-/UnrealClient/Saved
+HonorEtude

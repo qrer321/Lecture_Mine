@@ -1,5 +1,14 @@
 #pragma once
 
+enum class EGameServerCode
+{
+	OK,
+	LoginError,
+	JoinError,
+	CreateCharacterError,
+	MAX,
+};
+
 enum class EGameObjectType
 {
 	Player,

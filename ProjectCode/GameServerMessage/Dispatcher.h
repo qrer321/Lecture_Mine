@@ -1,6 +1,6 @@
 #pragma once
 #include <GameServerNet/TCPSession.h>
-#include "Messages.h"
+#include "GameServerMessage.h"
 
 // MessageOwner -> 패킷을 받은 Session
 template<class MessageOwner>

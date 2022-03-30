@@ -182,10 +182,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CharacterTable.cpp" />
+    <ClCompile Include="ContentsUserData.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="GameServerContentsCore.cpp">
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="MessageConverter.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PreCompile.cpp">
@@ -198,28 +203,52 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PreCompile.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="Section.cpp" />
     <ClCompile Include="ServerDispatcher.cpp" />
     <ClCompile Include="ThreadHandlerChatMessage.cpp" />
+    <ClCompile Include="ThreadHandlerCreateCharacterMessage.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="ThreadHandlerJoinMessage.cpp" />
     <ClCompile Include="ThreadHandlerLoginMessage.cpp" />
     <ClCompile Include="UserTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CharacterTable.h" />
+    <ClInclude Include="ClientToServer.h" />
+    <ClInclude Include="ContentsEnum.h" />
+    <ClInclude Include="ContentsStructure.h" />
+    <ClInclude Include="ContentsSystemEnum.h" />
+    <ClInclude Include="ContentsUserData.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="GameServerContentsCore.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="MessageTypeEnum.h" />
     <ClInclude Include="Monster.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PreCompile.h" />
-    <ClInclude Include="Room.h" />
+    <ClInclude Include="Section.h" />
+    <ClInclude Include="ServerAndClient.h" />
     <ClInclude Include="ServerDispatcher.h" />
+    <ClInclude Include="ServerToClient.h" />
     <ClInclude Include="ThreadHandlerChatMessage.h" />
+    <ClInclude Include="ThreadHandlerCreateCharacterMessage.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="ThreadHandlerJoinMessage.h" />
     <ClInclude Include="ThreadHandlerLoginMessage.h" />
     <ClInclude Include="UserTable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Info\ClientToServer.txt" />
+    <Text Include="Info\ServerAndClient.txt" />
+    <Text Include="Info\ServerToClient.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

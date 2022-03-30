@@ -1,6 +1,6 @@
 #pragma once
-#include "Messages.h"
 #include <memory>
+#include "GameServerMessage.h"
 
 class MessageConverter
 {
@@ -20,8 +20,7 @@ public: // Default
 	MessageConverter& operator=(MessageConverter&& other) = delete;
 
 public:
-	[[nodiscard]] MessageType GetMessageType() const { return m_Message->GetType(); }
-	[[nodiscard]] uint32_t GetMessageType_UINT() const { return static_cast<uint32_t>(GetMessageType()); }
+	[[nodiscard]] uint32_t GetMessageType() const { return m_Message->GetType(); }
 	std::shared_ptr<GameServerMessage>& GetServerMessage() { return m_Message; }
 
 	[[nodiscard]] bool IsValid() const { return nullptr != m_Message; }

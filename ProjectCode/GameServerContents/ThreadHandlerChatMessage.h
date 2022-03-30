@@ -1,9 +1,7 @@
 #pragma once
 #include <GameServerCore/ThreadHandlerBase.h>
+#include "ServerAndClient.h"
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
 class ThreadHandlerChatMessage final : public ThreadHandlerBase<ChatMessage>
 {
 public: // Default

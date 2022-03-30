@@ -19,17 +19,20 @@
     <ClCompile Include="UserTable.cpp">
       <Filter>DB</Filter>
     </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
-    <ClCompile Include="Room.cpp">
-      <Filter>Content</Filter>
-    </ClCompile>
     <ClCompile Include="GameServerContentsCore.cpp" />
     <ClCompile Include="ServerDispatcher.cpp" />
+    <ClCompile Include="ThreadHandlerCreateCharacterMessage.cpp">
+      <Filter>ThreadHandler\CreateCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="MessageConverter.cpp">
+      <Filter>Message\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Section.cpp" />
+    <ClCompile Include="ContentsUserData.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompile.h">
@@ -50,17 +53,38 @@
     <ClInclude Include="CharacterTable.h">
       <Filter>DB</Filter>
     </ClInclude>
-    <ClInclude Include="Monster.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Content</Filter>
-    </ClInclude>
-    <ClInclude Include="Room.h">
-      <Filter>Content</Filter>
-    </ClInclude>
     <ClInclude Include="GameServerContentsCore.h" />
     <ClInclude Include="ServerDispatcher.h" />
+    <ClInclude Include="ThreadHandlerCreateCharacterMessage.h">
+      <Filter>ThreadHandler\CreateCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentsEnum.h">
+      <Filter>Message\Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentsStructure.h">
+      <Filter>Message\Sub</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerAndClient.h">
+      <Filter>Message\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerToClient.h">
+      <Filter>Message\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientToServer.h">
+      <Filter>Message\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="MessageTypeEnum.h">
+      <Filter>Message\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="Section.h" />
+    <ClInclude Include="Monster.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="ContentsUserData.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentsSystemEnum.h">
+      <Filter>Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -84,5 +108,31 @@
     <Filter Include="Content">
       <UniqueIdentifier>{00bf6dd0-90a4-4feb-98f4-6879120d8b38}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ThreadHandler\CreateCharacter">
+      <UniqueIdentifier>{25a9a53c-857c-4860-8c99-314f062701e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message">
+      <UniqueIdentifier>{cbf3c088-e9c6-4528-abce-d39180c14829}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\Info">
+      <UniqueIdentifier>{17de79a5-9b08-4599-aade-a5c2feb4c272}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\Result">
+      <UniqueIdentifier>{ccaaddd4-3d4a-406a-a8cf-991a1253547f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Message\Sub">
+      <UniqueIdentifier>{316408e7-73a7-4ad2-8f69-8539452be05f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Info\ServerAndClient.txt">
+      <Filter>Message\Info</Filter>
+    </Text>
+    <Text Include="Info\ServerToClient.txt">
+      <Filter>Message\Info</Filter>
+    </Text>
+    <Text Include="Info\ClientToServer.txt">
+      <Filter>Message\Info</Filter>
+    </Text>
   </ItemGroup>
 </Project>

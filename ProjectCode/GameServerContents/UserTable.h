@@ -18,31 +18,11 @@ public:
 	UserRow(const UserRow& other) = delete;
 	UserRow(UserRow&& other) noexcept = delete;
 
-	UserRow& operator=(const UserRow& other) = delete;
+	UserRow& operator=(const UserRow& other) = default;
 	UserRow& operator=(UserRow&& other) = delete;
 };
 
-class UserTable
-{
-protected:
-	static std::string	s_TableName;
-	std::string			m_Query;
-
-public: // Default
-	UserTable() = default;
-	~UserTable() = default;
-
-	UserTable(const UserTable& other) = delete;
-	UserTable(UserTable&& other) noexcept = delete;
-
-	UserTable& operator=(const UserTable& other) = delete;
-	UserTable& operator=(UserTable&& other) = delete;
-
-private:
-	std::shared_ptr<UserRow> GetUserData(const std::string& id) {}
-};
-
-class UserTable_SelectIDFromUserInfo : public DBQuery, UserTable
+class UserTable_SelectIDFromUserInfo : public DBQuery
 {
 public:
 	std::string					m_ID;
@@ -62,7 +42,7 @@ public:
 	bool ExecuteQuery() override;
 };
 
-class UserTable_SelectAllUserInfo : public DBQuery, UserTable
+class UserTable_SelectAllUserInfo : public DBQuery
 {
 public:
 	std::vector<std::shared_ptr<UserRow>>	m_RowData;
@@ -81,7 +61,7 @@ public:
 	bool ExecuteQuery() override;
 };
 
-class UserTable_InsertToUserInfo : public DBQuery, UserTable
+class UserTable_InsertToUserInfo : public DBQuery
 {
 private:
 	std::string m_ID;
