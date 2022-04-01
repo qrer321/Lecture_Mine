@@ -61,7 +61,7 @@ public:
 	}
 
 	template<typename LinkType>
-	LinkType* GetLink(int index = 0)
+	std::shared_ptr<LinkType> GetLink(const size_t index)
 	{
 		if (index >= m_LinkObject.size())
 		{
@@ -69,6 +69,12 @@ public:
 		}
 
 		return std::dynamic_pointer_cast<LinkType>(m_LinkObject[index]);
+	}
+
+	template<typename LinkType>
+	LinkType* GetLink(const int index = 0)
+	{
+		return dynamic_cast<LinkType*>(m_LinkObject[index]);
 	}
 
 public: // Member Function

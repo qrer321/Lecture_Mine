@@ -6,11 +6,13 @@ enum class MessageType
 	LoginResult,
 	JoinResult,
 	CreateCharacterResult,
+	CharacterList,
 	ServerDestroy,
 	ObjectDestroy,
 	EnemyUpdate,
 	Login,
 	Join,
 	CreateCharacter,
+	SelectCharacter,
 	MAX
 };

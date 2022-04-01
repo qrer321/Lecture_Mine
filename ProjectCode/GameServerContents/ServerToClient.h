@@ -128,6 +128,46 @@ public:
 	}																											
 };																											
 
+class CharacterListMessage : public GameServerMessage											
+{																											
+public:																										
+	std::vector<CharacterInfo> m_Characters;
+																												
+public:																										
+	CharacterListMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::CharacterList))					
+		, m_Characters()																		
+	{																											
+	}																											
+	~CharacterListMessage() override = default;													
+																												
+	CharacterListMessage(const CharacterListMessage& other) = delete;				
+	CharacterListMessage(CharacterListMessage&& other) noexcept = delete;			
+																												
+	CharacterListMessage& operator=(const CharacterListMessage& other) = delete;	
+	CharacterListMessage& operator=(CharacterListMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_Characters);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer.WriteVector(m_Characters);
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer.ReadVector(m_Characters);
+	}																											
+};																											
+
 class ServerDestroyMessage : public GameServerMessage											
 {																											
 public:																										

@@ -7,7 +7,7 @@ class GameServerSerializer
 {
 private: // Member Var
 	unsigned int				m_Offset;
-	std::vector<unsigned char>	m_Data;
+	std::vector<unsigned char>	m_Data{};
 
 public: // Default
 	GameServerSerializer();
@@ -24,11 +24,13 @@ public:
 	void operator>>(std::string& value);
 	void operator>>(int& value);
 	void operator>>(unsigned int& value);
+	void operator>>(float& value);
 	void operator>>(FVector& value);
 
 	void operator<<(const std::string& value);
 	void operator<<(const int value);
 	void operator<<(const unsigned int value);
+	void operator<<(const float value);
 	void operator<<(const FVector& value);
 
 public:
@@ -55,7 +57,7 @@ public:
 		value.resize(size);
 		for (size_t i = 0; i < value.size(); ++i)
 		{
-			Read(value[0], size);
+			value[i].DeSerialize(*this);
 		}
 	}
 
@@ -76,12 +78,13 @@ public:
 	}
 
 	template <typename T>
-	void WriteVector(const std::vector<T>& value)
+	void WriteVector(std::vector<T>& value)
 	{
 		operator<<(static_cast<int>(value.size()));
 		for (size_t i = 0; i < value.size(); ++i)
 		{
-			Write(reinterpret_cast<const void*>(&value[i]), static_cast<unsigned int>(sizeof(T)));
+			value[i].Serialize(*this);
+			//Write(reinterpret_cast<const void*>(&value[i]), static_cast<unsigned int>(sizeof(T)));
 		}
 	}
 

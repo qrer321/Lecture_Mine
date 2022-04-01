@@ -236,5 +236,6 @@ void DisconnectOverlapped::Execute(BOOL result, DWORD byteSize)
 		return;
 	}
 
+	m_TCPSession->ClearLinkObject();
 	m_TCPSession->UnRegisterSession();
 }

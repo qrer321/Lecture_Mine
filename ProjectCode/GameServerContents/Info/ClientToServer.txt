@@ -8,3 +8,6 @@ std::string m_PW;
 
 |CreateCharacter-
 std::string m_Nickname;
+
+|SelectCharacter-
+std::string m_Nickname;

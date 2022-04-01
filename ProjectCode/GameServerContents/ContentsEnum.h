@@ -6,6 +6,7 @@ enum class EGameServerCode
 	LoginError,
 	JoinError,
 	CreateCharacterError,
+	SelectCharacterError,
 	MAX,
 };
 

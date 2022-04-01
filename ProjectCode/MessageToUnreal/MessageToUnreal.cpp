@@ -714,6 +714,11 @@ int main()
 					GameServerFile load_file = { contents_message_dir.AddFileNameToPath("ContentsStructure.h"), "rt" };
 					std::string file_code = load_file.GetString();
 
+					if (std::string::size_type find_pos; std::string::npos != (find_pos = file_code.find("#include <GameServerBase/GameServerSerializer.h>\n")))
+					{
+						file_code.replace(find_pos, strlen("#include <GameServerBase/GameServerSerializer.h>\n"), "#include \"GameServerSerializer.h\"\n");
+					}
+
 					client_save_map.insert(make_pair(save_dir.AddFileNameToPath("ContentsStructure.h"), file_code));
 				}
 				////////////////////////////////////////////////////////////////////////////////////////////

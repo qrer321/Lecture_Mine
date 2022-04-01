@@ -33,6 +33,9 @@
     <ClCompile Include="ContentsUserData.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerSelectCharacterMessage.cpp">
+      <Filter>ThreadHandler\SelectCharacter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompile.h">
@@ -85,6 +88,9 @@
     <ClInclude Include="ContentsSystemEnum.h">
       <Filter>Content</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadHandlerSelectCharacterMessage.h">
+      <Filter>ThreadHandler\SelectCharacter</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -122,6 +128,9 @@
     </Filter>
     <Filter Include="Message\Sub">
       <UniqueIdentifier>{316408e7-73a7-4ad2-8f69-8539452be05f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\SelectCharacter">
+      <UniqueIdentifier>{dab51079-a61c-4ac1-a8fc-e70977bb4eba}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

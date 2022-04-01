@@ -212,6 +212,7 @@
     </ClCompile>
     <ClCompile Include="ThreadHandlerJoinMessage.cpp" />
     <ClCompile Include="ThreadHandlerLoginMessage.cpp" />
+    <ClCompile Include="ThreadHandlerSelectCharacterMessage.cpp" />
     <ClCompile Include="UserTable.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +244,7 @@
     </ClInclude>
     <ClInclude Include="ThreadHandlerJoinMessage.h" />
     <ClInclude Include="ThreadHandlerLoginMessage.h" />
+    <ClInclude Include="ThreadHandlerSelectCharacterMessage.h" />
     <ClInclude Include="UserTable.h" />
   </ItemGroup>
   <ItemGroup>

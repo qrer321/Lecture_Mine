@@ -8,10 +8,12 @@ class UserRow;
 class ThreadHandlerLoginMessage final : public ThreadHandlerBase<LoginMessage>
 {
 private: // Member Var
-	LoginResultMessage				m_ResultMessage;	// 처리한 결과
+	LoginResultMessage			m_ResultMessage;	// 처리한 결과
+	CharacterListMessage		m_CharacterListMessage;
 
 public:
-	std::shared_ptr<UserRow> m_RowDatum;
+	std::shared_ptr<UserRow>	m_RowDatum;
+	int							m_UserIndex{};
 
 public: // Default
 	ThreadHandlerLoginMessage() = default;
@@ -24,11 +26,10 @@ public: // Default
 	ThreadHandlerLoginMessage& operator=(ThreadHandlerLoginMessage&& other) = delete;
 
 private:
-	// 메시지를 처리하는 단계
 	void DBCheck();
-
-	// 메시지 처리가 끝났을 때 실행되는 함수
 	void ResultSend();
+	void DBCharacterListCheck();
+	void CharactersSend();
 
 public:
 	// 메시지를 처음 받았을 때 실행되는 함수

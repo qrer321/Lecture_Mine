@@ -32,6 +32,9 @@ public: // Member Function
 	template<typename DataType>
 	unsigned int DataSizeCheck(DataType value);
 
+	template<typename DataType>
+	unsigned int DataSizeCheck(std::vector<DataType>& value);
+
 	virtual void Serialize(GameServerSerializer& serializer);
 	virtual void Deserialize(GameServerSerializer& serializer);
 };
@@ -56,6 +59,18 @@ template <typename DataType>
 unsigned int GameServerMessage::DataSizeCheck(DataType value)
 {
 	return sizeof(value);
+}
+
+template <typename DataType>
+unsigned GameServerMessage::DataSizeCheck(std::vector<DataType>& value)
+{
+	int size = 0;
+	for (size_t i = 0; i < value.size(); ++i)
+	{
+		size += value[i].GetDataSize();
+	}
+
+	return size;
 }
 
 inline void GameServerMessage::Serialize(GameServerSerializer& serializer)

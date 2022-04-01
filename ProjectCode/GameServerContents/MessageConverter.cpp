@@ -26,6 +26,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::CreateCharacterResult:
 		m_Message = std::make_shared<CreateCharacterResultMessage>();
 		break;
+	case MessageType::CharacterList:
+		m_Message = std::make_shared<CharacterListMessage>();
+		break;
 	case MessageType::ServerDestroy:
 		m_Message = std::make_shared<ServerDestroyMessage>();
 		break;
@@ -43,6 +46,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 		break;
 	case MessageType::CreateCharacter:
 		m_Message = std::make_shared<CreateCharacterMessage>();
+		break;
+	case MessageType::SelectCharacter:
+		m_Message = std::make_shared<SelectCharacterMessage>();
 		break;
 	default:																	
 		return;																	

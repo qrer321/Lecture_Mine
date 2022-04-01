@@ -8,6 +8,9 @@ EGameServerCode m_Code;
 EGameServerCode m_Code;
 std::string m_Nickname;
 
+|CharacterList-
+std::vector<CharacterInfo> m_Characters;
+
 |ServerDestroy-
 
 |ObjectDestroy-

@@ -31,6 +31,7 @@ public:
 	uint64_t GetAffectedRow() const { return mysql_stmt_affected_rows(m_Statement); }
 	std::string GetString(const int index) const;
 	int GetInt(const int index) const;
+	float GetFloat(const int index) const;
 
 	bool Next() const;
 };

@@ -132,3 +132,43 @@ public:
 	}																											
 };																											
 
+class SelectCharacterMessage : public GameServerMessage											
+{																											
+public:																										
+	std::string m_Nickname;
+																												
+public:																										
+	SelectCharacterMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::SelectCharacter))					
+		, m_Nickname()																		
+	{																											
+	}																											
+	~SelectCharacterMessage() override = default;													
+																												
+	SelectCharacterMessage(const SelectCharacterMessage& other) = delete;				
+	SelectCharacterMessage(SelectCharacterMessage&& other) noexcept = delete;			
+																												
+	SelectCharacterMessage& operator=(const SelectCharacterMessage& other) = delete;	
+	SelectCharacterMessage& operator=(SelectCharacterMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_Nickname);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer << m_Nickname;
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer >> m_Nickname;
+	}																											
+};																											
+

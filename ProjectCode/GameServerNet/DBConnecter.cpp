@@ -23,6 +23,11 @@ int DBStatementResult::GetInt(const int index) const
 	return *static_cast<int*>(m_ResultBinds[index].buffer);
 }
 
+float DBStatementResult::GetFloat(const int index) const
+{
+	return *static_cast<float*>(m_ResultBinds[index].buffer);
+}
+
 bool DBStatementResult::Next() const
 {
 	return 0 == mysql_stmt_fetch(m_Statement);
@@ -65,6 +70,25 @@ void DBStatement::ParamBind_String(const std::string_view& value)
 
 void DBStatement::ParamBind_Int(const int value)
 {
+	m_ParamLengthBuffer.emplace_back();
+	m_ParamIsNullBuffer.emplace_back();
+	const size_t param_buffer_size = m_ParamBindBuffer.size();
+	m_ParamBindBuffer.resize(param_buffer_size + sizeof(int));
+
+	MYSQL_BIND& bind = m_ParamBinds.emplace_back();
+	bind.buffer_type = MYSQL_TYPE_LONG;
+
+	bind.buffer = &m_ParamBindBuffer[param_buffer_size];
+	memset(bind.buffer, 0x00, sizeof(int));
+	memcpy_s(bind.buffer, sizeof(int), &value, sizeof(int));
+
+	bind.buffer_length = static_cast<unsigned long>(sizeof(int));
+
+	bind.is_null = reinterpret_cast<bool*>(&m_ParamIsNullBuffer[m_ParamIsNullBuffer.size() - 1]);
+	*bind.is_null = false;
+
+	bind.length = &m_ParamLengthBuffer[m_ParamLengthBuffer.size() - 1];
+	*bind.length = bind.buffer_length;
 }
 
 void DBStatement::ParamBind_Float(const float value)
@@ -134,7 +158,7 @@ std::unique_ptr<DBStatementResult> DBStatement::Execute()
 				break;
 
 			case MYSQL_TYPE_LONG:
-				stmt_result->m_ResultBindBuffer.resize(stmt_result->m_ResultBindBuffer.size() + field.length);
+				stmt_result->m_ResultBindBuffer.resize(stmt_result->m_ResultBindBuffer.size() + sizeof(int));
 
 				result_bind.buffer_type = MYSQL_TYPE_LONG;
 
@@ -149,6 +173,21 @@ std::unique_ptr<DBStatementResult> DBStatement::Execute()
 				result_bind.length = &stmt_result->m_ResultLengthBuffer[stmt_result->m_ResultLengthBuffer.size() - 1];
 				break;
 
+			case MYSQL_TYPE_FLOAT:
+				stmt_result->m_ResultBindBuffer.resize(stmt_result->m_ResultBindBuffer.size() + sizeof(float));
+
+				result_bind.buffer_type = MYSQL_TYPE_FLOAT;
+
+				result_bind.buffer = &stmt_result->m_ResultBindBuffer[result_buffer_size];
+				memset(result_bind.buffer, 0x00, sizeof(float));
+
+				result_bind.buffer_length = sizeof(float);
+
+				result_bind.is_null = reinterpret_cast<bool*>(&stmt_result->m_ResultIsNullBuffer[stmt_result->m_ResultIsNullBuffer.size() - 1]);
+				*result_bind.is_null = false;
+
+				result_bind.length = &stmt_result->m_ResultLengthBuffer[stmt_result->m_ResultLengthBuffer.size() - 1];
+				break;
 			default:
 				GameServerDebug::AssertDebugMsg("Mysql Result Type Switch Error");
 				break;
