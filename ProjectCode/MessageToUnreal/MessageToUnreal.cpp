@@ -51,7 +51,7 @@ void SerializerTypeCheck(std::string& source, const MemberInfo& member_info)
 		}
 		else if (member_info.Type[0] == 'F')
 		{
-			source += "		serializer.WriteUserData(" + member_info.Name + ");\n";
+			source += "		" + member_info.Name + ".Serialize(serializer);\n";
 		}
 		else
 		{
@@ -86,7 +86,7 @@ void DeserializerTypeCheck(std::string& source, const MemberInfo& member_info)
 		}
 		else if (member_info.Type[0] == 'F')
 		{
-			source += "		serializer.ReadUserData(" + member_info.Name + ");\n";
+			source += "		" + member_info.Name + ".DeSerialize(serializer);\n";
 		}
 		else
 		{

@@ -1,7 +1,6 @@
 #include "PreCompile.h"
 #include "ThreadHandlerLoginMessage.h"
 
-#include <GameServerBase/GameServerString.h>
 #include "CharacterTable.h"
 #include "UserTable.h"
 #include "ContentsSystemEnum.h"
@@ -70,15 +69,15 @@ void ThreadHandlerLoginMessage::DBCharacterListCheck()
 	m_CharacterListMessage.m_Characters.resize(select_query.m_RowData.size());
 	for (size_t i = 0; i < select_query.m_RowData.size(); ++i)
 	{
-		m_CharacterListMessage.m_Characters[i].m_Index = select_query.m_RowData[i]->m_Index;
-		m_CharacterListMessage.m_Characters[i].m_Nickname = select_query.m_RowData[i]->m_Nickname;
-		m_CharacterListMessage.m_Characters[i].m_UserIndex = select_query.m_RowData[i]->m_UserIndex;
-		m_CharacterListMessage.m_Characters[i].m_HP = select_query.m_RowData[i]->m_HP;
-		m_CharacterListMessage.m_Characters[i].m_Att = select_query.m_RowData[i]->m_Att;
-		m_CharacterListMessage.m_Characters[i].m_LastRoomID = select_query.m_RowData[i]->m_LastRoomID;
-		m_CharacterListMessage.m_Characters[i].m_LastRoomPosX = select_query.m_RowData[i]->m_LastRoomPosX;
-		m_CharacterListMessage.m_Characters[i].m_LastRoomPosY = select_query.m_RowData[i]->m_LastRoomPosY;
-		m_CharacterListMessage.m_Characters[i].m_LastRoomPosZ = select_query.m_RowData[i]->m_LastRoomPosZ;
+		m_CharacterListMessage.m_Characters[i].m_Index			= select_query.m_RowData[i]->m_Index;
+		m_CharacterListMessage.m_Characters[i].m_Nickname		= select_query.m_RowData[i]->m_Nickname;
+		m_CharacterListMessage.m_Characters[i].m_UserIndex		= select_query.m_RowData[i]->m_UserIndex;
+		m_CharacterListMessage.m_Characters[i].m_HP				= select_query.m_RowData[i]->m_HP;
+		m_CharacterListMessage.m_Characters[i].m_Att			= select_query.m_RowData[i]->m_Att;
+		m_CharacterListMessage.m_Characters[i].m_LastRoomID		= select_query.m_RowData[i]->m_LastRoomID;
+		m_CharacterListMessage.m_Characters[i].m_LastRoomPosX	= select_query.m_RowData[i]->m_LastRoomPosX;
+		m_CharacterListMessage.m_Characters[i].m_LastRoomPosY	= select_query.m_RowData[i]->m_LastRoomPosY;
+		m_CharacterListMessage.m_Characters[i].m_LastRoomPosZ	= select_query.m_RowData[i]->m_LastRoomPosZ;
 	}
 
 	NetWork(&ThreadHandlerLoginMessage::CharactersSend);

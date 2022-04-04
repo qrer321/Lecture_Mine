@@ -6,10 +6,10 @@ EGameServerCode m_Code;
 
 |CreateCharacterResult-
 EGameServerCode m_Code;
-std::string m_Nickname;
+FCharacterInfo m_CharacterInfo;
 
 |CharacterList-
-std::vector<CharacterInfo> m_Characters;
+std::vector<FCharacterInfo> m_Characters;
 
 |ServerDestroy-
 

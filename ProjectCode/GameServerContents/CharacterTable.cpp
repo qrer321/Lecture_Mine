@@ -2,7 +2,7 @@
 #include "CharacterTable.h"
 
 CharacterTable_SelectNickname::CharacterTable_SelectNickname(std::string nickname)
-	: DBQuery("SELECT NickName FROM userver2.characterinfo WHERE NickName = ? LIMIT 1")
+	: DBQuery("SELECT Idx, NickName, UserIndex, ATT, HP, LastRoomID, LastRoomPosX, LastRoomPosY, LastRoomPosZ FROM userver2.characterinfo WHERE NickName = ? LIMIT 1")
 	, m_Nickname(std::move(nickname))
 {
 }
@@ -21,6 +21,19 @@ bool CharacterTable_SelectNickname::ExecuteQuery()
 	{
 		return false;
 	}
+
+	stmt_result->Next();
+
+	m_RowDatum = std::make_shared<CharacterRow>(CharacterRow(
+		stmt_result->GetInt(0),
+		stmt_result->GetString(1),
+		stmt_result->GetInt(2),
+		stmt_result->GetFloat(3),
+		stmt_result->GetFloat(4),
+		stmt_result->GetInt(5),
+		stmt_result->GetFloat(6),
+		stmt_result->GetFloat(7),
+		stmt_result->GetFloat(8)));
 
 	return true;
 }
@@ -70,8 +83,13 @@ bool CharacterTable_CreateCharacter::ExecuteQuery()
 	const std::unique_ptr<DBStatement> statement = m_DBConnecter->CreateStatement(m_QueryString);
 	statement->ParamBind_String(m_Nickname);
 	statement->ParamBind_Int(m_Id);
+	statement->Execute();
 
-	const uint64_t row = statement->GetAffectedRow();
+	// Select Query가 아닌 경우 stmt_result는 반환되지 않기에 statement 자체를 사용
+	if (0 == statement->GetAffectedRow())
+	{
+		return false;
+	}
 
 	return true;
 }

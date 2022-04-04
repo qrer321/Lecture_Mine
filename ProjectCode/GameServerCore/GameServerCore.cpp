@@ -44,7 +44,10 @@ bool GameServerCore::CoreInit()
 	GameServerDebug::LogInfo("Server Initialize Start");
 
 	GameServerDirectory directory;
-	directory.MoveToParent("ProjectCode");
+	if (false == directory.IsExistFile("ServerConfig.xml"))
+	{
+		directory.MoveToParent("ProjectCode");
+	}
 
 	std::stringstream xml_stream;
 	xml_stream << directory.AddFileNameToPath("ServerConfig.xml");

@@ -19,6 +19,7 @@ public:
 	[[nodiscard]] std::vector<GameServerFile> GetAllFile(const std::string& filter) const;
 
 	[[nodiscard]] bool IsRootDirectory() const;
+	[[nodiscard]] bool IsExistFile(const std::string& file_name) const;
 
 public:
 	void MoveToRootDirectory();
@@ -26,6 +27,6 @@ public:
 	bool MoveToParent(const std::string& dir_name);
 	bool MoveToChild(const std::string& dir_name);
 
-	std::string AddFileNameToPath(const std::string& file_name);
+	std::string AddFileNameToPath(const std::string& file_name) const;
 };
 

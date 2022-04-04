@@ -23,11 +23,6 @@ GameServerFile::GameServerFile(const std::string& path)
 	: m_FileHandle(nullptr)
 {
 	m_Path = path;
-
-	if (false == IsExist())
-	{
-		GameServerDebug::AssertDebug();
-	}
 }
 
 GameServerFile::GameServerFile(const std::string& path, const std::string& mode)
@@ -36,11 +31,6 @@ GameServerFile::GameServerFile(const std::string& path, const std::string& mode)
 	m_Path = path;
 
 	Open(mode);
-
-	if (false == IsExist())
-	{
-		GameServerDebug::AssertDebug();
-	}
 }
 
 GameServerFile::~GameServerFile()

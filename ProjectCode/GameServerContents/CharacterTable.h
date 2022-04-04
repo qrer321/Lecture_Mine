@@ -22,18 +22,18 @@ public:
 		const float hp,
 		const float att,
 		const int last_room_id,
-		const float room_x,
-		const float room_y,
-		const float room_z)
+		const float last_room_x,
+		const float last_room_y,
+		const float last_room_z)
 		: m_Index(index)
 		, m_Nickname(std::move(nickname))
 		, m_UserIndex(user_index)
 		, m_HP(hp)
 		, m_Att(att)
 		, m_LastRoomID(last_room_id)
-		, m_LastRoomPosX(room_x)
-		, m_LastRoomPosY(room_y)
-		, m_LastRoomPosZ(room_z)
+		, m_LastRoomPosX(last_room_x)
+		, m_LastRoomPosY(last_room_y)
+		, m_LastRoomPosZ(last_room_z)
 	{
 		
 	}
@@ -42,7 +42,8 @@ public:
 class CharacterTable_SelectNickname : public DBQuery
 {
 public:
-	std::string m_Nickname;
+	std::string						m_Nickname;
+	std::shared_ptr<CharacterRow>	m_RowDatum;
 
 public: // Default
 	explicit CharacterTable_SelectNickname(std::string nickname);

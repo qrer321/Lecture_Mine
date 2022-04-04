@@ -88,13 +88,13 @@ class CreateCharacterResultMessage : public GameServerMessage
 {																											
 public:																										
 	EGameServerCode m_Code;
-	std::string m_Nickname;
+	FCharacterInfo m_CharacterInfo;
 																												
 public:																										
 	CreateCharacterResultMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::CreateCharacterResult))					
 		, m_Code()																		
-		, m_Nickname()																		
+		, m_CharacterInfo()																		
 	{																											
 	}																											
 	~CreateCharacterResultMessage() override = default;													
@@ -108,7 +108,7 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Code) + DataSizeCheck(m_Nickname);
+		return DataSizeCheck(m_Code) + DataSizeCheck(m_CharacterInfo);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
@@ -116,7 +116,7 @@ public:
 		GameServerMessage::Serialize(serializer);																
 																												
 		serializer.WriteEnum(m_Code);
-		serializer << m_Nickname;
+		m_CharacterInfo.Serialize(serializer);
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
@@ -124,14 +124,14 @@ public:
 		GameServerMessage::Deserialize(serializer);																
 																												
 		serializer.ReadEnum(m_Code);
-		serializer >> m_Nickname;
+		m_CharacterInfo.DeSerialize(serializer);
 	}																											
 };																											
 
 class CharacterListMessage : public GameServerMessage											
 {																											
 public:																										
-	std::vector<CharacterInfo> m_Characters;
+	std::vector<FCharacterInfo> m_Characters;
 																												
 public:																										
 	CharacterListMessage()																		

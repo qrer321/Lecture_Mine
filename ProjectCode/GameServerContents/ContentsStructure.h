@@ -1,7 +1,7 @@
 #pragma once
 #include <GameServerBase/GameServerSerializer.h>
 
-struct CharacterInfo 
+struct FCharacterInfo 
 {
 public:
 	int			m_Index;
