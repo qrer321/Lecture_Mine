@@ -1,42 +1,69 @@
 #pragma once
 #include <GameServerNet/DBQuery.h>
+#include "ContentsStructure.h"
 
 class CharacterRow : std::enable_shared_from_this<CharacterRow>
 {
 public:
-	int			m_Index;
-	std::string m_Nickname;
-	int			m_UserIndex;
-	float		m_HP;
-	float		m_Att;
-	int			m_LastRoomID;
-	float		m_LastRoomPosX;
-	float		m_LastRoomPosY;
-	float		m_LastRoomPosZ;
+	union
+	{
+		struct
+		{
+			int			m_Index;
+			std::string m_Nickname;
+			int			m_UserIndex;
+			float		m_HP;
+			float		m_Att;
+			int			m_LastSectionID;
+			float		m_LastSectionPosX;
+			float		m_LastSectionPosY;
+			float		m_LastSectionPosZ;
+		};
+		FCharacterInfo	m_Info {};
+	};
 
-public:
 	CharacterRow(
-		const int index,
+		const int	index,
 		std::string nickname,
-		const int user_index,
+		const int	user_index,
 		const float hp,
 		const float att,
-		const int last_room_id,
-		const float last_room_x,
-		const float last_room_y,
-		const float last_room_z)
+		const int	last_section_id,
+		const float last_section_x,
+		const float last_section_y,
+		const float last_section_z)
 		: m_Index(index)
 		, m_Nickname(std::move(nickname))
 		, m_UserIndex(user_index)
 		, m_HP(hp)
 		, m_Att(att)
-		, m_LastRoomID(last_room_id)
-		, m_LastRoomPosX(last_room_x)
-		, m_LastRoomPosY(last_room_y)
-		, m_LastRoomPosZ(last_room_z)
-	{
-		
-	}
+		, m_LastSectionID(last_section_id)
+		, m_LastSectionPosX(last_section_x)
+		, m_LastSectionPosY(last_section_y)
+		, m_LastSectionPosZ(last_section_z)
+	{}
+
+	CharacterRow(const CharacterRow& other)
+		: m_Index(other.m_Index)
+		, m_Nickname(other.m_Nickname)
+		, m_UserIndex(other.m_UserIndex)
+		, m_HP(other.m_HP)
+		, m_Att(other.m_Att)
+		, m_LastSectionID(other.m_LastSectionID)
+		, m_LastSectionPosX(other.m_LastSectionPosX)
+		, m_LastSectionPosY(other.m_LastSectionPosY)
+		, m_LastSectionPosZ(other.m_LastSectionPosZ)
+	{}
+
+	CharacterRow(const FCharacterInfo& other)
+		: m_Info(other)
+	{}
+
+	CharacterRow(CharacterRow&& other) noexcept = default;
+	CharacterRow& operator=(const CharacterRow& other) = delete;
+	CharacterRow& operator=(CharacterRow&& other) = delete;
+
+	~CharacterRow() {}
 };
 
 class CharacterTable_SelectNickname : public DBQuery
@@ -54,10 +81,10 @@ public: // Default
 	CharacterTable_SelectNickname& operator=(const CharacterTable_SelectNickname& other) = delete;
 	CharacterTable_SelectNickname& operator=(CharacterTable_SelectNickname&& other) = delete;
 
-private:
-
 public: // Member Function
 	bool ExecuteQuery() override;
+
+	FCharacterInfo ConvertInfoCharacter() const;
 };
 
 class CharacterTable_SelectUserCharacters : public DBQuery

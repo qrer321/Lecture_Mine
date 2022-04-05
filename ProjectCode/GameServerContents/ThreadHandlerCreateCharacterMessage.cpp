@@ -12,7 +12,7 @@ void ThreadHandlerCreateCharacterMessage::DBCheck()
 	
 	if (false == select_query.ExecuteQuery())
 	{
-		CharacterTable_CreateCharacter insert_query(m_Message->m_Nickname, user_data->m_UserData.m_Index);
+		CharacterTable_CreateCharacter insert_query(m_Message->m_Nickname, user_data->m_UserRow.m_Index);
 		if (false == insert_query.ExecuteQuery())
 		{
 			m_ResultMessage.m_Code = EGameServerCode::CreateCharacterError;
@@ -27,17 +27,11 @@ void ThreadHandlerCreateCharacterMessage::DBCheck()
 			else
 			{
 				m_ResultMessage.m_Code = EGameServerCode::OK;
-				m_ResultMessage.m_CharacterInfo.m_Index			= result_query.m_RowDatum->m_Index;
-				m_ResultMessage.m_CharacterInfo.m_Nickname		= result_query.m_RowDatum->m_Nickname;
-				m_ResultMessage.m_CharacterInfo.m_UserIndex		= result_query.m_RowDatum->m_UserIndex;
-				m_ResultMessage.m_CharacterInfo.m_HP			= result_query.m_RowDatum->m_HP;
-				m_ResultMessage.m_CharacterInfo.m_Att			= result_query.m_RowDatum->m_Att;
-				m_ResultMessage.m_CharacterInfo.m_LastRoomID	= result_query.m_RowDatum->m_LastRoomID;
-				m_ResultMessage.m_CharacterInfo.m_LastRoomPosX	= result_query.m_RowDatum->m_LastRoomPosX;
-				m_ResultMessage.m_CharacterInfo.m_LastRoomPosY	= result_query.m_RowDatum->m_LastRoomPosY;
-				m_ResultMessage.m_CharacterInfo.m_LastRoomPosZ	= result_query.m_RowDatum->m_LastRoomPosZ;
+				m_ResultMessage.m_CharacterInfo = result_query.m_RowDatum->m_Info;
 			}
 		}
+
+		user_data->m_CharactersInfo.push_back(m_ResultMessage.m_CharacterInfo);
 	}
 	else
 	{

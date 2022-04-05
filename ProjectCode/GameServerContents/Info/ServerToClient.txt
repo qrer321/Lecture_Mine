@@ -8,8 +8,15 @@ EGameServerCode m_Code;
 EGameServerCode m_Code;
 FCharacterInfo m_CharacterInfo;
 
+|SelectCharacterResult-
+EGameServerCode m_Code;
+std::string m_Nickname;
+
+|InsertSectionResult-
+EGameServerCode m_Code;
+
 |CharacterList-
-std::vector<FCharacterInfo> m_Characters;
+std::vector<FCharacterInfo> m_CharactersInfo;
 
 |ServerDestroy-
 

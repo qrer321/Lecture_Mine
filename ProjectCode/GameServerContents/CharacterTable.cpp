@@ -2,7 +2,7 @@
 #include "CharacterTable.h"
 
 CharacterTable_SelectNickname::CharacterTable_SelectNickname(std::string nickname)
-	: DBQuery("SELECT Idx, NickName, UserIndex, ATT, HP, LastRoomID, LastRoomPosX, LastRoomPosY, LastRoomPosZ FROM userver2.characterinfo WHERE NickName = ? LIMIT 1")
+	: DBQuery("SELECT Idx, NickName, UserIndex, ATT, HP, LastSectionID, LastSectionPosX, LastSectionPosY, LastSectionPosZ FROM userver2.characterinfo WHERE NickName = ? LIMIT 1")
 	, m_Nickname(std::move(nickname))
 {
 }
@@ -38,8 +38,24 @@ bool CharacterTable_SelectNickname::ExecuteQuery()
 	return true;
 }
 
+FCharacterInfo CharacterTable_SelectNickname::ConvertInfoCharacter() const
+{
+	FCharacterInfo character_info;
+	character_info.m_Index = m_RowDatum->m_Index;
+	character_info.m_Nickname = m_RowDatum->m_Nickname;
+	character_info.m_UserIndex = m_RowDatum->m_UserIndex;
+	character_info.m_HP = m_RowDatum->m_HP;
+	character_info.m_Att = m_RowDatum->m_Att;
+	character_info.m_LastSectionID = m_RowDatum->m_LastSectionID;
+	character_info.m_LastSectionPosX = m_RowDatum->m_LastSectionPosX;
+	character_info.m_LastSectionPosY = m_RowDatum->m_LastSectionPosY;
+	character_info.m_LastSectionPosZ = m_RowDatum->m_LastSectionPosZ;
+
+	return character_info;
+}
+
 CharacterTable_SelectUserCharacters::CharacterTable_SelectUserCharacters(int index)
-	: DBQuery("SELECT Idx, NickName, UserIndex, ATT, HP, LastRoomID, LastRoomPosX, LastRoomPosY, LastRoomPosZ FROM userver2.characterinfo WHERE UserIndex = ?")
+	: DBQuery("SELECT Idx, NickName, UserIndex, ATT, HP, LastSectionID, LastSectionPosX, LastSectionPosY, LastSectionPosZ FROM userver2.characterinfo WHERE UserIndex = ?")
 	, m_UserIndex(index)
 {
 }

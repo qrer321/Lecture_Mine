@@ -1,11 +1,13 @@
 #pragma once
 #include <GameServerCore/ThreadHandlerBase.h>
+#include "ServerToClient.h"
 #include "ClientToServer.h"
 
 class ThreadHandlerSelectCharacterMessage final : public ThreadHandlerBase<SelectCharacterMessage>
 {
 private: // Member Var
-	SelectCharacterMessage m_SelectMessage;	// 처리한 결과
+	SelectCharacterResultMessage	m_ResultMessage;	// 처리한 결과
+	FCharacterInfo					m_SelectCharacterInfo;
 
 public: // Default
 	ThreadHandlerSelectCharacterMessage() = default;
@@ -18,7 +20,8 @@ public: // Default
 
 private:
 	void DBCheck();
-	void ResultSend();
+	void SelectResult();
+	void InsertSection();
 
 public:
 	void Start() override;

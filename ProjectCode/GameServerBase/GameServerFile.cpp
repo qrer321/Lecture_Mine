@@ -59,9 +59,12 @@ std::string GameServerFile::GetString() const
 	std::string all_string = std::string();
 	all_string.resize(GetFileSize());
 
-	Read(&all_string[0], all_string.size(), all_string.size());
+	for (char& string_element : all_string)
+	{
+		Read(&string_element, 1, 1);
+	}
 
-	while(0 == all_string[all_string.size() - 1])
+	while (all_string[all_string.size() - 1] == 0)
 	{
 		all_string.erase(--all_string.end());
 	}

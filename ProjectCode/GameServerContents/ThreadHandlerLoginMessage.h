@@ -1,5 +1,6 @@
 #pragma once
 #include <GameServerCore/ThreadHandlerBase.h>
+#include "ContentsUserData.h"
 #include "ServerToClient.h"
 #include "ClientToServer.h"
 
@@ -8,8 +9,9 @@ class UserRow;
 class ThreadHandlerLoginMessage final : public ThreadHandlerBase<LoginMessage>
 {
 private: // Member Var
-	LoginResultMessage			m_ResultMessage;	// 처리한 결과
-	CharacterListMessage		m_CharacterListMessage;
+	LoginResultMessage					m_ResultMessage;
+	CharacterListMessage				m_CharacterListMessage;
+	std::shared_ptr<ContentsUserData>	m_UserData;
 
 public:
 	std::shared_ptr<UserRow>	m_RowDatum;

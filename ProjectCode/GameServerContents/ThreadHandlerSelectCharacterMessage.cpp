@@ -6,30 +6,48 @@
 
 void ThreadHandlerSelectCharacterMessage::DBCheck()
 {
-	//const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
-	//CharacterTable_SelectNickname select_query(m_Message->m_Nickname);
-	
-	//if (false == select_query.ExecuteQuery())
-	//{
-	//	m_SelectMessage.m_Code = EGameServerCode::OK;
+	CharacterTable_SelectNickname select_query(m_Message->m_Nickname);
+	if (false == select_query.ExecuteQuery())
+	{
+		m_ResultMessage.m_Code = EGameServerCode::SelectCharacterError;
+		NetWork(&ThreadHandlerSelectCharacterMessage::SelectResult);
+		return;
+	}
 
-	//	CharacterTable_CreateCharacter create_query = CharacterTable_CreateCharacter(m_Message->m_Nickname, user_data->m_UserData.m_Index);
-	//}
-	//else
-	//{
-	//	m_SelectMessage.m_Code = EGameServerCode::SelectCharacterError;
-	//}
-
-	NetWork(&ThreadHandlerSelectCharacterMessage::ResultSend);
+	m_ResultMessage.m_Code = EGameServerCode::OK;
+	NetWork(&ThreadHandlerSelectCharacterMessage::SelectResult);
 }
 
-void ThreadHandlerSelectCharacterMessage::ResultSend()
+void ThreadHandlerSelectCharacterMessage::SelectResult()
 {
-	//GameServerSerializer serializer;
-	//m_SelectMessage.Serialize(serializer);
-	//m_TCPSession->Send(serializer.GetData());
+	std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	if (EGameServerCode::OK == m_ResultMessage.m_Code)
+	{
+		for (size_t i = 0; i < user_data->m_CharactersInfo.size(); ++i)
+		{
+			if (user_data->m_CharactersInfo[i].m_Nickname == m_Message->m_Nickname)
+			{
+				GameServerSerializer serializer;
+				m_ResultMessage.m_Nickname = m_Message->m_Nickname;
+				m_ResultMessage.Serialize(serializer);
+				m_TCPSession->Send(serializer.GetData());
+				GameServerDebug::LogInfo("Send Select Character OK Result");
 
-	GameServerDebug::LogInfo("Send Select Character Result");
+				return;
+			}
+		}
+	}
+
+	GameServerSerializer serializer;
+	m_ResultMessage.m_Code = EGameServerCode::SelectCharacterError;
+	m_ResultMessage.Serialize(serializer);
+	m_TCPSession->Send(serializer.GetData());
+
+	GameServerDebug::LogInfo("Send Select Character Fail Result");
+}
+
+void ThreadHandlerSelectCharacterMessage::InsertSection()
+{
 }
 
 void ThreadHandlerSelectCharacterMessage::Start()
@@ -40,6 +58,6 @@ void ThreadHandlerSelectCharacterMessage::Start()
 		return;
 	}
 
-	//m_SelectMessage.m_Code = EGameServerCode::SelectCharacterError;
+	//m_ResultMessage.m_Code = EGameServerCode::SelectCharacterError;
 	DBWork(&ThreadHandlerSelectCharacterMessage::DBCheck);
 }

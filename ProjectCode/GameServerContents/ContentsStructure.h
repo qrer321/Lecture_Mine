@@ -4,15 +4,15 @@
 struct FCharacterInfo 
 {
 public:
-	int			m_Index;
+	int			m_Index{};
 	std::string m_Nickname;
-	int			m_UserIndex;
-	float		m_HP;
-	float		m_Att;
-	int			m_LastRoomID;
-	float		m_LastRoomPosX;
-	float		m_LastRoomPosY;
-	float		m_LastRoomPosZ;
+	int			m_UserIndex{};
+	float		m_HP{};
+	float		m_Att{};
+	int			m_LastSectionID{};
+	float		m_LastSectionPosX{};
+	float		m_LastSectionPosY{};
+	float		m_LastSectionPosZ{};
 
 public:
 	[[nodiscard]] int GetDataSize() const { return (4 * 8) + 4 + static_cast<int>(m_Nickname.size()); }
@@ -24,10 +24,10 @@ public:
 		serializer << m_UserIndex;
 		serializer << m_HP;
 		serializer << m_Att;
-		serializer << m_LastRoomID;
-		serializer << m_LastRoomPosX;
-		serializer << m_LastRoomPosY;
-		serializer << m_LastRoomPosZ;
+		serializer << m_LastSectionID;
+		serializer << m_LastSectionPosX;
+		serializer << m_LastSectionPosY;
+		serializer << m_LastSectionPosZ;
 	}
 
 	void DeSerialize(GameServerSerializer& serializer)
@@ -37,9 +37,13 @@ public:
 		serializer >> m_UserIndex;
 		serializer >> m_HP;
 		serializer >> m_Att;
-		serializer >> m_LastRoomID;
-		serializer >> m_LastRoomPosX;
-		serializer >> m_LastRoomPosY;
-		serializer >> m_LastRoomPosZ;
+		serializer >> m_LastSectionID;
+		serializer >> m_LastSectionPosX;
+		serializer >> m_LastSectionPosY;
+		serializer >> m_LastSectionPosZ;
 	}
+
+public:
+	FCharacterInfo() = default;
+	~FCharacterInfo() = default;
 };

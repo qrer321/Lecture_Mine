@@ -128,15 +128,99 @@ public:
 	}																											
 };																											
 
+class SelectCharacterResultMessage : public GameServerMessage											
+{																											
+public:																										
+	EGameServerCode m_Code;
+	std::string m_Nickname;
+																												
+public:																										
+	SelectCharacterResultMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::SelectCharacterResult))					
+		, m_Code()																		
+		, m_Nickname()																		
+	{																											
+	}																											
+	~SelectCharacterResultMessage() override = default;													
+																												
+	SelectCharacterResultMessage(const SelectCharacterResultMessage& other) = delete;				
+	SelectCharacterResultMessage(SelectCharacterResultMessage&& other) noexcept = delete;			
+																												
+	SelectCharacterResultMessage& operator=(const SelectCharacterResultMessage& other) = delete;	
+	SelectCharacterResultMessage& operator=(SelectCharacterResultMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_Code) + DataSizeCheck(m_Nickname);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer.WriteEnum(m_Code);
+		serializer << m_Nickname;
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer.ReadEnum(m_Code);
+		serializer >> m_Nickname;
+	}																											
+};																											
+
+class InsertSectionResultMessage : public GameServerMessage											
+{																											
+public:																										
+	EGameServerCode m_Code;
+																												
+public:																										
+	InsertSectionResultMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::InsertSectionResult))					
+		, m_Code()																		
+	{																											
+	}																											
+	~InsertSectionResultMessage() override = default;													
+																												
+	InsertSectionResultMessage(const InsertSectionResultMessage& other) = delete;				
+	InsertSectionResultMessage(InsertSectionResultMessage&& other) noexcept = delete;			
+																												
+	InsertSectionResultMessage& operator=(const InsertSectionResultMessage& other) = delete;	
+	InsertSectionResultMessage& operator=(InsertSectionResultMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_Code);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer.WriteEnum(m_Code);
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer.ReadEnum(m_Code);
+	}																											
+};																											
+
 class CharacterListMessage : public GameServerMessage											
 {																											
 public:																										
-	std::vector<FCharacterInfo> m_Characters;
+	std::vector<FCharacterInfo> m_CharactersInfo;
 																												
 public:																										
 	CharacterListMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::CharacterList))					
-		, m_Characters()																		
+		, m_CharactersInfo()																		
 	{																											
 	}																											
 	~CharacterListMessage() override = default;													
@@ -150,21 +234,21 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Characters);
+		return DataSizeCheck(m_CharactersInfo);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Serialize(serializer);																
 																												
-		serializer.WriteVector(m_Characters);
+		serializer.WriteVector(m_CharactersInfo);
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Deserialize(serializer);																
 																												
-		serializer.ReadVector(m_Characters);
+		serializer.ReadVector(m_CharactersInfo);
 	}																											
 };																											
 

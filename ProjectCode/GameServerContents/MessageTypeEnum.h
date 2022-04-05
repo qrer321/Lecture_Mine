@@ -6,6 +6,8 @@ enum class MessageType
 	LoginResult,
 	JoinResult,
 	CreateCharacterResult,
+	SelectCharacterResult,
+	InsertSectionResult,
 	CharacterList,
 	ServerDestroy,
 	ObjectDestroy,
