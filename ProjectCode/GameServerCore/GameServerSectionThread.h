@@ -1,21 +1,22 @@
 #pragma once
 #include <GameServerBase/GameServerQueue.h>
+#include <GameServerBase/GameServerThread.h>
 #include "GameServerSection.h"
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
-class GameServerSectionThread
+class GameServerSectionThread : GameServerThread
 {
 private: // Member Var
-	GameServerQueue*				m_SectionTaskQueue{};
+	GameServerQueue*								m_SectionTaskQueue{};
+	std::shared_ptr<std::thread>					m_Thread;
 
-	std::shared_ptr<std::thread>	m_Thread;
-	std::vector<GameServerSection*> m_Sections;
+	std::atomic<size_t>								m_LastIndex;
+	std::atomic<size_t>								m_SectionSize;
+	std::mutex										m_SectionLock;
+	std::vector<std::shared_ptr<GameServerSection>> m_Sections;
 
 public: // Default
-	GameServerSectionThread() = default;
-	~GameServerSectionThread() = default;
+	GameServerSectionThread();
+	~GameServerSectionThread() override = default;
 
 	GameServerSectionThread(const GameServerSectionThread& other) = delete;
 	GameServerSectionThread(GameServerSectionThread&& other) noexcept = delete;
@@ -24,10 +25,12 @@ public: // Default
 	GameServerSectionThread& operator=(GameServerSectionThread&& other) = delete;
 
 private:
-	static void ThreadFunction(GameServerSectionThread* thread);
+	static void ThreadFunction(GameServerSectionThread* section_thread);
 
 public: // Member Function
-	void AddSection(GameServerSection* section);
-	void RemoveSection(GameServerSection* section);
+	void AddSection(const std::shared_ptr<GameServerSection>& section);
+	void RemoveSection(const std::shared_ptr<GameServerSection>& section);
+
+	void StartSectionThread();
 };
 

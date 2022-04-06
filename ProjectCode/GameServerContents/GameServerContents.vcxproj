@@ -186,13 +186,23 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="FightZone.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="GameServerContentsCore.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="MessageConverter.cpp" />
-    <ClCompile Include="Monster.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="NoneFightZone.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PreCompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PreCompile.h</PrecompiledHeaderFile>
@@ -203,7 +213,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PreCompile.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Section.cpp" />
     <ClCompile Include="ServerDispatcher.cpp" />
     <ClCompile Include="ThreadHandlerChatMessage.cpp" />
     <ClCompile Include="ThreadHandlerCreateCharacterMessage.cpp">
@@ -225,15 +234,24 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="FightZone.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="GameServerContentsCore.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="MessageTypeEnum.h" />
-    <ClInclude Include="Monster.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="NoneFightZone.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PreCompile.h" />
-    <ClInclude Include="Section.h" />
     <ClInclude Include="ServerAndClient.h" />
     <ClInclude Include="ServerDispatcher.h" />
     <ClInclude Include="ServerToClient.h" />

@@ -17,7 +17,7 @@ public: // Member Function
 
 protected:
 	static void AcceptEvent(const std::shared_ptr<TCPSession>& session);
-	static void RecvEvent(std::shared_ptr<TCPSession> session, const std::vector<unsigned char>& value);
-	static void CloseEvent(std::shared_ptr<TCPSession> session);
+	static void RecvEvent(const std::shared_ptr<TCPSession>& session, const std::vector<unsigned char>& value);
+	static void CloseEvent(const std::shared_ptr<TCPSession>& session);
 };
 

@@ -27,14 +27,20 @@
     <ClCompile Include="MessageConverter.cpp">
       <Filter>Message\Result</Filter>
     </ClCompile>
-    <ClCompile Include="Monster.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Section.cpp" />
     <ClCompile Include="ContentsUserData.cpp">
       <Filter>Content</Filter>
     </ClCompile>
     <ClCompile Include="ThreadHandlerSelectCharacterMessage.cpp">
       <Filter>ThreadHandler\SelectCharacter</Filter>
+    </ClCompile>
+    <ClCompile Include="FightZone.cpp">
+      <Filter>Object\Section</Filter>
+    </ClCompile>
+    <ClCompile Include="NoneFightZone.cpp">
+      <Filter>Object\Section</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Object\Actor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,9 +85,6 @@
     <ClInclude Include="MessageTypeEnum.h">
       <Filter>Message\Result</Filter>
     </ClInclude>
-    <ClInclude Include="Section.h" />
-    <ClInclude Include="Monster.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="ContentsUserData.h">
       <Filter>Content</Filter>
     </ClInclude>
@@ -90,6 +93,15 @@
     </ClInclude>
     <ClInclude Include="ThreadHandlerSelectCharacterMessage.h">
       <Filter>ThreadHandler\SelectCharacter</Filter>
+    </ClInclude>
+    <ClInclude Include="FightZone.h">
+      <Filter>Object\Section</Filter>
+    </ClInclude>
+    <ClInclude Include="NoneFightZone.h">
+      <Filter>Object\Section</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Object\Actor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +143,15 @@
     </Filter>
     <Filter Include="ThreadHandler\SelectCharacter">
       <UniqueIdentifier>{dab51079-a61c-4ac1-a8fc-e70977bb4eba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{c49e6529-a877-41c0-864a-f35e56e4d4cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Section">
+      <UniqueIdentifier>{121c1d8e-bc23-4320-a2ae-3bddca9b03ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Actor">
+      <UniqueIdentifier>{b08f0b38-c5d3-4b95-b0e6-4f770685ee60}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

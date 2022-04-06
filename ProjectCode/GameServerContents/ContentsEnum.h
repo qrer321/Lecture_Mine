@@ -26,3 +26,14 @@ enum class EEnemyState
 	State_Attack,
 	MAX
 };
+
+enum class ESectionType
+{
+	NONE,
+	NONE_FIGHT,
+	FIGHT_ZONE_1,
+	FIGHT_ZONE_2,
+	FIGHT_ZONE_3,
+	FIGHT_ZONE_4,
+	MAX,
+};

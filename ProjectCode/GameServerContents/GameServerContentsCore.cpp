@@ -2,7 +2,11 @@
 #include "GameServerContentsCore.h"
 #include <GameServerNet/TCPSession.h>
 #include <GameServerMessage/MessageConverter.h>
+#include <GameServerCore/GameServerSectionManager.h>
 #include "ServerDispatcher.h"
+#include "ContentsEnum.h"
+#include "FightZone.h"
+#include "NoneFightZone.h"
 
 void GameServerContentsCore::UserStart()
 {
@@ -18,9 +22,19 @@ void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& sess
 
 	const std::string logText = std::to_string(static_cast<int>(session->GetSocket()));
 	GameServerDebug::LogInfo(logText + " Socket Connected");
+
+
+	GameServerSectionManager::GetInst()->Init(3);
+
+	GameServerSectionManager::GetInst()->CreateSection<NoneFightZone>(0, ESectionType::NONE_FIGHT);
+
+	GameServerSectionManager::GetInst()->CreateSection<FightZone>(1, ESectionType::FIGHT_ZONE_1);
+	GameServerSectionManager::GetInst()->CreateSection<FightZone>(1, ESectionType::FIGHT_ZONE_2);
+	GameServerSectionManager::GetInst()->CreateSection<FightZone>(2, ESectionType::FIGHT_ZONE_3);
+	GameServerSectionManager::GetInst()->CreateSection<FightZone>(2, ESectionType::FIGHT_ZONE_4);
 }
 
-void GameServerContentsCore::RecvEvent(std::shared_ptr<TCPSession> session, const std::vector<unsigned char>& value)
+void GameServerContentsCore::RecvEvent(const std::shared_ptr<TCPSession>& session, const std::vector<unsigned char>& value)
 {
 	MessageConverter converter = MessageConverter(value);
 	if (false == converter.IsValid())
@@ -41,10 +55,10 @@ void GameServerContentsCore::RecvEvent(std::shared_ptr<TCPSession> session, cons
 		return;
 	}
 
-	handler(std::move(session), std::move(converter.GetServerMessage()));
+	handler(session, std::move(converter.GetServerMessage()));
 }
 
-void GameServerContentsCore::CloseEvent(std::shared_ptr<TCPSession> session)
+void GameServerContentsCore::CloseEvent(const std::shared_ptr<TCPSession>& session)
 {
 	const std::string logText = std::to_string(static_cast<int>(session->GetSocket()));
 	GameServerDebug::LogInfo(logText + " Connection has Ended");

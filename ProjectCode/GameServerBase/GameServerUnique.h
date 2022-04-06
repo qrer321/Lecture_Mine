@@ -6,17 +6,17 @@
 class GameServerUnique
 {
 private: // static Var
-	static std::atomic<__int64> s_UniqueId;
+	static std::atomic<uint64_t> s_UniqueId;
 
 public:	// static Function
-	static __int64 GetNextUniqueId();
+	static uint64_t GetNextUniqueId();
 
 public: // Default
-	GameServerUnique();
-	~GameServerUnique();
+	GameServerUnique() = default;
+	~GameServerUnique() = default;
 
 	GameServerUnique(const GameServerUnique& other) = delete;
-	GameServerUnique(GameServerUnique&& other) noexcept;
+	GameServerUnique(GameServerUnique&& other) noexcept = default;
 
 public:
 	GameServerUnique& operator=(const GameServerUnique& other) = delete;

@@ -2,20 +2,17 @@
 #include "GameServerObjectBase.h"
 #include <string>
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
-class GameServerNameBase : public GameServerObjectBase
+class GameServerNameBase
 {
 private: // Member Var
 	std::string m_Name;
 
 public: // Default
-	GameServerNameBase();
-	~GameServerNameBase() override;
+	GameServerNameBase() = default;
+	virtual ~GameServerNameBase() = default;
 
 	GameServerNameBase(const GameServerNameBase& other) = delete;
-	GameServerNameBase(GameServerNameBase&& other) noexcept;
+	GameServerNameBase(GameServerNameBase&& other) noexcept = default;
 
 public:
 	GameServerNameBase& operator=(const GameServerNameBase& other) = delete;
@@ -24,9 +21,9 @@ public:
 public:
 	virtual void SetName(const std::string& name);
 
-	std::string_view GetNameView() const;
-	std::string GetNameCopy() const;
-	const char* GetNamePtr() const;
+	[[nodiscard]] std::string_view GetNameView() const;
+	[[nodiscard]] std::string GetNameCopy() const;
+	[[nodiscard]] const char* GetNamePtr() const;
 
 private:
 

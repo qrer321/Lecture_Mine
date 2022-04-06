@@ -3,37 +3,50 @@
 
 GameServerSectionManager* GameServerSectionManager::m_Inst = new GameServerSectionManager();
 
-GameServerSectionManager::GameServerSectionManager()
-	: m_NextSectionIndex(1)
+void GameServerSectionManager::Init(int thread_count)
 {
+	for (int i = 0; i < thread_count; ++i)
+	{
+		std::shared_ptr<GameServerSectionThread> new_section_thread = std::make_shared<GameServerSectionThread>();
+		new_section_thread->StartSectionThread();
+		m_SectionThread.push_back(new_section_thread);
+	}
 }
 
-uint32_t GameServerSectionManager::AddSection(GameServerSection* section)
+void GameServerSectionManager::CreateSection(int thread_key, uint64_t section_key, std::shared_ptr<GameServerSection> section)
 {
 	if (nullptr == section)
 	{
-		return 0;
+		return;
 	}
-
-	if (0 != section->GetSectionNumber())
-	{
-		return section->GetSectionNumber();
-	}
-
+	
 	{
 		std::lock_guard lock(m_SectionLock);
-		section->SetSectionNumber(m_NextSectionIndex++);
-		
-		m_AllSection.insert(std::unordered_map<uint32_t, std::shared_ptr<GameServerSection>>::value_type(m_NextSectionIndex, section));
+
+		section->SetSectionKey(section_key);
+		m_AllSection.insert(std::unordered_map<uint64_t, std::shared_ptr<GameServerSection>>::value_type(section_key, section));
+		m_SectionThread[thread_key]->AddSection(section);
 	}
 
-	return m_NextSectionIndex;
+	return;
 }
 
-uint32_t GameServerSectionManager::RemoveSection(uint32_t section_number)
+uint64_t GameServerSectionManager::RemoveSection(int thread_key, uint64_t section_key)
 {
 	std::lock_guard lock(m_SectionLock);
 
-	m_AllSection.erase(section_number);
-	return section_number;
+	m_AllSection.erase(section_key);
+	return section_key;
+}
+
+std::shared_ptr<GameServerSection> GameServerSectionManager::FindSection(uint64_t section_key)
+{
+	std::lock_guard lock(m_SectionLock);
+	const auto find_iter = m_AllSection.find(section_key);
+	if (find_iter == m_AllSection.end())
+	{
+		return nullptr;
+	}
+
+	return find_iter->second;
 }

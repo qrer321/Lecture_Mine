@@ -1,22 +1,20 @@
 #pragma once
 #include <GameServerBase/GameServerThread.h>
+#include "GameServerSectionThread.h"
 #include "GameServerSection.h"
 
-// 용도 : 
-// 분류 :
-// 첨언 : 
 class GameServerSectionManager
 {
 private: // Member Var
 	static GameServerSectionManager* m_Inst;
 
-	int m_NextSectionIndex;
-
 	std::mutex m_SectionLock;
-	std::unordered_map<uint32_t, std::shared_ptr<GameServerSection>> m_AllSection;
+	std::unordered_map<uint64_t, std::shared_ptr<GameServerSection>> m_AllSection;
+
+	std::vector<std::shared_ptr<GameServerSectionThread>> m_SectionThread;
 
 public: // Default
-	GameServerSectionManager();
+	GameServerSectionManager() = default;
 	~GameServerSectionManager() = default;
 
 	GameServerSectionManager(const GameServerSectionManager& other) = delete;
@@ -29,7 +27,6 @@ private:
 
 public: // Member Function
 	static GameServerSectionManager* GetInst() { return m_Inst; }
-
 	static void Destroy()
 	{
 		if (nullptr != m_Inst)
@@ -39,13 +36,23 @@ public: // Member Function
 		}
 	}
 
-	template <typename SectionType, typename... Parameter>
-	uint32_t AddSection(Parameter... args)
+	void Init(int thread_count);
+
+	template <typename SectionType, typename EnumType, typename... Parameter>
+	void CreateSection(int thread_key, EnumType enum_type, Parameter... args)
 	{
-		return AddSection(std::make_shared<SectionType>(args...));
+		CreateSection<SectionType>(thread_key, static_cast<uint64_t>(enum_type), args...);
 	}
 
-	uint32_t AddSection(GameServerSection* section);
-	uint32_t RemoveSection(uint32_t section_number);
+	template <typename SectionType, typename... Parameter>
+	void CreateSection(int thread_key, uint64_t section_key, Parameter... args)
+	{
+		CreateSection(thread_key, section_key, std::make_shared<SectionType>(args...));
+	}
+
+	void CreateSection(int thread_key, uint64_t section_key, std::shared_ptr<GameServerSection> section);
+	uint64_t RemoveSection(int thread_key, uint64_t section_key);
+
+	std::shared_ptr<GameServerSection> FindSection(uint64_t section_key);
 };
 

@@ -1,9 +1,16 @@
 #include "PreCompile.h"
 #include "GameServerSectionThread.h"
 
-void GameServerSectionThread::ThreadFunction(GameServerSectionThread* thread)
+GameServerSectionThread::GameServerSectionThread()
+	: m_LastIndex(0)
+	, m_SectionSize(0)
 {
-	if (nullptr == thread)
+	m_Sections.reserve(100);
+}
+
+void GameServerSectionThread::ThreadFunction(GameServerSectionThread* section_thread)
+{
+	if (nullptr == section_thread)
 	{
 		GameServerDebug::LogErrorAssert("Section Thread Is Nullptr");
 		return;
@@ -12,28 +19,27 @@ void GameServerSectionThread::ThreadFunction(GameServerSectionThread* thread)
 	std::vector<GameServerSection*> delete_sections;
 	while (true)
 	{
-		for (GameServerSection* section : thread->m_Sections)
+		const size_t section_size = section_thread->m_SectionSize;
+		for (size_t i = 0; i < section_size; ++i)
 		{
-			if (false == section->Update())
+			if (nullptr == section_thread->m_Sections[i])
 			{
-				delete_sections.push_back(section);
+				continue;
 			}
-		}
 
-		for (GameServerSection* section : delete_sections)
-		{
-			thread->RemoveSection(section);
+			section_thread->m_Sections[i]->Update();
 		}
-
-		delete_sections.clear();
+		Sleep(1);
 	}
 }
 
-void GameServerSectionThread::AddSection(GameServerSection* section)
+void GameServerSectionThread::AddSection(const std::shared_ptr<GameServerSection>& section)
 {
+	++m_SectionSize;
+	m_Sections.push_back(section);
 }
 
-void GameServerSectionThread::RemoveSection(GameServerSection* section)
+void GameServerSectionThread::RemoveSection(const std::shared_ptr<GameServerSection>& section)
 {
 	if (nullptr == section)
 	{
@@ -41,14 +47,16 @@ void GameServerSectionThread::RemoveSection(GameServerSection* section)
 		return;
 	}
 
-	auto section_iter = m_Sections.begin();
-	for (; section_iter != m_Sections.end(); ++section_iter)
+	for (auto& section_element : m_Sections)
 	{
-		if ((*section_iter)->GetSectionNumber() == section->GetSectionNumber())
+		if (section_element == section)
 		{
-			delete (*section_iter);
-			section_iter = m_Sections.erase(section_iter);
-			return;
+			section_element = nullptr;
 		}
 	}
+}
+
+void GameServerSectionThread::StartSectionThread()
+{
+	Start(ThreadFunction, this);
 }

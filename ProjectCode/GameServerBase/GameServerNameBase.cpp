@@ -1,15 +1,6 @@
 #include "PreCompile.h"
 #include "GameServerNameBase.h"
 
-GameServerNameBase::GameServerNameBase() = default;
-
-GameServerNameBase::~GameServerNameBase() = default;
-
-GameServerNameBase::GameServerNameBase(GameServerNameBase&& other) noexcept
-{
-
-}
-
 void GameServerNameBase::SetName(const std::string& name)
 {
 	m_Name = name;

@@ -6,6 +6,8 @@
 class GameServerObjectBase : public std::enable_shared_from_this<GameServerObjectBase>
 {
 private: // Member Var
+	bool m_IsDeath;
+	bool m_IsUpdate;
 
 public: // Default
 	GameServerObjectBase();
@@ -79,5 +81,7 @@ public:
 
 public: // Member Function
 	bool IsValidLowLevel();
+	[[nodiscard]] bool IsDeath() const { return m_IsDeath; }
+	[[nodiscard]] bool IsUpdate() const { return m_IsUpdate; }
 };
 
