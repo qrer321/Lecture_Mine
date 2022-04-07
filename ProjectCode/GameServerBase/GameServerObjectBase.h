@@ -6,8 +6,12 @@
 class GameServerObjectBase : public std::enable_shared_from_this<GameServerObjectBase>
 {
 private: // Member Var
-	bool m_IsDeath;
-	bool m_IsUpdate;
+	GameServerObjectBase*								m_Parent;
+	std::vector<std::shared_ptr<GameServerObjectBase>>	m_LinkObject{};
+
+	std::atomic<bool>									m_IsUpdate;
+	std::atomic<bool>									m_IsDeath;
+	float												m_AccTime;
 
 public: // Default
 	GameServerObjectBase();
@@ -19,10 +23,6 @@ public: // Default
 public:
 	GameServerObjectBase& operator=(const GameServerObjectBase& other) = delete;
 	GameServerObjectBase& operator=(GameServerObjectBase&& other) = delete;
-
-private:
-	GameServerObjectBase*								m_Parent;
-	std::vector<std::shared_ptr<GameServerObjectBase>>	m_LinkObject;
 
 public:
 	void SetParent(GameServerObjectBase* parent) { m_Parent = parent; }
@@ -82,6 +82,10 @@ public:
 public: // Member Function
 	bool IsValidLowLevel();
 	[[nodiscard]] bool IsDeath() const { return m_IsDeath; }
-	[[nodiscard]] bool IsUpdate() const { return m_IsUpdate; }
+	[[nodiscard]] bool IsUpdate() const { return m_IsUpdate && false == m_IsDeath; }
+
+	void AccTimeReset() { m_AccTime = 0.f; }
+	void AccTimeUpdate(float delta_time) { m_AccTime += delta_time; }
+	float GetAccTime() const { return m_AccTime; }
 };
 

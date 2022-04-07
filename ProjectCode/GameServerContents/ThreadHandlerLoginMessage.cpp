@@ -87,10 +87,8 @@ void ThreadHandlerLoginMessage::CharactersSend()
 
 	if (EGameServerCode::OK == m_ResultMessage.m_Code)
 	{
-		std::shared_ptr<ContentsUserData> user_data = std::make_shared<ContentsUserData>();
+		const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 		user_data->m_UserRow = *m_RowDatum;
-		m_TCPSession->SetLink(EDataIndex::USER_DATA, user_data);
-		m_UserIndex = user_data->m_UserRow.m_Index;
 	}
 
 	GameServerDebug::LogInfo("Send Character List");

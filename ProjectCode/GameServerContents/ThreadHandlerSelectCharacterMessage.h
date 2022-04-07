@@ -7,7 +7,6 @@ class ThreadHandlerSelectCharacterMessage final : public ThreadHandlerBase<Selec
 {
 private: // Member Var
 	SelectCharacterResultMessage	m_ResultMessage;	// 처리한 결과
-	FCharacterInfo					m_SelectCharacterInfo;
 
 public: // Default
 	ThreadHandlerSelectCharacterMessage() = default;

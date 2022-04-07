@@ -1,9 +1,11 @@
 #pragma once
 #include <GameServerCore/GameServerActor.h>
 
+class ContentsUserData;
 class Player : public GameServerActor
 {
 private: // Member Var
+	std::shared_ptr<ContentsUserData> m_UserData;
 
 public: // Default
 	Player() = default;
@@ -15,7 +17,12 @@ public: // Default
 	Player& operator=(Player&& other) = delete;
 
 private:
-	void Update() override;
+	void SessionInitialize() override;
+	void SectionInitialize() override;
+
+	void Update(float delta_time) override;
+
+	bool InsertSection() override;
 
 public: // Member Function
 };

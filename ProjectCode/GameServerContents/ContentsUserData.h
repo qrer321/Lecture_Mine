@@ -8,6 +8,7 @@ class ContentsUserData : public GameServerObjectBase
 public: // Member Var
 	UserRow						m_UserRow;
 	std::vector<FCharacterInfo> m_CharactersInfo{};
+	FCharacterInfo				m_SelectCharacterInfo;
 
 public: // Default
 	ContentsUserData() = default;

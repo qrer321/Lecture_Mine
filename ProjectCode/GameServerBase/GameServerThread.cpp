@@ -6,6 +6,7 @@ thread_local std::string			GameServerThread::m_Name;
 thread_local unsigned int			GameServerThread::m_Order;
 thread_local const std::type_info*	GameServerThread::m_LocalDataType = nullptr;
 thread_local std::vector<char>		GameServerThread::m_Data;
+thread_local GameServerTime			GameServerThread::m_Timer;
 
 void GameServerThread::SetThreadName(const std::string& name)
 {

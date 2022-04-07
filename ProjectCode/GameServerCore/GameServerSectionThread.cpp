@@ -2,32 +2,38 @@
 #include "GameServerSectionThread.h"
 
 GameServerSectionThread::GameServerSectionThread()
-	: m_LastIndex(0)
-	, m_SectionSize(0)
 {
 	m_Sections.reserve(100);
 }
 
-void GameServerSectionThread::ThreadFunction(GameServerSectionThread* section_thread)
+void GameServerSectionThread::ThreadFunction()
 {
-	if (nullptr == section_thread)
-	{
-		GameServerDebug::LogErrorAssert("Section Thread Is Nullptr");
-		return;
-	}
+	m_Timer.Reset();
 
-	std::vector<GameServerSection*> delete_sections;
 	while (true)
 	{
-		const size_t section_size = section_thread->m_SectionSize;
-		for (size_t i = 0; i < section_size; ++i)
+		if (0 != m_InsertSectionSize)
 		{
-			if (nullptr == section_thread->m_Sections[i])
+			std::lock_guard lock(m_InsertSectionLock);
+			for (const auto& insert_section : m_InsertSections)
+			{
+				insert_section->AccTimeReset();
+				m_Sections.push_back(insert_section);
+			}
+			m_InsertSections.clear();
+			m_InsertSectionSize = 0;
+		}
+
+		const float delta_time = m_Timer.Update();
+		for (const auto& section : m_Sections)
+		{
+			if (false == section->IsUpdate())
 			{
 				continue;
 			}
 
-			section_thread->m_Sections[i]->Update();
+			section->AccTimeUpdate(delta_time);
+			section->Update(delta_time);
 		}
 		Sleep(1);
 	}
@@ -35,8 +41,8 @@ void GameServerSectionThread::ThreadFunction(GameServerSectionThread* section_th
 
 void GameServerSectionThread::AddSection(const std::shared_ptr<GameServerSection>& section)
 {
-	++m_SectionSize;
-	m_Sections.push_back(section);
+	++m_InsertSectionSize;
+	m_InsertSections.push_back(section);
 }
 
 void GameServerSectionThread::RemoveSection(const std::shared_ptr<GameServerSection>& section)
@@ -51,12 +57,15 @@ void GameServerSectionThread::RemoveSection(const std::shared_ptr<GameServerSect
 	{
 		if (section_element == section)
 		{
-			section_element = nullptr;
+			//section_element = nullptr;
+			section_element->IsDeath();	// -> ???
 		}
 	}
+
+	++m_DeleteSectionSize;
 }
 
 void GameServerSectionThread::StartSectionThread()
 {
-	Start(ThreadFunction, this);
+	Start(&GameServerSectionThread::ThreadFunction, this);
 }

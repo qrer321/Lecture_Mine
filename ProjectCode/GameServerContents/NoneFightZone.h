@@ -7,7 +7,7 @@ private: // Member Var
 
 public: // Default
 	NoneFightZone() = default;
-	~NoneFightZone() = default;
+	~NoneFightZone() override = default;
 
 	NoneFightZone(const NoneFightZone& other) = delete;
 	NoneFightZone(NoneFightZone&& other) noexcept = delete;
@@ -17,5 +17,6 @@ public: // Default
 private:
 
 public: // Member Function
+	void UserUpdate() override;
 };
 

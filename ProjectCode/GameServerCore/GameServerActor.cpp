@@ -3,5 +3,6 @@
 
 GameServerActor::GameServerActor()
 	: m_ID(-1)
+	, m_Section(nullptr)
 {
 }

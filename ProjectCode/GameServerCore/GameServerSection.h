@@ -10,8 +10,11 @@ class GameServerSection : public GameServerObjectBase
 
 private: // Member Var
 	std::map<uint64_t, std::shared_ptr<GameServerActor>>	m_AllActor;
-	std::list<std::shared_ptr<GameServerActor>>				m_UpdateActor;
+	std::list<std::shared_ptr<GameServerActor>>				m_PlayableActor;
+	std::list<std::shared_ptr<GameServerActor>>				m_AIActor;
+
 	std::vector<std::shared_ptr<GameServerActor>>			m_WaitActor;
+	std::atomic<size_t>										m_WaitActorCount;
 	std::mutex												m_WaitLock;
 
 	uint64_t m_SectionKey{};
@@ -27,6 +30,8 @@ public: // Default
 	GameServerSection& operator=(GameServerSection&& other) = delete;
 
 private:
+	virtual void UserUpdate() = 0;
+
 	void SetSectionKey(uint64_t section_key) { m_SectionKey = section_key; }
 	void SetThreadKey(uint64_t thread_key) { m_ThreadKey = thread_key; }
 
@@ -74,6 +79,7 @@ public:
 public: // Member Function
 	uint64_t GetSectionKey() const { return m_SectionKey; }
 
-	bool Update();
+	bool Update(float delta_time);
+	void Broadcasting();
 };
 

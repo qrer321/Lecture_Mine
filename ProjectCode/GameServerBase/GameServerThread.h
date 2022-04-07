@@ -1,6 +1,7 @@
 #pragma once
 #include <thread>
 #include "GameServerDebug.h"
+#include "GameServerTime.h"
 
 class GameServerThread
 {
@@ -10,6 +11,9 @@ private: // Member Var
 	static thread_local unsigned int			m_Order;
 	static thread_local const std::type_info*	m_LocalDataType;
 	static thread_local std::vector<char>		m_Data;
+
+protected:
+	static thread_local GameServerTime			m_Timer;
 
 public: // Default
 	template <class _Fn, class... _Args, std::enable_if_t<!std::is_same_v<std::_Remove_cvref_t<_Fn>, std::thread>, int> = 0>

@@ -9,10 +9,13 @@ private: // Member Var
 	GameServerQueue*								m_SectionTaskQueue{};
 	std::shared_ptr<std::thread>					m_Thread;
 
-	std::atomic<size_t>								m_LastIndex;
-	std::atomic<size_t>								m_SectionSize;
-	std::mutex										m_SectionLock;
 	std::vector<std::shared_ptr<GameServerSection>> m_Sections;
+
+	std::vector<std::shared_ptr<GameServerSection>> m_InsertSections;
+	std::atomic<size_t>								m_InsertSectionSize;
+	std::mutex										m_InsertSectionLock;
+
+	std::atomic<size_t>								m_DeleteSectionSize;
 
 public: // Default
 	GameServerSectionThread();
@@ -25,7 +28,7 @@ public: // Default
 	GameServerSectionThread& operator=(GameServerSectionThread&& other) = delete;
 
 private:
-	static void ThreadFunction(GameServerSectionThread* section_thread);
+	void ThreadFunction();
 
 public: // Member Function
 	void AddSection(const std::shared_ptr<GameServerSection>& section);

@@ -30,6 +30,9 @@
 #include <sstream>
 #include <deque>
 
+// ½Ã°£
+#include <chrono>
+
 // µð¹ö±ë
 #include <functional>
 #include <cassert>

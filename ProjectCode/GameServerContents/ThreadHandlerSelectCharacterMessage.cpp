@@ -23,14 +23,14 @@ void ThreadHandlerSelectCharacterMessage::DBCheck()
 
 void ThreadHandlerSelectCharacterMessage::SelectResult()
 {
-	std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 	if (EGameServerCode::OK == m_ResultMessage.m_Code)
 	{
 		for (const FCharacterInfo& character_info : user_data->m_CharactersInfo)
 		{
 			if (character_info.m_Nickname == m_Message->m_Nickname)
 			{
-				m_SelectCharacterInfo = character_info;
+				user_data->m_SelectCharacterInfo = character_info;
 
 				GameServerSerializer serializer;
 				m_ResultMessage.m_Nickname = m_Message->m_Nickname;
@@ -51,12 +51,19 @@ void ThreadHandlerSelectCharacterMessage::SelectResult()
 	m_TCPSession->Send(serializer.GetData());
 
 	GameServerDebug::LogInfo("Send Select Character Fail Result");
-	NetWork(&ThreadHandlerSelectCharacterMessage::InsertSection);
 }
 
 void ThreadHandlerSelectCharacterMessage::InsertSection()
 {
-	const std::shared_ptr<GameServerSection> last_section = GameServerSectionManager::GetInst()->FindSection(m_SelectCharacterInfo.m_LastSectionID);
+	const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+
+	int last_section_id = user_data->m_SelectCharacterInfo.m_LastSectionID;
+	if (-1 == last_section_id)
+	{
+		last_section_id = static_cast<int>(ESectionType::NONE_FIGHT);
+	}
+
+	const std::shared_ptr<GameServerSection> last_section = GameServerSectionManager::GetInst()->FindSection(last_section_id);
 	if (nullptr == last_section)
 	{
 		return;
