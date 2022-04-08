@@ -7,6 +7,7 @@ class GameServerActor;
 class GameServerSection : public GameServerObjectBase
 {
 	friend class GameServerSectionManager;
+	friend class GameServerSectionThread;
 
 private: // Member Var
 	std::map<uint64_t, std::shared_ptr<GameServerActor>>	m_AllActor;
@@ -17,8 +18,10 @@ private: // Member Var
 	std::atomic<size_t>										m_WaitActorCount;
 	std::mutex												m_WaitLock;
 
-	uint64_t m_SectionKey{};
-	uint64_t m_ThreadKey{};
+	GameServerSectionThread*								m_SectionThread;
+
+	uint64_t m_SectionIndex{};
+	uint64_t m_ThreadIndex{};
 
 public: // Default
 	GameServerSection();
@@ -32,54 +35,59 @@ public: // Default
 private:
 	virtual void UserUpdate() = 0;
 
-	void SetSectionKey(uint64_t section_key) { m_SectionKey = section_key; }
-	void SetThreadKey(uint64_t thread_key) { m_ThreadKey = thread_key; }
+	void SetSectionThread(GameServerSectionThread* section_thread) { m_SectionThread = section_thread; }
 
-	void InsertActor(uint64_t id, const std::shared_ptr<GameServerActor>& actor);
+	void SetSectionIndex(uint64_t section_index) { m_SectionIndex = section_index; }
+	void SetThreadIndex(uint64_t thread_index) { m_ThreadIndex = thread_index; }
+
+	void InsertActor(const std::shared_ptr<GameServerActor>& actor);
 
 public:
 	template <typename ActorType, typename... Parameter>
 	uint64_t CreateActor(Parameter... args)
 	{
-		int unique_id = GameServerUnique::GetNextUniqueId();
-		CreateActor<ActorType>(unique_id, args...);
+		int actor_index = GameServerUnique::GetNextUniqueId();
+		CreateActor<ActorType>(actor_index, args...);
 
-		return unique_id;
+		return actor_index;
 	}
 
 	template <typename ActorType, typename... Parameter>
-	void CreateActor(uint64_t id, Parameter... args)
+	void CreateActor(uint64_t actor_index, Parameter... args)
 	{
 		std::shared_ptr<ActorType> new_actor = std::make_shared<ActorType>(args...);
-		new_actor->SetID(id);
+		new_actor->SetActorIndex(actor_index);
 
-		InsertActor(id, std::dynamic_pointer_cast<GameServerActor>(new_actor));
+		InsertActor(std::dynamic_pointer_cast<GameServerActor>(new_actor));
 	}
 
 
 	template <typename ActorType, typename... Parameter>
 	uint64_t CreateActor(const std::shared_ptr<TCPSession>& session, Parameter... args)
 	{
-		uint64_t unique_id = GameServerUnique::GetNextUniqueId();
-		CreateActor<ActorType>(session, unique_id, args...);
+		uint64_t actor_index = GameServerUnique::GetNextUniqueId();
+		CreateActor<ActorType>(session, actor_index, args...);
 
-		return unique_id;
+		return actor_index;
 	}
 
 	template <typename ActorType, typename... Parameter>
-	void CreateActor(const std::shared_ptr<TCPSession>& session, uint64_t id, Parameter... args)
+	void CreateActor(const std::shared_ptr<TCPSession>& session, uint64_t actor_index, Parameter... args)
 	{
 		std::shared_ptr<ActorType> new_actor = std::make_shared<ActorType>(args...);
-		new_actor->SetID(id);
+		new_actor->SetActorIndex(actor_index);
 		new_actor->SetSession(session);
 
-		InsertActor(id, std::dynamic_pointer_cast<GameServerActor>(new_actor));
+		InsertActor(std::dynamic_pointer_cast<GameServerActor>(new_actor));
 	}
 
 public: // Member Function
-	uint64_t GetSectionKey() const { return m_SectionKey; }
+	GameServerSectionThread* GetSectionThread() const { return m_SectionThread; }
+
+	uint64_t GetSectionIndex() const { return m_SectionIndex; }
+	uint64_t GetThreadIndex() const { return m_ThreadIndex; }
 
 	bool Update(float delta_time);
-	void Broadcasting();
+	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
 };
 

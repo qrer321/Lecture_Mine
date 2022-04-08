@@ -1,11 +1,15 @@
 #pragma once
 #include <GameServerCore/GameServerActor.h>
+#include "ServerAndClient.h"
 
 class ContentsUserData;
 class Player : public GameServerActor
 {
 private: // Member Var
-	std::shared_ptr<ContentsUserData> m_UserData;
+	PlayerUpdateMessage					m_UpdateMessage;
+	GameServerSerializer				m_Serializer;
+
+	std::shared_ptr<ContentsUserData>	m_UserData;
 
 public: // Default
 	Player() = default;
@@ -15,6 +19,12 @@ public: // Default
 	Player(Player&& other) noexcept = delete;
 	Player& operator=(const Player& other) = delete;
 	Player& operator=(Player&& other) = delete;
+
+protected:
+	PlayerUpdateMessage& GetPlayerUpdateMessage();
+	GameServerSerializer& GetPlayerUpdateSerializer();
+
+	void PlayerUpdateBroadcasting();
 
 private:
 	void SessionInitialize() override;

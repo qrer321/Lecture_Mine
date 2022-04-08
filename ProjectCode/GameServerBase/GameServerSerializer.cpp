@@ -62,6 +62,11 @@ void GameServerSerializer::operator<<(const unsigned int value)
 	Write(&value, sizeof(unsigned int));
 }
 
+void GameServerSerializer::operator<<(const uint64_t& value)
+{
+	Write(&value, sizeof(uint64_t));
+}
+
 void GameServerSerializer::operator<<(const float value)
 {
 	Write(&value, sizeof(float));
@@ -92,6 +97,11 @@ void GameServerSerializer::operator>>(int& value)
 void GameServerSerializer::operator>>(unsigned int& value)
 {
 	Read(&value, sizeof(unsigned int));
+}
+
+void GameServerSerializer::operator>>(uint64_t& value)
+{
+	Read(&value, sizeof(uint64_t));
 }
 
 void GameServerSerializer::operator>>(float& value)

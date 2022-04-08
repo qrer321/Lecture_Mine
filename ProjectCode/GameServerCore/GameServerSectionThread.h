@@ -5,9 +5,12 @@
 
 class GameServerSectionThread : GameServerThread
 {
+	friend class GameServerSectionManager;
+
 private: // Member Var
 	GameServerQueue*								m_SectionTaskQueue{};
 	std::shared_ptr<std::thread>					m_Thread;
+	uint64_t										m_ThreadIndex{};
 
 	std::vector<std::shared_ptr<GameServerSection>> m_Sections;
 
@@ -30,7 +33,11 @@ public: // Default
 private:
 	void ThreadFunction();
 
+	void SetThreadIndex(uint64_t thread_index) { m_ThreadIndex = thread_index; }
+
 public: // Member Function
+	uint64_t GetThreadIndex() const { return m_ThreadIndex; }
+
 	void AddSection(const std::shared_ptr<GameServerSection>& section);
 	void RemoveSection(const std::shared_ptr<GameServerSection>& section);
 

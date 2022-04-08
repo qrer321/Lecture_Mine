@@ -101,6 +101,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="GameServerMathStruct.cpp" />
     <ClCompile Include="GameServerNameBase.cpp">
       <SubType>
       </SubType>

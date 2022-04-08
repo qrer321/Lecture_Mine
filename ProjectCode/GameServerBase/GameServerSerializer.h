@@ -24,17 +24,26 @@ public:
 	void operator>>(std::string& value);
 	void operator>>(int& value);
 	void operator>>(unsigned int& value);
+	void operator>>(uint64_t& value);
 	void operator>>(float& value);
 	void operator>>(FVector& value);
 
 	void operator<<(const std::string& value);
 	void operator<<(const int value);
 	void operator<<(const unsigned int value);
+	void operator<<(const uint64_t& value);
 	void operator<<(const float value);
 	void operator<<(const FVector& value);
 
 public:
 	const std::vector<unsigned char>& GetData() { return m_Data; }
+
+	void Reset()
+	{
+		m_Offset = 0;
+		m_Data.clear();
+		m_Data.resize(1024);
+	}
 
 public:
 	template <typename T>

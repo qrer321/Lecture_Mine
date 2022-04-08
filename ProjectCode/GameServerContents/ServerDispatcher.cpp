@@ -3,6 +3,7 @@
 #include <GameServerBase/GameServerDebug.h>																									
 																																			
 #include "ThreadHandlerChatMessage.h"															
+#include "ThreadHandlerPlayerUpdateMessage.h"															
 #include "ThreadHandlerLoginMessage.h"																	
 #include "ThreadHandlerJoinMessage.h"																	
 #include "ThreadHandlerCreateCharacterMessage.h"																	
@@ -31,6 +32,12 @@ void DispatcherRegistration()
 		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					
 		{																										
 			return OnMessageProcess<ThreadHandlerChatMessage, ChatMessage>(std::move(tcp_session), std::move(message));			
+		});																										
+																												
+		g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::PlayerUpdate),	
+		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					
+		{																										
+			return OnMessageProcess<ThreadHandlerPlayerUpdateMessage, PlayerUpdateMessage>(std::move(tcp_session), std::move(message));			
 		});																										
 																												
 		g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::Login),			

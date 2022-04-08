@@ -117,6 +117,9 @@
     <ClCompile Include="GameServerTime.cpp">
       <Filter>Time</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerMathStruct.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

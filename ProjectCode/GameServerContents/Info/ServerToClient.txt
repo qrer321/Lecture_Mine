@@ -14,6 +14,9 @@ std::string m_Nickname;
 
 |InsertSectionResult-
 EGameServerCode m_Code;
+uint64_t m_ActorIndex;
+uint64_t m_ThreadIndex;
+uint64_t m_SectionIndex;
 
 |CharacterList-
 std::vector<FCharacterInfo> m_CharactersInfo;

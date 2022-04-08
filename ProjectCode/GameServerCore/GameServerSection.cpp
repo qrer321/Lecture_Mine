@@ -1,15 +1,19 @@
 #include "PreCompile.h"
 #include "GameServerSection.h"
 #include "GameServerActor.h"
+#include "GameServerNet/TCPSession.h"
 
 GameServerSection::GameServerSection()
+	: m_SectionThread(nullptr)
 {
 	m_WaitActor.reserve(100);
 }
 
-void GameServerSection::InsertActor(uint64_t id, const std::shared_ptr<GameServerActor>& actor)
+void GameServerSection::InsertActor(const std::shared_ptr<GameServerActor>& actor)
 {
 	std::lock_guard lock(m_WaitLock);
+	actor->SetSectionIndex(GetSectionIndex());
+	actor->SetThreadIndex(GetThreadIndex());
 	m_WaitActor.push_back(actor);
 	m_WaitActorCount = m_WaitActor.size();
 }
@@ -49,6 +53,10 @@ bool GameServerSection::Update(float delta_time)
 			{
 				m_PlayableActor.push_back(wait_actor);
 			}
+			else
+			{
+				m_AIActor.push_back(wait_actor);
+			}
 
 			wait_actor->SetSection(this);
 			wait_actor->AccTimeReset();
@@ -59,7 +67,7 @@ bool GameServerSection::Update(float delta_time)
 				continue;
 			}
 
-			m_AllActor.insert(std::make_pair(wait_actor->GetID(), wait_actor));
+			m_AllActor.insert(std::make_pair(wait_actor->GetActorIndex(), wait_actor));
 		}
 
 		m_WaitActor.clear();
@@ -69,15 +77,15 @@ bool GameServerSection::Update(float delta_time)
 	return true;
 }
 
-void GameServerSection::Broadcasting()
+void GameServerSection::Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor /*= -1*/)
 {
 	for (const auto& actor : m_PlayableActor)
 	{
-		if (nullptr == actor->GetSession())
+		if (ignore_actor == actor->GetActorIndex())
 		{
-			// Player Actor가 TCPSession을 들고있지 않는다
-			// -> 잘못된 Player Actor
 			continue;
 		}
+
+		actor->GetSession()->Send(buffer);
 	}
 }

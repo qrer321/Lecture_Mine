@@ -86,7 +86,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)Bin\$(Configuration)\$(Platform)\$(ProjectName)\</IntDir>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)Bin\$(Configuration)\$(Platform)\;</LibraryPath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)$(SolutionDir)Bin\$(Configuration)\$(Platform)\;$(SolutionDir)\ThirdParty\Lib\</LibraryPath>
+    <ExternalIncludePath>$(SolutionDir)\ThirdParty\include\;$(ExternalIncludePath)</ExternalIncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>

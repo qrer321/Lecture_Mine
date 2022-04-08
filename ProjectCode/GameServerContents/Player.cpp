@@ -5,7 +5,32 @@
 #include <GameServerCore/GameServerSection.h>
 #include "ServerToClient.h"
 #include "ClientToServer.h"
+#include "ContentsUserData.h"
 #include "ContentsSystemEnum.h"
+
+PlayerUpdateMessage& Player::GetPlayerUpdateMessage()
+{
+	m_UpdateMessage.m_Pos = GetActorPos();
+	m_UpdateMessage.m_Dir = GetActorDir();
+
+	return m_UpdateMessage;
+}
+
+GameServerSerializer& Player::GetPlayerUpdateSerializer()
+{
+	m_UpdateMessage.m_Pos = GetActorPos();
+	m_UpdateMessage.m_Dir = GetActorDir();
+
+	m_Serializer.Reset();
+	m_UpdateMessage.Serialize(m_Serializer);
+
+	return m_Serializer;
+}
+
+void Player::PlayerUpdateBroadcasting()
+{
+	GetSection()->Broadcasting(GetPlayerUpdateSerializer().GetData(), GetActorIndex());
+}
 
 void Player::SessionInitialize()
 {
@@ -34,13 +59,22 @@ bool Player::InsertSection()
 		return false;
 	}
 
+	m_UpdateMessage.m_ActorIndex = GetActorIndex();
+	m_UpdateMessage.m_ThreadIndex = GetThreadIndex();
+	m_UpdateMessage.m_SectionIndex = GetSectionIndex();
+
+	SetActorPos({ 200.f, 0.f, 0.f });
+
 	InsertSectionResultMessage insert_message;
 	GameServerSerializer serializer;
 	insert_message.m_Code = EGameServerCode::OK;
+	insert_message.m_ActorIndex = GetActorIndex();
+	insert_message.m_ThreadIndex = GetThreadIndex();
+	insert_message.m_SectionIndex = GetSectionIndex();
 	insert_message.Serialize(serializer);
 	GetSession()->Send(serializer.GetData());
 
-	GetSection()->Broadcasting();
+	PlayerUpdateBroadcasting();
 	GameServerDebug::LogInfo("Insert Section Result Send");
 
 	return true;

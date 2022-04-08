@@ -39,19 +39,19 @@ public: // Member Function
 	void Init(int thread_count);
 
 	template <typename SectionType, typename EnumType, typename... Parameter>
-	void CreateSection(int thread_key, EnumType enum_type, Parameter... args)
+	void CreateSection(int thread_index, EnumType enum_type, Parameter... args)
 	{
-		CreateSection<SectionType>(thread_key, static_cast<uint64_t>(enum_type), args...);
+		CreateSection<SectionType>(thread_index, static_cast<uint64_t>(enum_type), args...);
 	}
 
 	template <typename SectionType, typename... Parameter>
-	void CreateSection(int thread_key, uint64_t section_key, Parameter... args)
+	void CreateSection(int thread_index, uint64_t section_index, Parameter... args)
 	{
-		CreateSection(thread_key, section_key, std::make_shared<SectionType>(args...));
+		CreateSection(thread_index, section_index, std::make_shared<SectionType>(args...));
 	}
 
-	void CreateSection(int thread_key, uint64_t section_key, std::shared_ptr<GameServerSection> section);
-	uint64_t RemoveSection(int thread_key, uint64_t section_key);
+	void CreateSection(int thread_index, uint64_t section_index, const std::shared_ptr<GameServerSection>& section);
+	uint64_t RemoveSection(int thread_index, uint64_t section_index);
 
 	std::shared_ptr<GameServerSection> FindSection(uint64_t section_key);
 };

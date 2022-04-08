@@ -17,6 +17,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::Chat:
 		m_Message = std::make_shared<ChatMessage>();
 		break;
+	case MessageType::PlayerUpdate:
+		m_Message = std::make_shared<PlayerUpdateMessage>();
+		break;
 	case MessageType::LoginResult:
 		m_Message = std::make_shared<LoginResultMessage>();
 		break;

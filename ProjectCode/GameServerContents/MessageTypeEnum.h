@@ -3,6 +3,7 @@
 enum class MessageType
 {
 	Chat,
+	PlayerUpdate,
 	LoginResult,
 	JoinResult,
 	CreateCharacterResult,

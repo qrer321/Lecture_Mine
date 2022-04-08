@@ -176,11 +176,17 @@ class InsertSectionResultMessage : public GameServerMessage
 {																											
 public:																										
 	EGameServerCode m_Code;
+	uint64_t m_ActorIndex;
+	uint64_t m_ThreadIndex;
+	uint64_t m_SectionIndex;
 																												
 public:																										
 	InsertSectionResultMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::InsertSectionResult))					
 		, m_Code()																		
+		, m_ActorIndex()																		
+		, m_ThreadIndex()																		
+		, m_SectionIndex()																		
 	{																											
 	}																											
 	~InsertSectionResultMessage() override = default;													
@@ -194,7 +200,7 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Code);
+		return DataSizeCheck(m_Code) + DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
@@ -202,6 +208,9 @@ public:
 		GameServerMessage::Serialize(serializer);																
 																												
 		serializer.WriteEnum(m_Code);
+		serializer << m_ActorIndex;
+		serializer << m_ThreadIndex;
+		serializer << m_SectionIndex;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
@@ -209,6 +218,9 @@ public:
 		GameServerMessage::Deserialize(serializer);																
 																												
 		serializer.ReadEnum(m_Code);
+		serializer >> m_ActorIndex;
+		serializer >> m_ThreadIndex;
+		serializer >> m_SectionIndex;
 	}																											
 };																											
 

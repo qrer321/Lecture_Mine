@@ -42,6 +42,7 @@ void GameServerSectionThread::ThreadFunction()
 void GameServerSectionThread::AddSection(const std::shared_ptr<GameServerSection>& section)
 {
 	++m_InsertSectionSize;
+	section->SetSectionThread(this);
 	m_InsertSections.push_back(section);
 }
 
@@ -58,7 +59,7 @@ void GameServerSectionThread::RemoveSection(const std::shared_ptr<GameServerSect
 		if (section_element == section)
 		{
 			//section_element = nullptr;
-			section_element->IsDeath();	// -> ???
+			//section_element->IsDeath();	// -> ???
 		}
 	}
 
