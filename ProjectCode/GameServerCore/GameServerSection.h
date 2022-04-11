@@ -87,6 +87,8 @@ public: // Member Function
 	uint64_t GetSectionIndex() const { return m_SectionIndex; }
 	uint64_t GetThreadIndex() const { return m_ThreadIndex; }
 
+	const std::list<std::shared_ptr<GameServerActor>>& GetPlayableActor() { return m_PlayableActor; }
+
 	bool Update(float delta_time);
 	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
 };

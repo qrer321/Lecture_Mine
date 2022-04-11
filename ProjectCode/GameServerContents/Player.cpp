@@ -10,21 +10,26 @@
 
 PlayerUpdateMessage& Player::GetPlayerUpdateMessage()
 {
-	m_UpdateMessage.m_Pos = GetActorPos();
-	m_UpdateMessage.m_Dir = GetActorDir();
+	m_UpdateMessage.m_Datum.m_Pos = GetActorPos();
+	m_UpdateMessage.m_Datum.m_Dir = GetActorDir();
 
 	return m_UpdateMessage;
 }
 
 GameServerSerializer& Player::GetPlayerUpdateSerializer()
 {
-	m_UpdateMessage.m_Pos = GetActorPos();
-	m_UpdateMessage.m_Dir = GetActorDir();
+	m_UpdateMessage.m_Datum.m_Pos = GetActorPos();
+	m_UpdateMessage.m_Datum.m_Dir = GetActorDir();
 
 	m_Serializer.Reset();
 	m_UpdateMessage.Serialize(m_Serializer);
 
 	return m_Serializer;
+}
+
+void Player::PlayerUpdateSelf()
+{
+	GetSession()->Send(GetPlayerUpdateSerializer().GetData());
 }
 
 void Player::PlayerUpdateBroadcasting()
@@ -59,9 +64,9 @@ bool Player::InsertSection()
 		return false;
 	}
 
-	m_UpdateMessage.m_ActorIndex = GetActorIndex();
-	m_UpdateMessage.m_ThreadIndex = GetThreadIndex();
-	m_UpdateMessage.m_SectionIndex = GetSectionIndex();
+	m_UpdateMessage.m_Datum.m_ActorIndex = GetActorIndex();
+	m_UpdateMessage.m_Datum.m_ThreadIndex = GetThreadIndex();
+	m_UpdateMessage.m_Datum.m_SectionIndex = GetSectionIndex();
 
 	SetActorPos({ 200.f, 0.f, 0.f });
 
@@ -74,7 +79,7 @@ bool Player::InsertSection()
 	insert_message.Serialize(serializer);
 	GetSession()->Send(serializer.GetData());
 
-	PlayerUpdateBroadcasting();
+	//PlayerUpdateBroadcasting();
 	GameServerDebug::LogInfo("Insert Section Result Send");
 
 	return true;

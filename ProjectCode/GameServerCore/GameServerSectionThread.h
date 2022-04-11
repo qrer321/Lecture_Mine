@@ -8,7 +8,7 @@ class GameServerSectionThread : GameServerThread
 	friend class GameServerSectionManager;
 
 private: // Member Var
-	GameServerQueue*								m_SectionTaskQueue{};
+	GameServerQueue									m_SectionThreadQueue{};
 	std::shared_ptr<std::thread>					m_Thread;
 	uint64_t										m_ThreadIndex{};
 

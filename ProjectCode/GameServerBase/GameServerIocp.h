@@ -58,8 +58,6 @@ public: // Default
 
 	GameServerIocp(const GameServerIocp& other) = delete;
 	GameServerIocp(GameServerIocp&& other) noexcept = delete;
-
-public:
 	GameServerIocp& operator=(const GameServerIocp& other) = delete;
 	GameServerIocp& operator=(GameServerIocp&& other) = delete;
 
@@ -71,5 +69,7 @@ public:
 	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time, unsigned int order);
 	void Post(DWORD byteSize, ULONG_PTR data);
 	bool Bind(HANDLE handle, ULONG_PTR key) const;
+
+	bool Execute(DWORD& number_of_bytes_transferred, ULONG_PTR& completion_key, DWORD time);
 };
 

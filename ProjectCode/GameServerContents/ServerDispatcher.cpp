@@ -8,6 +8,7 @@
 #include "ThreadHandlerJoinMessage.h"																	
 #include "ThreadHandlerCreateCharacterMessage.h"																	
 #include "ThreadHandlerSelectCharacterMessage.h"																	
+#include "ThreadHandlerClientToReadyMessage.h"																	
 																																			
 Dispatcher<TCPSession> g_dispatcher;																										
 																																			
@@ -62,5 +63,11 @@ void DispatcherRegistration()
 		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					
 		{																										
 			return OnMessageProcess<ThreadHandlerSelectCharacterMessage, SelectCharacterMessage>(std::move(tcp_session), std::move(message));					
+		});																										
+																												
+		g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::ClientToReady),			
+		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					
+		{																										
+			return OnMessageProcess<ThreadHandlerClientToReadyMessage, ClientToReadyMessage>(std::move(tcp_session), std::move(message));					
 		});																										
 }																																		     

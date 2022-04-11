@@ -95,3 +95,8 @@ bool GameServerIocp::Bind(HANDLE handle, ULONG_PTR key) const
 
 	return true;
 }
+
+bool GameServerIocp::Execute(DWORD& number_of_bytes_transferred, ULONG_PTR& completion_key, DWORD time)
+{
+	return GetQueuedCompletionStatus(m_IocpHandle, &number_of_bytes_transferred, &completion_key, nullptr, time);
+}

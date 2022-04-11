@@ -12,10 +12,12 @@ enum class MessageType
 	CharacterList,
 	ServerDestroy,
 	ObjectDestroy,
+	PlayersUpdate,
 	EnemyUpdate,
 	Login,
 	Join,
 	CreateCharacter,
 	SelectCharacter,
+	ClientToReady,
 	MAX
 };

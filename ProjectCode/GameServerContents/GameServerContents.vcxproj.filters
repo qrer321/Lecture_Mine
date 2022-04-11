@@ -45,6 +45,9 @@
     <ClCompile Include="ThreadHandlerPlayerUpdateMessage.cpp">
       <Filter>ThreadHandler\PlayerUpdate</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerClientToReadyMessage.cpp">
+      <Filter>ThreadHandler\PlayerUpdate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompile.h">
@@ -107,6 +110,9 @@
       <Filter>Object\Actor</Filter>
     </ClInclude>
     <ClInclude Include="ThreadHandlerPlayerUpdateMessage.h">
+      <Filter>ThreadHandler\PlayerUpdate</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadHandlerClientToReadyMessage.h">
       <Filter>ThreadHandler\PlayerUpdate</Filter>
     </ClInclude>
   </ItemGroup>

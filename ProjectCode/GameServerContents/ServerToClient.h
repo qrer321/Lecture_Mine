@@ -340,6 +340,46 @@ public:
 	}																											
 };																											
 
+class PlayersUpdateMessage : public GameServerMessage											
+{																											
+public:																										
+	std::vector<FPlayerUpdateData> m_Data;
+																												
+public:																										
+	PlayersUpdateMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::PlayersUpdate))					
+		, m_Data()																		
+	{																											
+	}																											
+	~PlayersUpdateMessage() override = default;													
+																												
+	PlayersUpdateMessage(const PlayersUpdateMessage& other) = delete;				
+	PlayersUpdateMessage(PlayersUpdateMessage&& other) noexcept = delete;			
+																												
+	PlayersUpdateMessage& operator=(const PlayersUpdateMessage& other) = delete;	
+	PlayersUpdateMessage& operator=(PlayersUpdateMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_Data);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer.WriteVector(m_Data);
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer.ReadVector(m_Data);
+	}																											
+};																											
+
 class EnemyUpdateMessage : public GameServerMessage											
 {																											
 public:																										

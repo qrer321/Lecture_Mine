@@ -3,8 +3,4 @@ std::string m_ID;
 std::string m_Message;
 
 |PlayerUpdate-
-uint64_t m_ActorIndex;
-uint64_t m_ThreadIndex;
-uint64_t m_SectionIndex;
-FVector m_Dir;
-FVector m_Pos;
+FPlayerUpdateData m_Datum;

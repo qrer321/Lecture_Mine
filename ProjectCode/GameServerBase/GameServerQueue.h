@@ -88,6 +88,8 @@ public: // Member Function
 
 	void Destroy();
 
+	void Execute(DWORD& number_of_bytes_transferred, std::function<void()>& callback, DWORD time);
+
 	template <typename LocalDataType>
 	void InitializeLocalData(const WORK_TYPE type, int thread_count, const std::string& thread_name, std::function<void(LocalDataType*)> init_function = nullptr)
 	{
@@ -121,7 +123,6 @@ public: // Member Function
 		}
 
 		self->Run(work);
-
 	}
 };
 

@@ -180,3 +180,8 @@ void GameServerQueue::Destroy()
 		Sleep(1);
 	}
 }
+
+void GameServerQueue::Execute(DWORD& number_of_bytes_transferred, std::function<void()>& callback, DWORD time)
+{
+	//m_Iocp.Execute(number_of_bytes_transferred, , time)
+}

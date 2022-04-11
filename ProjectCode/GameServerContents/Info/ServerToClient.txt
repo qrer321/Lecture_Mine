@@ -26,6 +26,9 @@ std::vector<FCharacterInfo> m_CharactersInfo;
 |ObjectDestroy-
 int m_ObjectID;
 
+|PlayersUpdate-
+std::vector<FPlayerUpdateData> m_Data;
+
 |EnemyUpdate-
 int m_ObjectID;
 int m_EnemyType;

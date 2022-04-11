@@ -24,6 +24,7 @@ protected:
 	PlayerUpdateMessage& GetPlayerUpdateMessage();
 	GameServerSerializer& GetPlayerUpdateSerializer();
 
+	void PlayerUpdateSelf();
 	void PlayerUpdateBroadcasting();
 
 private:

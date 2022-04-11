@@ -44,6 +44,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::ObjectDestroy:
 		m_Message = std::make_shared<ObjectDestroyMessage>();
 		break;
+	case MessageType::PlayersUpdate:
+		m_Message = std::make_shared<PlayersUpdateMessage>();
+		break;
 	case MessageType::EnemyUpdate:
 		m_Message = std::make_shared<EnemyUpdateMessage>();
 		break;
@@ -58,6 +61,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 		break;
 	case MessageType::SelectCharacter:
 		m_Message = std::make_shared<SelectCharacterMessage>();
+		break;
+	case MessageType::ClientToReady:
+		m_Message = std::make_shared<ClientToReadyMessage>();
 		break;
 	default:																	
 		return;																	

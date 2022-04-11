@@ -172,3 +172,51 @@ public:
 	}																											
 };																											
 
+class ClientToReadyMessage : public GameServerMessage											
+{																											
+public:																										
+	uint64_t m_ActorIndex;
+	uint64_t m_ThreadIndex;
+	uint64_t m_SectionIndex;
+																												
+public:																										
+	ClientToReadyMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::ClientToReady))					
+		, m_ActorIndex()																		
+		, m_ThreadIndex()																		
+		, m_SectionIndex()																		
+	{																											
+	}																											
+	~ClientToReadyMessage() override = default;													
+																												
+	ClientToReadyMessage(const ClientToReadyMessage& other) = delete;				
+	ClientToReadyMessage(ClientToReadyMessage&& other) noexcept = delete;			
+																												
+	ClientToReadyMessage& operator=(const ClientToReadyMessage& other) = delete;	
+	ClientToReadyMessage& operator=(ClientToReadyMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer << m_ActorIndex;
+		serializer << m_ThreadIndex;
+		serializer << m_SectionIndex;
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer >> m_ActorIndex;
+		serializer >> m_ThreadIndex;
+		serializer >> m_SectionIndex;
+	}																											
+};																											
+

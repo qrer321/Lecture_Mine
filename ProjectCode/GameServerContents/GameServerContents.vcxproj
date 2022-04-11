@@ -215,6 +215,7 @@
     </ClCompile>
     <ClCompile Include="ServerDispatcher.cpp" />
     <ClCompile Include="ThreadHandlerChatMessage.cpp" />
+    <ClCompile Include="ThreadHandlerClientToReadyMessage.cpp" />
     <ClCompile Include="ThreadHandlerCreateCharacterMessage.cpp">
       <SubType>
       </SubType>
@@ -257,6 +258,7 @@
     <ClInclude Include="ServerDispatcher.h" />
     <ClInclude Include="ServerToClient.h" />
     <ClInclude Include="ThreadHandlerChatMessage.h" />
+    <ClInclude Include="ThreadHandlerClientToReadyMessage.h" />
     <ClInclude Include="ThreadHandlerCreateCharacterMessage.h">
       <SubType>
       </SubType>

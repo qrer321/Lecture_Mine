@@ -11,3 +11,8 @@ std::string m_Nickname;
 
 |SelectCharacter-
 std::string m_Nickname;
+
+|ClientToReady-
+uint64_t m_ActorIndex;
+uint64_t m_ThreadIndex;
+uint64_t m_SectionIndex;

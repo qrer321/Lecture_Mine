@@ -51,20 +51,12 @@ public:
 class PlayerUpdateMessage : public GameServerMessage											
 {																											
 public:																										
-	uint64_t m_ActorIndex;
-	uint64_t m_ThreadIndex;
-	uint64_t m_SectionIndex;
-	FVector m_Dir;
-	FVector m_Pos;
+	FPlayerUpdateData m_Datum;
 																												
 public:																										
 	PlayerUpdateMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::PlayerUpdate))					
-		, m_ActorIndex()																		
-		, m_ThreadIndex()																		
-		, m_SectionIndex()																		
-		, m_Dir()																		
-		, m_Pos()																		
+		, m_Datum()																		
 	{																											
 	}																											
 	~PlayerUpdateMessage() override = default;													
@@ -78,29 +70,21 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex) + DataSizeCheck(m_Dir) + DataSizeCheck(m_Pos);
+		return DataSizeCheck(m_Datum);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Serialize(serializer);																
 																												
-		serializer << m_ActorIndex;
-		serializer << m_ThreadIndex;
-		serializer << m_SectionIndex;
-		serializer << m_Dir;
-		serializer << m_Pos;
+		m_Datum.Serialize(serializer);
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Deserialize(serializer);																
 																												
-		serializer >> m_ActorIndex;
-		serializer >> m_ThreadIndex;
-		serializer >> m_SectionIndex;
-		serializer >> m_Dir;
-		serializer >> m_Pos;
+		m_Datum.DeSerialize(serializer);
 	}																											
 };																											
 

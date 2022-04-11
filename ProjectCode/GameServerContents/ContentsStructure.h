@@ -47,3 +47,36 @@ public:
 	FCharacterInfo() = default;
 	~FCharacterInfo() = default;
 };
+
+struct FPlayerUpdateData
+{
+	uint64_t	m_ActorIndex;
+	uint64_t	m_ThreadIndex;
+	uint64_t	m_SectionIndex;
+	FVector		m_Pos;
+	FVector		m_Dir;
+
+	int GetDataSize() const { return sizeof(FPlayerUpdateData); }
+
+	void Serialize(GameServerSerializer& serializer)
+	{
+		serializer << m_ActorIndex;
+		serializer << m_ThreadIndex;
+		serializer << m_SectionIndex;
+		serializer << m_Pos;
+		serializer << m_Dir;
+	}
+
+	void DeSerialize(GameServerSerializer& serializer)
+	{
+		serializer >> m_ActorIndex;
+		serializer >> m_ThreadIndex;
+		serializer >> m_SectionIndex;
+		serializer >> m_Pos;
+		serializer >> m_Dir;
+	}
+
+public:
+	FPlayerUpdateData() = default;
+	~FPlayerUpdateData() = default;
+};

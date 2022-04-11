@@ -3,6 +3,14 @@
 
 GameServerSectionManager* GameServerSectionManager::m_Inst = new GameServerSectionManager();
 
+GameServerSectionManager::~GameServerSectionManager()
+{
+	for (const auto& section_thread : m_SectionThread)
+	{
+		section_thread->m_SectionThreadQueue.Destroy();
+	}
+}
+
 void GameServerSectionManager::Init(int thread_count)
 {
 	for (int i = 0; i < thread_count; ++i)
@@ -51,4 +59,9 @@ std::shared_ptr<GameServerSection> GameServerSectionManager::FindSection(uint64_
 	}
 
 	return find_iter->second;
+}
+
+void GameServerSectionManager::MessagePost(uint64_t thread_index, const std::function<void()>& callback)
+{
+	m_SectionThread[thread_index]->m_SectionThreadQueue.EnQueue(callback);
 }

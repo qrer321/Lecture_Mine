@@ -15,7 +15,7 @@ private: // Member Var
 
 public: // Default
 	GameServerSectionManager() = default;
-	~GameServerSectionManager() = default;
+	~GameServerSectionManager();
 
 	GameServerSectionManager(const GameServerSectionManager& other) = delete;
 	GameServerSectionManager(GameServerSectionManager&& other) noexcept = delete;
@@ -54,5 +54,7 @@ public: // Member Function
 	uint64_t RemoveSection(int thread_index, uint64_t section_index);
 
 	std::shared_ptr<GameServerSection> FindSection(uint64_t section_key);
+
+	void MessagePost(uint64_t thread_index, const std::function<void()>& callback);
 };
 
