@@ -10,10 +10,5 @@ void ThreadHandlerClientToReadyMessage::Start()
 		return;
 	}
 
-	GameServerSectionManager::GetInst()->MessagePost(m_Message->m_ThreadIndex, std::bind(&ThreadHandlerClientToReadyMessage::SectionWork, this));
-}
-
-void ThreadHandlerClientToReadyMessage::SectionWork()
-{
-	int a = 0;
+	ActorWork(m_Message->m_ThreadIndex, m_Message->m_SectionIndex, m_Message->m_ActorIndex, m_Message);
 }

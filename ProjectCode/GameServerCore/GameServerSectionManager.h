@@ -1,7 +1,9 @@
 #pragma once
 #include <GameServerBase/GameServerThread.h>
+#include <GameServerMessage/GameServerMessage.h>
 #include "GameServerSectionThread.h"
 #include "GameServerSection.h"
+
 
 class GameServerSectionManager
 {
@@ -56,5 +58,6 @@ public: // Member Function
 	std::shared_ptr<GameServerSection> FindSection(uint64_t section_key);
 
 	void MessagePost(uint64_t thread_index, const std::function<void()>& callback);
+	void ActorPost(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
 };
 

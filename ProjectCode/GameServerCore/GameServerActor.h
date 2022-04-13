@@ -4,21 +4,23 @@
 #include <GameServerBase/GameServerMathStruct.h>
 
 class TCPSession;
+class GameServerMessage;
 class GameServerSection;
 class GameServerActor : public GameServerObjectBase, GameServerNameBase
 {
 	friend GameServerSection;
 
 private:
-	std::shared_ptr<TCPSession> m_TCPSession;
+	std::shared_ptr<TCPSession>						m_TCPSession;
+	std::queue<std::shared_ptr<GameServerMessage>>	m_MessageQueue;
 
-	GameServerSection*			m_Section;
-	uint64_t					m_ActorIndex;
-	uint64_t					m_ThreadIndex;
-	uint64_t					m_SectionIndex;
+	GameServerSection*								m_Section;
+	uint64_t										m_ActorIndex;
+	uint64_t										m_ThreadIndex;
+	uint64_t										m_SectionIndex;
 
-	FVector						m_ActorPos;
-	FVector						m_ActorDir;
+	FVector											m_ActorPos;
+	FVector											m_ActorDir;
 
 public: // Default
 	GameServerActor();
@@ -60,4 +62,7 @@ public: // Member Function
 	void SetActorDir(const FVector& dir) { m_ActorDir = dir; }
 
 	void Move(const FVector& value) { m_ActorPos += value; }
+
+	bool IsEmptyMessage() const { return m_MessageQueue.empty(); }
+	std::shared_ptr<GameServerMessage> PopMessage();
 };

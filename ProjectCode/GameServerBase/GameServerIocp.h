@@ -65,11 +65,13 @@ public:
 	size_t GetThreadCount() const { return m_ThreadList.size(); }
 
 	void Initialize(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, int thread_count, DWORD time);
+	void InitializeIocpHandle(int thread_count);
 
 	void AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time, unsigned int order);
 	void Post(DWORD byteSize, ULONG_PTR data);
 	bool Bind(HANDLE handle, ULONG_PTR key) const;
 
-	bool Execute(DWORD& number_of_bytes_transferred, ULONG_PTR& completion_key, DWORD time);
+	BOOL Execute(DWORD& number_of_bytes_transferred, ULONG_PTR& completion_key, LPOVERLAPPED& overlapped, DWORD time);
+	BOOL ExecuteEx(LPOVERLAPPED_ENTRY entry, PULONG num_entries_removed, DWORD time_out);
 };
 

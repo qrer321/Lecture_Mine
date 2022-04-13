@@ -3,6 +3,7 @@
 #include "ServerAndClient.h"
 
 class ContentsUserData;
+class ClientToReadyMessage;
 class Player : public GameServerActor
 {
 private: // Member Var
@@ -36,5 +37,7 @@ private:
 	bool InsertSection() override;
 
 public: // Member Function
+	void CheckMessage();
+	void ClientToReadyMessageProcess(const std::shared_ptr<ClientToReadyMessage>& message);
 };
 

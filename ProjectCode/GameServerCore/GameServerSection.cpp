@@ -89,3 +89,17 @@ void GameServerSection::Broadcasting(const std::vector<unsigned char>& buffer, u
 		actor->GetSession()->Send(buffer);
 	}
 }
+
+void GameServerSection::ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message)
+{
+	static std::map<uint64_t, std::shared_ptr<GameServerActor>>::iterator find_iter;
+	find_iter = m_AllActor.find(actor_index);
+
+	if (m_AllActor.end() == find_iter)
+	{
+		GameServerDebug::AssertDebugMsg("Message Sent To Section That Does Not Exist");
+		return;
+	}
+
+	find_iter->second->m_MessageQueue.push(message);
+}

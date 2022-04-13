@@ -3,11 +3,14 @@
 #include <GameServerBase/GameServerUnique.h>
 
 class TCPSession;
+class GameServerMessage;
+class GameServerSectionManager;
+class GameServerSectionThread;
 class GameServerActor;
 class GameServerSection : public GameServerObjectBase
 {
-	friend class GameServerSectionManager;
-	friend class GameServerSectionThread;
+	friend GameServerSectionManager;
+	friend GameServerSectionThread;
 
 private: // Member Var
 	std::map<uint64_t, std::shared_ptr<GameServerActor>>	m_AllActor;
@@ -91,5 +94,7 @@ public: // Member Function
 
 	bool Update(float delta_time);
 	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
+
+	void ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
 };
 

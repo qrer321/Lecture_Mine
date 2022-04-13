@@ -1,6 +1,7 @@
 #pragma once
 #include <GameServerNet/TCPSession.h>
 #include <GameServerMessage/Messages.h>
+#include "GameServerSectionManager.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
 
@@ -30,16 +31,27 @@ public:
 		m_Message = std::move(message);
 	}
 
-	template<typename ChildThreadHandler>
-	void DBWork(void(ChildThreadHandler::* child_function)())
+	template <typename ChildThreadHandler>
+	void DBWork(void(ChildThreadHandler::*child_function)())
 	{
 		DBQueue::Queue(std::bind(child_function, std::dynamic_pointer_cast<ChildThreadHandler>(this->shared_from_this())));
 	}
 
-	template<typename ChildThreadHandler>
-	void NetWork(void(ChildThreadHandler::* child_function)())
+	template <typename ChildThreadHandler>
+	void NetWork(void(ChildThreadHandler::*child_function)())
 	{
 		NetQueue::Queue(std::bind(child_function, std::dynamic_pointer_cast<ChildThreadHandler>(this->shared_from_this())));
+	}
+
+	template <typename ChildThreadHandler>
+	void SectionWork(uint64_t thread_index, void(ChildThreadHandler::* child_function)())
+	{
+		GameServerSectionManager::GetInst()->MessagePost(thread_index, std::bind(child_function, std::dynamic_pointer_cast<ChildThreadHandler>(this->shared_from_this())));
+	}
+
+	void ActorWork(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message)
+	{
+		GameServerSectionManager::GetInst()->ActorPost(thread_index, section_index, actor_index, message);
 	}
 };
 

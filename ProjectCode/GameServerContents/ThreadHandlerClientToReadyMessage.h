@@ -18,6 +18,5 @@ public: // Default
 
 public:
 	void Start() override;
-	void SectionWork();
 };
 

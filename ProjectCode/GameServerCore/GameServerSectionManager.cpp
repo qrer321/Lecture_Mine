@@ -65,3 +65,15 @@ void GameServerSectionManager::MessagePost(uint64_t thread_index, const std::fun
 {
 	m_SectionThread[thread_index]->m_SectionThreadQueue.EnQueue(callback);
 }
+
+void GameServerSectionManager::ActorPost(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message)
+{
+	if (thread_index >= m_SectionThread.size())
+	{
+		GameServerDebug::AssertDebugMsg("Message Sent To Section That Does Not Exist");
+		return;
+	}
+
+	const std::shared_ptr<GameServerSectionThread>& section_thread = m_SectionThread[thread_index];
+	section_thread->m_SectionThreadQueue.EnQueue(std::bind(&GameServerSectionThread::ActorPost, section_thread.get(), section_index, actor_index, message));
+}

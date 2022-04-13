@@ -10,3 +10,16 @@ GameServerActor::GameServerActor()
 	, m_ActorDir(FVector::ZeroVector)
 {
 }
+
+std::shared_ptr<GameServerMessage> GameServerActor::PopMessage()
+{
+	if (true == IsEmptyMessage())
+	{
+		return nullptr;
+	}
+
+	std::shared_ptr<GameServerMessage> server_message = m_MessageQueue.front();
+	m_MessageQueue.pop();
+
+	return server_message;
+}

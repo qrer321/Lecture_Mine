@@ -54,6 +54,7 @@ void Player::SectionInitialize()
 
 void Player::Update(float delta_time)
 {
+	CheckMessage();
 }
 
 bool Player::InsertSection()

@@ -1,5 +1,6 @@
 #include "PreCompile.h"
 #include "GameServerSectionThread.h"
+#include "GameServerSection.h"
 
 GameServerSectionThread::GameServerSectionThread()
 {
@@ -8,10 +9,24 @@ GameServerSectionThread::GameServerSectionThread()
 
 void GameServerSectionThread::ThreadFunction()
 {
+	m_SectionThreadQueue.Initialize(1);
+	m_SectionThreadQueue.SetExecuteType(GameServerQueue::WORK_TYPE::Default);
 	m_Timer.Reset();
 
-	while (true)
+	GameServerQueue::QUEUE_RETURN return_result = GameServerQueue::QUEUE_RETURN::OK;
+	while (GameServerQueue::QUEUE_RETURN::DESTROY != return_result)
 	{
+		return_result = GameServerQueue::QUEUE_RETURN::OK;
+		while (GameServerQueue::QUEUE_RETURN::OK == return_result)
+		{
+			return_result = m_SectionThreadQueue.Execute(1);
+		}
+
+		if (GameServerQueue::QUEUE_RETURN::DESTROY == return_result)
+		{
+			return;
+		}
+
 		if (0 != m_InsertSectionSize)
 		{
 			std::lock_guard lock(m_InsertSectionLock);
@@ -19,7 +34,9 @@ void GameServerSectionThread::ThreadFunction()
 			{
 				insert_section->AccTimeReset();
 				m_Sections.push_back(insert_section);
+				m_KeySections.insert(std::make_pair(insert_section->GetSectionIndex(), insert_section));
 			}
+
 			m_InsertSections.clear();
 			m_InsertSectionSize = 0;
 		}
@@ -37,6 +54,17 @@ void GameServerSectionThread::ThreadFunction()
 		}
 		Sleep(1);
 	}
+}
+
+void GameServerSectionThread::ActorPost(uint64_t section_index, uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message)
+{
+	if (m_KeySections.end() == m_KeySections.find(section_index))
+	{
+		GameServerDebug::AssertDebugMsg("Message Sent To Section That Does Not Exist");
+		return;
+	}
+
+	m_KeySections[section_index]->ActorPost(actor_index, message);
 }
 
 void GameServerSectionThread::AddSection(const std::shared_ptr<GameServerSection>& section)

@@ -22,6 +22,14 @@ public:
 		Extension	// 확장형, Post n번에 운영체제가 알아서 횟수를 정해 리턴
 	};
 
+	enum class QUEUE_RETURN : char
+	{
+		OK,
+		TIME_OUT,
+		EMPTY,
+		DESTROY,
+	};
+
 private:
 	// 일을 시키기
 	struct PostTask : std::enable_shared_from_this<PostTask>
@@ -38,12 +46,6 @@ private:
 		std::function<void(BOOL returnType, DWORD NumberOfBytes, LPOVERLAPPED lpOverlapped)> task;
 	};
 
-	enum class QUEUE_RETURN : char
-	{
-		OK,
-		DESTROY
-	};
-
 	enum class WORK_MESSAGE_TYPE : char
 	{
 		MSG_POST = -2,
@@ -57,9 +59,10 @@ private:
 private:
 	GameServerIocp m_Iocp;
 	std::function<QUEUE_RETURN(std::shared_ptr<GameServerIocpWorker> work)> m_WorkFunction;
+	std::function<QUEUE_RETURN(DWORD)>										m_ExecuteFunction;
 
 public: // Default
-	GameServerQueue() = default;
+	GameServerQueue();
 	GameServerQueue(WORK_TYPE type, int threadCount, const std::string& threadName = "");
 	~GameServerQueue() override;
 
@@ -74,21 +77,27 @@ private:
 	static void QueueFunction(const std::shared_ptr<GameServerIocpWorker>& work, GameServerQueue* self, const std::string& threadName);
 
 	void Run(const std::shared_ptr<GameServerIocpWorker>& work);
-	QUEUE_RETURN Work(const std::shared_ptr<GameServerIocpWorker>& work);
+
+	QUEUE_RETURN WorkThread(const std::shared_ptr<GameServerIocpWorker>& work);
 	QUEUE_RETURN WorkDefault(const std::shared_ptr<GameServerIocpWorker>& work);		// 한번에 하나씩
 	QUEUE_RETURN WorkExtension(const std::shared_ptr<GameServerIocpWorker>& work);		// 한번에 여러개
 
-	void SetWorkType(WORK_TYPE type);
+	QUEUE_RETURN ExecuteDefault(DWORD time);
+	QUEUE_RETURN ExecuteExtension(DWORD time);
+
+	void SetWorkType(WORK_TYPE work_type);
 
 public: // Member Function
 	void Initialize(WORK_TYPE type, int thread_count, const std::string& thread_name);
+	void Initialize(int thread_count);
 
 	void EnQueue(const std::function<void()>& callback);
 	bool NetworkBind(SOCKET socket, const std::function<void(BOOL, DWORD, LPOVERLAPPED)>& callback) const;
 
 	void Destroy();
 
-	void Execute(DWORD& number_of_bytes_transferred, std::function<void()>& callback, DWORD time);
+	void SetExecuteType(WORK_TYPE work_type);
+	QUEUE_RETURN Execute(DWORD time);
 
 	template <typename LocalDataType>
 	void InitializeLocalData(const WORK_TYPE type, int thread_count, const std::string& thread_name, std::function<void(LocalDataType*)> init_function = nullptr)

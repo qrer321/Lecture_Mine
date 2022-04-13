@@ -59,12 +59,17 @@ void GameServerIocp::Initialize(const std::function<void(std::shared_ptr<GameSer
 	}
 
 	// IOCP 핸들 생성
-	m_IocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, NULL, thread_count);
+	InitializeIocpHandle(thread_count);
 
 	for (int i = 0; i < thread_count; ++i)
 	{
 		AddThread(func, time, i);
 	}
+}
+
+void GameServerIocp::InitializeIocpHandle(int thread_count)
+{
+	m_IocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, NULL, thread_count);
 }
 
 void GameServerIocp::AddThread(const std::function<void(std::shared_ptr<GameServerIocpWorker>)>& func, DWORD time, unsigned int order)
@@ -96,7 +101,23 @@ bool GameServerIocp::Bind(HANDLE handle, ULONG_PTR key) const
 	return true;
 }
 
-bool GameServerIocp::Execute(DWORD& number_of_bytes_transferred, ULONG_PTR& completion_key, DWORD time)
+BOOL GameServerIocp::Execute(DWORD& number_of_bytes_transferred, ULONG_PTR& completion_key, LPOVERLAPPED& overlapped, DWORD time)
 {
-	return GetQueuedCompletionStatus(m_IocpHandle, &number_of_bytes_transferred, &completion_key, nullptr, time);
+	return GetQueuedCompletionStatus(m_IocpHandle, &number_of_bytes_transferred, &completion_key, &overlapped, time);
+}
+
+
+/*
+ * GetQueuedCompletionStatusEx(
+    _In_ HANDLE CompletionPort,
+    _Out_writes_to_(ulCount,*ulNumEntriesRemoved) LPOVERLAPPED_ENTRY lpCompletionPortEntries,
+    _In_ ULONG ulCount,
+    _Out_ PULONG ulNumEntriesRemoved,
+    _In_ DWORD dwMilliseconds,
+    _In_ BOOL fAlertable
+    );
+ */
+BOOL GameServerIocp::ExecuteEx(LPOVERLAPPED_ENTRY entry, PULONG num_entries_removed, DWORD time_out)
+{
+	return GetQueuedCompletionStatusEx(m_IocpHandle, entry, 16, num_entries_removed, time_out, FALSE);
 }

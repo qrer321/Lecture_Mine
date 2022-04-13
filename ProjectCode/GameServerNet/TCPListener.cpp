@@ -240,7 +240,7 @@ void TCPListener::AsyncAccept()
 
 	// Overlapped에 대한 주소를 넘겨주었다
 	// 해당 Overlapped 주소는 PostQueued -> GetQueued를 거쳐
-	// GameServerQueue의 Work 함수에 있는 OverTask의 task function으로 통하고
+	// GameServerQueue의 WorkThread 함수에 있는 OverTask의 task function으로 통하고
 	// 해당 task function은 BindQueue 함수로 인해 묶인 OnAccept 함수로 간다
 	// OnAccept 함수에서 받은 Overlapped의 주소에서 가상함수테이블 만큼의 주소위치를 빼면
 	// AcceptExOverlapped 객체를 복구할 수 있다.
