@@ -41,6 +41,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::ServerDestroy:
 		m_Message = std::make_shared<ServerDestroyMessage>();
 		break;
+	case MessageType::PlayerDestroy:
+		m_Message = std::make_shared<PlayerDestroyMessage>();
+		break;
 	case MessageType::ObjectDestroy:
 		m_Message = std::make_shared<ObjectDestroyMessage>();
 		break;

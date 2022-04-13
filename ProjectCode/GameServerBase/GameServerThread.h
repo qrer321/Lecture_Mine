@@ -1,13 +1,14 @@
 #pragma once
 #include <thread>
+#include "GameServerNameBase.h"
 #include "GameServerDebug.h"
 #include "GameServerTime.h"
 
-class GameServerThread
+class GameServerThread : public GameServerNameBase
 {
 private: // Member Var
 	std::thread									m_Thread;
-	static thread_local std::string				m_Name;
+	static thread_local std::string				m_ThreadName;
 	static thread_local unsigned int			m_Order;
 	static thread_local const std::type_info*	m_LocalDataType;
 	static thread_local std::vector<char>		m_Data;
@@ -35,7 +36,7 @@ public: // Default
 	}
 
 	GameServerThread() = default;
-	virtual ~GameServerThread() = default;
+	virtual ~GameServerThread() override = default;
 
 	GameServerThread(const GameServerThread& other) = delete;
 	GameServerThread(GameServerThread&& other) noexcept = delete;
@@ -45,7 +46,7 @@ public: // Default
 
 public:
 	[[nodiscard]] std::thread::id GetThreadID() const { return m_Thread.get_id(); }
-	static std::string GetName() { return m_Name; }
+	static std::string GetThreadName() { return m_ThreadName; }
 
 	static void SetThreadName(const std::string& name);
 	static void SetThreadOrder(unsigned int order);

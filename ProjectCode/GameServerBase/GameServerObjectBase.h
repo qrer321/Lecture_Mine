@@ -27,9 +27,31 @@ public:
 public:
 	void SetParent(GameServerObjectBase* parent) { m_Parent = parent; }
 
+	template <typename CreateType, typename EnumData>
+	std::shared_ptr<CreateType> CreateLink(EnumData index)
+	{
+		std::shared_ptr<CreateType> new_object = std::make_shared<CreateType>();
+		SetLink<EnumData>(index, new_object);
+
+		return new_object;
+	}
+
+	template <typename CreateType>
+	std::shared_ptr<CreateType> CreateLink(size_t index)
+	{
+		std::shared_ptr<CreateType> new_object = std::make_shared<CreateType>();
+		SetLink(index, new_object);
+
+		return new_object;
+	}
+
 	template <typename EnumData>
-	void SetLink(EnumData index, std::shared_ptr<GameServerObjectBase> link) { SetLink(static_cast<size_t>(index), std::move(link)); }
-	void SetLink(size_t index, std::shared_ptr<GameServerObjectBase> link)
+	void SetLink(EnumData index, std::shared_ptr<GameServerObjectBase> object)
+	{
+		SetLink(static_cast<size_t>(index), std::move(object));
+	}
+
+	void SetLink(size_t index, std::shared_ptr<GameServerObjectBase> object)
 	{
 		if (index >= 128)
 		{
@@ -48,7 +70,7 @@ public:
 			return;
 		}
 
-		m_LinkObject[index] = std::move(link);
+		m_LinkObject[index] = std::move(object);
 	}
 
 	void ClearLinkObject() { m_LinkObject.clear(); }
@@ -87,5 +109,7 @@ public: // Member Function
 	void AccTimeReset() { m_AccTime = 0.f; }
 	void AccTimeUpdate(float delta_time) { m_AccTime += delta_time; }
 	float GetAccTime() const { return m_AccTime; }
+
+	void SetDeath(bool is_death = true) { m_IsDeath = is_death; }
 };
 

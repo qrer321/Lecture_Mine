@@ -77,6 +77,45 @@ bool GameServerSection::Update(float delta_time)
 	return true;
 }
 
+void GameServerSection::Release()
+{
+	{
+		std::list<std::shared_ptr<GameServerActor>>::iterator start_iter = m_PlayableActor.begin();
+		std::list<std::shared_ptr<GameServerActor>>::iterator end_iter = m_PlayableActor.end();
+
+		while (start_iter != end_iter)
+		{
+			if (false == (*start_iter)->IsDeath())
+			{
+				++start_iter;
+				continue;
+			}
+
+			(*start_iter)->DeathEvent();
+			m_AllActor.erase((*start_iter)->GetActorIndex());
+			start_iter = m_PlayableActor.erase(start_iter);
+		}
+	}
+
+	{
+		std::list<std::shared_ptr<GameServerActor>>::iterator start_iter = m_AIActor.begin();
+		std::list<std::shared_ptr<GameServerActor>>::iterator end_iter = m_AIActor.end();
+
+		while (start_iter != end_iter)
+		{
+			if (false == (*start_iter)->IsDeath())
+			{
+				++start_iter;
+				continue;
+			}
+
+			(*start_iter)->DeathEvent();
+			m_AllActor.erase((*start_iter)->GetActorIndex());
+			start_iter = m_AIActor.erase(start_iter);
+		}
+	}
+}
+
 void GameServerSection::Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor /*= -1*/)
 {
 	for (const auto& actor : m_PlayableActor)

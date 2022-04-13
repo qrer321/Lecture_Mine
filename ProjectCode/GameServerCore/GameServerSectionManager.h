@@ -38,7 +38,7 @@ public: // Member Function
 		}
 	}
 
-	void Init(int thread_count);
+	void Init(int thread_count, const std::string& thread_name);
 
 	template <typename SectionType, typename EnumType, typename... Parameter>
 	void CreateSection(int thread_index, EnumType enum_type, Parameter... args)

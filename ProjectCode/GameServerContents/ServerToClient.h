@@ -300,15 +300,51 @@ public:
 	}																											
 };																											
 
+class PlayerDestroyMessage : public GameServerMessage											
+{																											
+public:																										
+																												
+public:																										
+	PlayerDestroyMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::PlayerDestroy))					
+	{																											
+	}																											
+	~PlayerDestroyMessage() override = default;													
+																												
+	PlayerDestroyMessage(const PlayerDestroyMessage& other) = delete;				
+	PlayerDestroyMessage(PlayerDestroyMessage&& other) noexcept = delete;			
+																												
+	PlayerDestroyMessage& operator=(const PlayerDestroyMessage& other) = delete;	
+	PlayerDestroyMessage& operator=(PlayerDestroyMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return 0;
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+	}																											
+};																											
+
 class ObjectDestroyMessage : public GameServerMessage											
 {																											
 public:																										
-	int m_ObjectID;
+	uint64_t m_ActorIndex;
 																												
 public:																										
 	ObjectDestroyMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::ObjectDestroy))					
-		, m_ObjectID()																		
+		, m_ActorIndex()																		
 	{																											
 	}																											
 	~ObjectDestroyMessage() override = default;													
@@ -322,21 +358,21 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_ObjectID);
+		return DataSizeCheck(m_ActorIndex);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Serialize(serializer);																
 																												
-		serializer << m_ObjectID;
+		serializer << m_ActorIndex;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Deserialize(serializer);																
 																												
-		serializer >> m_ObjectID;
+		serializer >> m_ActorIndex;
 	}																											
 };																											
 
@@ -383,20 +419,22 @@ public:
 class EnemyUpdateMessage : public GameServerMessage											
 {																											
 public:																										
-	int m_ObjectID;
+	int m_ActorIndex;
 	int m_EnemyType;
 	EEnemyState m_UpdateType;
-	FVector m_Pos;
-	FVector m_Dir;
+	FVector4 m_Pos;
+	FVector4 m_Dir;
+	FVector4 m_Rot;
 																												
 public:																										
 	EnemyUpdateMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::EnemyUpdate))					
-		, m_ObjectID()																		
+		, m_ActorIndex()																		
 		, m_EnemyType()																		
 		, m_UpdateType()																		
 		, m_Pos()																		
 		, m_Dir()																		
+		, m_Rot()																		
 	{																											
 	}																											
 	~EnemyUpdateMessage() override = default;													
@@ -410,29 +448,31 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_ObjectID) + DataSizeCheck(m_EnemyType) + DataSizeCheck(m_UpdateType) + DataSizeCheck(m_Pos) + DataSizeCheck(m_Dir);
+		return DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_EnemyType) + DataSizeCheck(m_UpdateType) + DataSizeCheck(m_Pos) + DataSizeCheck(m_Dir) + DataSizeCheck(m_Rot);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Serialize(serializer);																
 																												
-		serializer << m_ObjectID;
+		serializer << m_ActorIndex;
 		serializer << m_EnemyType;
 		serializer.WriteEnum(m_UpdateType);
 		serializer << m_Pos;
 		serializer << m_Dir;
+		serializer << m_Rot;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
 	{																											
 		GameServerMessage::Deserialize(serializer);																
 																												
-		serializer >> m_ObjectID;
+		serializer >> m_ActorIndex;
 		serializer >> m_EnemyType;
 		serializer.ReadEnum(m_UpdateType);
 		serializer >> m_Pos;
 		serializer >> m_Dir;
+		serializer >> m_Rot;
 	}																											
 };																											
 

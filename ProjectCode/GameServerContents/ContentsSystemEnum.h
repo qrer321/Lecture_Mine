@@ -3,6 +3,6 @@
 enum class EDataIndex
 {
 	USER_DATA,
-	CHARACTER_DATA,
+	PLAYABLE,
 	MAX,
 };

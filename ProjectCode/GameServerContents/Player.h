@@ -36,8 +36,12 @@ private:
 
 	bool InsertSection() override;
 
+	void DeathEvent() override;
+	void Disconnect();
+
 public: // Member Function
 	void CheckMessage();
 	void ClientToReadyMessageProcess(const std::shared_ptr<ClientToReadyMessage>& message);
+	void PlayerUpdateMessageProcess(const std::shared_ptr<PlayerUpdateMessage>& message);
 };
 

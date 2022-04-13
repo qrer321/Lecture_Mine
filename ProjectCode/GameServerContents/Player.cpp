@@ -85,3 +85,35 @@ bool Player::InsertSection()
 
 	return true;
 }
+
+void Player::DeathEvent()
+{
+	{
+		const std::list<std::shared_ptr<GameServerActor>>& all_playable_actor = GetSection()->GetPlayableActor();
+
+		ObjectDestroyMessage destroy_message;
+		GameServerSerializer serializer;
+		destroy_message.m_ActorIndex = GetActorIndex();
+		destroy_message.Serialize(serializer);
+
+		for (const auto& other_actor : all_playable_actor)
+		{
+			if (GetActorIndex() == other_actor->GetActorIndex())
+			{
+				continue;
+			}
+
+			std::shared_ptr<Player> other_player = std::dynamic_pointer_cast<Player>(other_actor);
+			other_player->GetSession()->Send(serializer.GetData());
+		}
+	}
+
+	PlayerDestroyMessage destroy_message;
+	GameServerSerializer serializer;
+	destroy_message.Serialize(serializer);
+	GetSession()->Send(serializer.GetData());
+}
+
+void Player::Disconnect()
+{
+}

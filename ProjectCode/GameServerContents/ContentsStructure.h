@@ -53,8 +53,10 @@ struct FPlayerUpdateData
 	uint64_t	m_ActorIndex;
 	uint64_t	m_ThreadIndex;
 	uint64_t	m_SectionIndex;
-	FVector		m_Pos;
-	FVector		m_Dir;
+	FVector4	m_Pos;
+	FVector4	m_Dir;
+	FVector4	m_Rot;
+	int			m_State;
 
 	int GetDataSize() const { return sizeof(FPlayerUpdateData); }
 
@@ -65,6 +67,8 @@ struct FPlayerUpdateData
 		serializer << m_SectionIndex;
 		serializer << m_Pos;
 		serializer << m_Dir;
+		serializer << m_Rot;
+		serializer << m_State;
 	}
 
 	void DeSerialize(GameServerSerializer& serializer)
@@ -74,6 +78,8 @@ struct FPlayerUpdateData
 		serializer >> m_SectionIndex;
 		serializer >> m_Pos;
 		serializer >> m_Dir;
+		serializer >> m_Rot;
+		serializer >> m_State;
 	}
 
 public:

@@ -118,6 +118,9 @@
     <ClInclude Include="ThreadHandlerClientToReadyMessage.h">
       <Filter>ThreadHandler\PlayerUpdate</Filter>
     </ClInclude>
+    <ClInclude Include="ContentsPlayerData.h">
+      <Filter>Content</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">

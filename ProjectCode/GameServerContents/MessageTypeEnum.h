@@ -11,6 +11,7 @@ enum class MessageType
 	InsertSectionResult,
 	CharacterList,
 	ServerDestroy,
+	PlayerDestroy,
 	ObjectDestroy,
 	PlayersUpdate,
 	EnemyUpdate,

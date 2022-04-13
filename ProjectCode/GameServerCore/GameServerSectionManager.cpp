@@ -11,13 +11,14 @@ GameServerSectionManager::~GameServerSectionManager()
 	}
 }
 
-void GameServerSectionManager::Init(int thread_count)
+void GameServerSectionManager::Init(int thread_count, const std::string& thread_name)
 {
 	for (int i = 0; i < thread_count; ++i)
 	{
 		std::shared_ptr<GameServerSectionThread> new_section_thread = std::make_shared<GameServerSectionThread>();
 		new_section_thread->StartSectionThread();
 		new_section_thread->SetThreadIndex(i);
+		new_section_thread->SetName(thread_name + std::to_string(i));
 		m_SectionThread.push_back(new_section_thread);
 	}
 }

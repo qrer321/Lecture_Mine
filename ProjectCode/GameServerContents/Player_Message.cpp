@@ -18,6 +18,7 @@ void Player::CheckMessage()
 		switch(message_type)
 		{
 		case MessageType::PlayerUpdate:
+			PlayerUpdateMessageProcess(std::dynamic_pointer_cast<PlayerUpdateMessage>(message));
 			break;
 
 		case MessageType::ClientToReady:
@@ -58,4 +59,13 @@ void Player::ClientToReadyMessageProcess(const std::shared_ptr<ClientToReadyMess
 	PlayerUpdateBroadcasting();
 
 	PlayerUpdateSelf();
+}
+
+void Player::PlayerUpdateMessageProcess(const std::shared_ptr<PlayerUpdateMessage>& message)
+{
+	message->m_Datum = m_UpdateMessage.m_Datum;
+
+	SetActorPos(m_UpdateMessage.m_Datum.m_Pos);
+	SetActorDir(m_UpdateMessage.m_Datum.m_Dir);
+	PlayerUpdateBroadcasting();
 }

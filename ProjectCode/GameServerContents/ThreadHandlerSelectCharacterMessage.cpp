@@ -5,6 +5,7 @@
 #include "CharacterTable.h"
 #include "ContentsSystemEnum.h"
 #include "ContentsUserData.h"
+#include "ContentsPlayerData.h"
 #include "Player.h"
 
 void ThreadHandlerSelectCharacterMessage::DBCheck()
@@ -69,7 +70,14 @@ void ThreadHandlerSelectCharacterMessage::InsertSection()
 		return;
 	}
 
-	last_section->CreateActor<Player>(m_TCPSession);
+	std::shared_ptr<Player> new_player = last_section->CreateSessionActor<Player>(m_TCPSession);
+	if (nullptr == new_player)
+	{
+		// 액터 생성에 실패에 대한 정보를 클라이언트로 보내주어야 한다.
+	}
+
+	const std::shared_ptr<ContentsPlayerData> player_data = m_TCPSession->CreateLink<ContentsPlayerData>(EDataIndex::PLAYABLE);
+	player_data->m_ConnectPlayer = new_player.get();	// 순환참조로 인해 그냥 포인터로 처리
 }
 
 void ThreadHandlerSelectCharacterMessage::Start()

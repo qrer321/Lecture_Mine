@@ -231,6 +231,7 @@
     <ClInclude Include="CharacterTable.h" />
     <ClInclude Include="ClientToServer.h" />
     <ClInclude Include="ContentsEnum.h" />
+    <ClInclude Include="ContentsPlayerData.h" />
     <ClInclude Include="ContentsStructure.h" />
     <ClInclude Include="ContentsSystemEnum.h" />
     <ClInclude Include="ContentsUserData.h">

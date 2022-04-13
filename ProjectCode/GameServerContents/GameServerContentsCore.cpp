@@ -4,9 +4,13 @@
 #include <GameServerMessage/MessageConverter.h>
 #include <GameServerCore/GameServerSectionManager.h>
 #include "ServerDispatcher.h"
+#include "ContentsSystemEnum.h"
 #include "ContentsEnum.h"
+#include "ContentsUserData.h"
+#include "ContentsPlayerData.h"
 #include "FightZone.h"
 #include "NoneFightZone.h"
+#include "Player.h"
 
 void GameServerContentsCore::UserStart()
 {
@@ -24,7 +28,7 @@ void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& sess
 	GameServerDebug::LogInfo(logText + " Socket Connected");
 
 
-	GameServerSectionManager::GetInst()->Init(3);
+	GameServerSectionManager::GetInst()->Init(3, "SectionThread");
 
 	GameServerSectionManager::GetInst()->CreateSection<NoneFightZone>(0, ESectionType::NONE_FIGHT);
 
@@ -62,4 +66,23 @@ void GameServerContentsCore::CloseEvent(const std::shared_ptr<TCPSession>& sessi
 {
 	const std::string logText = std::to_string(static_cast<int>(session->GetSocket()));
 	GameServerDebug::LogInfo(logText + " Connection has Ended");
+
+	const std::shared_ptr<ContentsUserData> user_data = session->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	if (nullptr != user_data)
+	{
+		// 로그인은 했다.
+	}
+
+	const std::shared_ptr<ContentsPlayerData> player_data = session->GetLink<ContentsPlayerData>(EDataIndex::PLAYABLE);
+	if (nullptr != player_data)
+	{
+		// Section까지 진입하여 플레이했던 유저다.
+		Player* connect_player = player_data->m_ConnectPlayer;
+		if (nullptr != connect_player)
+		{
+			connect_player->SetDeath(true);
+		}
+	}
+
+	session->ClearLinkObject();
 }

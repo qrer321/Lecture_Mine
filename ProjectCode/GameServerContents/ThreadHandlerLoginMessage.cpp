@@ -18,7 +18,7 @@ void ThreadHandlerLoginMessage::DBCheck()
 	// GameServerThread에서 thread_local을 통해
 	// 각각의 스레드가 가질 local 변수를 만들었기에
 	// 코드 상으로 해당 thread의 Name을 얻어올 수 있게 되었다.
-	std::string thread_name = GameServerThread::GetName();
+	std::string thread_name = GameServerThread::GetThreadName();
 
 	UserTable_SelectIDFromUserInfo select_query(m_Message->m_ID);
 	select_query.ExecuteQuery();

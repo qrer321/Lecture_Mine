@@ -43,7 +43,7 @@ void SerializerTypeCheck(std::string& source, const MemberInfo& member_info)
 	{
 		source += "		serializer << " + member_info.Name + ";\n";
 	}
-	else if (member_info.Type == "FVector")
+	else if (member_info.Type == "FVector4")
 	{
 		source += "		serializer << " + member_info.Name + ";\n";
 	}
@@ -86,7 +86,7 @@ void DeserializerTypeCheck(std::string& source, const MemberInfo& member_info)
 	{
 		source += "		serializer >> " + member_info.Name + ";\n";
 	}
-	else if (member_info.Type == "FVector")
+	else if (member_info.Type == "FVector4")
 	{
 		source += "		serializer >> " + member_info.Name + ";\n";
 	}

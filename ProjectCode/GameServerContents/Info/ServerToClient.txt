@@ -23,15 +23,18 @@ std::vector<FCharacterInfo> m_CharactersInfo;
 
 |ServerDestroy-
 
+|PlayerDestroy-
+
 |ObjectDestroy-
-int m_ObjectID;
+uint64_t m_ActorIndex;
 
 |PlayersUpdate-
 std::vector<FPlayerUpdateData> m_Data;
 
 |EnemyUpdate-
-int m_ObjectID;
+int m_ActorIndex;
 int m_EnemyType;
 EEnemyState m_UpdateType;
-FVector m_Pos;
-FVector m_Dir;
+FVector4 m_Pos;
+FVector4 m_Dir;
+FVector4 m_Rot;

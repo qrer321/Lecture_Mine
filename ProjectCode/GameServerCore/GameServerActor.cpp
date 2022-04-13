@@ -6,8 +6,8 @@ GameServerActor::GameServerActor()
 	, m_ActorIndex(-1)
 	, m_ThreadIndex(-1)
 	, m_SectionIndex(-1)
-	, m_ActorPos(FVector::ZeroVector)
-	, m_ActorDir(FVector::ZeroVector)
+	, m_ActorPos(FVector4::ZeroVector)
+	, m_ActorDir(FVector4::ZeroVector)
 {
 }
 

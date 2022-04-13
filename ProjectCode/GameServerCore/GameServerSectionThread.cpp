@@ -9,6 +9,8 @@ GameServerSectionThread::GameServerSectionThread()
 
 void GameServerSectionThread::ThreadFunction()
 {
+	SetThreadName(GetNameCopy());
+
 	m_SectionThreadQueue.Initialize(1);
 	m_SectionThreadQueue.SetExecuteType(GameServerQueue::WORK_TYPE::Default);
 	m_Timer.Reset();
@@ -51,6 +53,7 @@ void GameServerSectionThread::ThreadFunction()
 
 			section->AccTimeUpdate(delta_time);
 			section->Update(delta_time);
+			section->Release();
 		}
 		Sleep(1);
 	}

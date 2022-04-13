@@ -47,41 +47,45 @@ private:
 
 public:
 	template <typename ActorType, typename... Parameter>
-	uint64_t CreateActor(Parameter... args)
+	std::shared_ptr<ActorType> CreateActor(Parameter... args)
 	{
 		int actor_index = GameServerUnique::GetNextUniqueId();
-		CreateActor<ActorType>(actor_index, args...);
 
-		return actor_index;
+		std::shared_ptr<ActorType> new_actor = CreateSessionActor<ActorType>(actor_index, args...);
+		return new_actor;
 	}
 
 	template <typename ActorType, typename... Parameter>
-	void CreateActor(uint64_t actor_index, Parameter... args)
+	std::shared_ptr<ActorType> CreateActor(uint64_t actor_index, Parameter... args)
 	{
 		std::shared_ptr<ActorType> new_actor = std::make_shared<ActorType>(args...);
 		new_actor->SetActorIndex(actor_index);
 
 		InsertActor(std::dynamic_pointer_cast<GameServerActor>(new_actor));
+
+		return new_actor;
 	}
 
 
 	template <typename ActorType, typename... Parameter>
-	uint64_t CreateActor(const std::shared_ptr<TCPSession>& session, Parameter... args)
+	std::shared_ptr<ActorType> CreateSessionActor(const std::shared_ptr<TCPSession>& session, Parameter... args)
 	{
 		uint64_t actor_index = GameServerUnique::GetNextUniqueId();
-		CreateActor<ActorType>(session, actor_index, args...);
 
-		return actor_index;
+		std::shared_ptr<ActorType> new_actor = CreateSessionActor<ActorType>(session, actor_index, args...);
+		return new_actor;
 	}
 
 	template <typename ActorType, typename... Parameter>
-	void CreateActor(const std::shared_ptr<TCPSession>& session, uint64_t actor_index, Parameter... args)
+	std::shared_ptr<ActorType> CreateSessionActor(const std::shared_ptr<TCPSession>& session, uint64_t actor_index, Parameter... args)
 	{
 		std::shared_ptr<ActorType> new_actor = std::make_shared<ActorType>(args...);
 		new_actor->SetActorIndex(actor_index);
 		new_actor->SetSession(session);
 
 		InsertActor(std::dynamic_pointer_cast<GameServerActor>(new_actor));
+
+		return new_actor;
 	}
 
 public: // Member Function
@@ -93,8 +97,9 @@ public: // Member Function
 	const std::list<std::shared_ptr<GameServerActor>>& GetPlayableActor() { return m_PlayableActor; }
 
 	bool Update(float delta_time);
-	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
+	void Release();
 
+	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
 	void ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
 };
 

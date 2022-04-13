@@ -72,9 +72,9 @@ void GameServerSerializer::operator<<(const float value)
 	Write(&value, sizeof(float));
 }
 
-void GameServerSerializer::operator<<(const FVector& value)
+void GameServerSerializer::operator<<(const FVector4& value)
 {
-	Write(&value, sizeof(FVector));
+	Write(&value, sizeof(FVector4));
 }
 
 /*
@@ -109,7 +109,7 @@ void GameServerSerializer::operator>>(float& value)
 	Read(&value, sizeof(float));
 }
 
-void GameServerSerializer::operator>>(FVector& value)
+void GameServerSerializer::operator>>(FVector4& value)
 {
-	Read(&value, sizeof(FVector));
+	Read(&value, sizeof(FVector4));
 }

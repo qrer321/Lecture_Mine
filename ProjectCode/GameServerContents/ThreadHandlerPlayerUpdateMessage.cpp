@@ -8,4 +8,6 @@ void ThreadHandlerPlayerUpdateMessage::Start()
 		GameServerDebug::LogError("Player Update TCPSession Error");
 		return;
 	}
+
+	ActorWork(m_Message->m_Datum.m_ThreadIndex, m_Message->m_Datum.m_SectionIndex, m_Message->m_Datum.m_ActorIndex, m_Message);
 }

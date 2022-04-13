@@ -19,8 +19,8 @@ private:
 	uint64_t										m_ThreadIndex;
 	uint64_t										m_SectionIndex;
 
-	FVector											m_ActorPos;
-	FVector											m_ActorDir;
+	FVector4											m_ActorPos;
+	FVector4											m_ActorDir;
 
 public: // Default
 	GameServerActor();
@@ -42,6 +42,7 @@ private:
 
 	virtual void Update(float delta_time) = 0;
 	virtual bool InsertSection() = 0;
+	virtual void DeathEvent() = 0;
 
 protected:
 	std::shared_ptr<TCPSession> GetSession() const { return m_TCPSession; }
@@ -55,13 +56,13 @@ public: // Member Function
 	[[nodiscard]] uint64_t GetThreadIndex() const { return m_ThreadIndex; }
 	[[nodiscard]] uint64_t GetSectionIndex() const { return m_SectionIndex; }
 
-	[[nodiscard]] FVector GetActorPos() const { return m_ActorPos; }
-	[[nodiscard]] FVector GetActorDir() const { return m_ActorDir; }
+	[[nodiscard]] FVector4 GetActorPos() const { return m_ActorPos; }
+	[[nodiscard]] FVector4 GetActorDir() const { return m_ActorDir; }
 
-	void SetActorPos(const FVector& pos) { m_ActorPos = pos; }
-	void SetActorDir(const FVector& dir) { m_ActorDir = dir; }
+	void SetActorPos(const FVector4& pos) { m_ActorPos = pos; }
+	void SetActorDir(const FVector4& dir) { m_ActorDir = dir; }
 
-	void Move(const FVector& value) { m_ActorPos += value; }
+	void Move(const FVector4& value) { m_ActorPos += value; }
 
 	bool IsEmptyMessage() const { return m_MessageQueue.empty(); }
 	std::shared_ptr<GameServerMessage> PopMessage();
