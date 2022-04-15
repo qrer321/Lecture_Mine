@@ -18,13 +18,22 @@ enum class EGameObjectType
 	MAX
 };
 
+enum class EPlayerState
+{
+	NONE,
+	State_Idle,
+	State_Move,
+	State_Attack,
+	MAX,
+};
+
 enum class EEnemyState
 {
 	NONE,
 	State_Idle,
 	State_Trace,
 	State_Attack,
-	MAX
+	MAX,
 };
 
 enum class ESectionType

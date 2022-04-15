@@ -62,6 +62,10 @@
       </SubType>
     </ClInclude>
     <ClInclude Include="TypeDefine.h" />
+    <ClInclude Include="UDPSession.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DBConnecter.cpp">
@@ -107,6 +111,10 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="TCPSession.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="UDPSession.cpp">
       <SubType>
       </SubType>
     </ClCompile>

@@ -40,6 +40,9 @@
     <ClInclude Include="DBQuery.h">
       <Filter>DB</Filter>
     </ClInclude>
+    <ClInclude Include="UDPSession.h">
+      <Filter>NetObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PreCompile.cpp">
@@ -74,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="DBQuery.cpp">
       <Filter>DB</Filter>
+    </ClCompile>
+    <ClCompile Include="UDPSession.cpp">
+      <Filter>NetObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,12 +19,16 @@ public: // Default
 
 	GameServerObjectBase(const GameServerObjectBase& other) = delete;
 	GameServerObjectBase(GameServerObjectBase&& other) noexcept;
-
-public:
 	GameServerObjectBase& operator=(const GameServerObjectBase& other) = delete;
 	GameServerObjectBase& operator=(GameServerObjectBase&& other) = delete;
 
 public:
+	template <typename CastType>
+	std::shared_ptr<CastType> DynamicCast()
+	{
+		return std::dynamic_pointer_cast<CastType>(shared_from_this());
+	}
+
 	void SetParent(GameServerObjectBase* parent) { m_Parent = parent; }
 
 	template <typename CreateType, typename EnumData>

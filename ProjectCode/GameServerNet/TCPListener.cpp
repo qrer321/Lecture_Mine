@@ -162,7 +162,7 @@ void TCPListener::OnAccept(BOOL result, DWORD byte_size, LPOVERLAPPED overlapped
 
 		// IOCP의 감시를 받는 SessionSocket에서 무언가 일이 발생했을 때
 		// 그 무언가가 어떤 것에서 발생할지 대한 설정 ==> 현재 Receive 동작
-		overlappedPtr->GetTCPSession()->RecvRequest();
+		overlappedPtr->GetTCPSession()->Recv();
 
 		m_ConnectionLock.lock();
 		m_Connections.insert(make_pair(overlappedPtr->GetTCPSession()->GetConnectId(), overlappedPtr->GetTCPSession()));

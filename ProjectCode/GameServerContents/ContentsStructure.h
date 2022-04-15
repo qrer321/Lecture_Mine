@@ -60,6 +60,18 @@ struct FPlayerUpdateData
 
 	int GetDataSize() const { return sizeof(FPlayerUpdateData); }
 
+	template <typename StateType>
+	StateType GetState() const
+	{
+		return static_cast<StateType>(m_State);
+	}
+
+	template <typename StateType>
+	void SetState(StateType type)
+	{
+		m_State = static_cast<int>(type);
+	}
+
 	void Serialize(GameServerSerializer& serializer)
 	{
 		serializer << m_ActorIndex;

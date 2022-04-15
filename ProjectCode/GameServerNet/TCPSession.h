@@ -1,13 +1,10 @@
 #pragma once
-#include "IPEndPoint.h"
-#include "TypeDefine.h"
 #include <GameServerBase/GameServerObjectBase.h>
 #include <GameServerBase/GameServerObjectPool.h>
 #include <GameServerBase/GameServerQueue.h>
+#include "IPEndPoint.h"
+#include "TypeDefine.h"
 
-// 용도 : 
-// 분류 :
-// 첨언 :
 class TCPListener;
 class AcceptExOverlapped;
 class SendOverlapped;
@@ -23,7 +20,7 @@ class TCPSession : public GameServerObjectBase
 private: // Member Var
 	SOCKET		m_SessionSocket;
 
-	__int64		m_ConnectId;
+	uint64_t	m_ConnectId;
 	IPEndPoint	m_LocalAddress;
 	IPEndPoint	m_RemoteAddress;
 	bool		m_IsAcceptBind;
@@ -35,9 +32,6 @@ private: // Member Var
 	std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>	m_RecvCallBack;
 	std::function<void(PtrSTCPSession)>										m_CloseCallBack;
 	bool																	m_CallClose;
-
-	// using RecvCallBack = std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>;
-	// using CloseCallBack = std::function<void(PtrSTCPSession)>;
 
 public: // Default
 	TCPSession();
@@ -51,25 +45,25 @@ public:
 	TCPSession& operator=(TCPSession&& other) = delete;
 
 private:
-	static void OnCallBack(PtrWTCPSession weakSession, BOOL result, DWORD numberOfBytes, LPOVERLAPPED lpOverlapped);
+	static void OnCallBack(BOOL result, DWORD number_of_bytes, LPOVERLAPPED overlapped);
 
 	bool Initialize();
-	bool BindQueue(const GameServerQueue& taskQueue);	// nullptr가 들어올 수 없도록 매개변수를 &로 받는다
-	void AcceptBindOn();								// 이미 Bind된 Socket이 다시금 Bind되지 않도록 막는 함수
+	bool BindQueue(const GameServerQueue& task_queue);	// nullptr가 들어올 수 없도록 매개변수를 &로 받는다
+	void AcceptBindOn() { m_IsAcceptBind = true; }		// 이미 Bind된 Socket이 다시금 Bind되지 않도록 막는 함수
 
-	void OnSendComplete(SendOverlapped* sendOverlapped);
-	void OnRecv(const char* data, DWORD byteSize);
-	void RecvRequest();
+	void OnSendComplete(SendOverlapped* send_overlapped);
+	void OnRecv(const char* recv_buffer, DWORD number_of_bytes);
+	void Recv();
 		
-	void Close(bool forceClose = false);
+	void Close(bool force_close = false);
 	void DisconnectSocket();	// 정상 종료 후 재활용
 	void CloseSocket();			// 강제 종료
 
 public:
-	SOCKET	GetSocket()		const { return m_SessionSocket; }
-	__int64 GetConnectId()	const { return m_ConnectId; }
+	SOCKET	 GetSocket()	const { return m_SessionSocket; }
+	uint64_t GetConnectId()	const { return m_ConnectId; }
 
-	bool Send(const std::vector<unsigned char>& buffer);
+	bool Send(const std::vector<unsigned char>& send_data);
 
 	void SetCallBack(const std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>& recv_callback, const std::function<void(PtrSTCPSession)>& close_callback);
 	void SetRecvCallBack(const std::function<void(PtrSTCPSession, const std::vector<unsigned char>&)>& callback);

@@ -1,6 +1,9 @@
 #include "PreCompile.h"
 #include "GameServerOverlapped.h"
+
+#include <utility>
 #include "TCPSession.h"
+#include "UDPSession.h"
 
 ///////////////////////////// GameServerOverlapped /////////////////////////////
 GameServerOverlapped::GameServerOverlapped()
@@ -9,8 +12,7 @@ GameServerOverlapped::GameServerOverlapped()
 	ResetOverlapped();
 }
 
-GameServerOverlapped::~GameServerOverlapped()
-= default;
+GameServerOverlapped::~GameServerOverlapped() = default;
 
 LPWSAOVERLAPPED GameServerOverlapped::GetOverlapped()
 {
@@ -35,25 +37,22 @@ AcceptExOverlapped::AcceptExOverlapped(PtrSTCPSession tcpSession)
 {
 }
 
-AcceptExOverlapped::~AcceptExOverlapped()
-= default;
-
-void AcceptExOverlapped::SetTCPSession(PtrSTCPSession tcpSession)
+void AcceptExOverlapped::SetTCPSession(PtrSTCPSession tcp_session)
 {
-	if (nullptr == tcpSession)
+	if (nullptr == tcp_session)
 	{
-		GameServerDebug::AssertDebugMsg("nullptr 세션을 세팅하려고 시도하였습니다");
+		GameServerDebug::AssertDebugMsg("Attempted To Set Nullptr Session");
 		return;
 	}
 
-	m_TCPSession = std::move(tcpSession);
+	m_TCPSession = std::move(tcp_session);
 }
 
-void AcceptExOverlapped::Execute(BOOL result, DWORD byteSize)
+void AcceptExOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 {
 	if (nullptr == m_TCPSession)
 	{
-		GameServerDebug::LogError("세션이 세팅되어있지 않은 오버랩드 객체입니다");
+		GameServerDebug::LogError("Overlapped Object With Nullptr Session");
 		return;
 	}
 
@@ -129,14 +128,11 @@ SendOverlapped::SendOverlapped()
 {
 }
 
-SendOverlapped::SendOverlapped(TCPSession* tcpSession)
+SendOverlapped::SendOverlapped(TCPSession* tcp_session)
 	: m_wsaBuffer()
-	, m_TCPSession(tcpSession)
+	, m_TCPSession(tcp_session)
 {
 }
-
-SendOverlapped::~SendOverlapped()
-= default;
 
 LPWSABUF SendOverlapped::GetBuffer()
 {
@@ -148,20 +144,20 @@ int SendOverlapped::GetMaxBufferLength() const
 	return static_cast<int>(m_Buffer.size());
 }
 
-void SendOverlapped::SetTCPSession(TCPSession* tcpSession)
+void SendOverlapped::SetTCPSession(TCPSession* tcp_session)
 {
-	if (nullptr == tcpSession)
+	if (nullptr == tcp_session)
 	{
-		GameServerDebug::AssertDebugMsg("nullptr 세션을 세팅하려고 시도하였습니다");
+		GameServerDebug::AssertDebugMsg("Attempted To Set Nullptr Session");
 		return;
 	}
 
-	m_TCPSession = tcpSession;
+	m_TCPSession = tcp_session;
 }
 
-void SendOverlapped::New(size_t maxBufferLength)
+void SendOverlapped::New(size_t max_buffer_length)
 {
-	m_Buffer.resize(maxBufferLength);
+	m_Buffer.resize(max_buffer_length);
 	m_wsaBuffer.buf = &m_Buffer[0];
 	m_wsaBuffer.len = static_cast<ULONG>(m_Buffer.size());
 }
@@ -172,11 +168,11 @@ void SendOverlapped::CopyFrom(const std::vector<unsigned char>& from)
 	std::copy(from.begin(), from.end(), m_Buffer.begin());
 }
 
-void SendOverlapped::Execute(BOOL result, DWORD byteSize)
+void SendOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 {
 	if (nullptr == m_TCPSession)
 	{
-		GameServerDebug::LogError("세션이 세팅되어있지 않은 오버랩드 객체입니다");
+		GameServerDebug::LogError("Overlapped Object With Nullptr Session");
 		return;
 	}
 		
@@ -185,16 +181,13 @@ void SendOverlapped::Execute(BOOL result, DWORD byteSize)
 
 
 ///////////////////////////// RecvOverlapped /////////////////////////////
-RecvOverlapped::RecvOverlapped(TCPSession* tcpSession)
+RecvOverlapped::RecvOverlapped(TCPSession* tcp_session)
 	: m_Buffer{}
 	, m_wsaBuffer()
-	, m_TCPSession(tcpSession)
+	, m_TCPSession(tcp_session)
 {
 	Clear();
 }
-
-RecvOverlapped::~RecvOverlapped()
-= default;
 
 void RecvOverlapped::Clear()
 {
@@ -204,38 +197,87 @@ void RecvOverlapped::Clear()
 	m_wsaBuffer.buf = m_Buffer;
 }
 
-void RecvOverlapped::Execute(BOOL result, DWORD byteSize)
+void RecvOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 {
 	// 넘어온 byteSize가 0일 경우는
 	// 서버가 터졌다던가, 클라의 연결이 끊어졌다는 등
 	// 잘못된 경우이기 때문에 무조건 정리한다
-	if (0 == byteSize)
+	if (0 == number_of_bytes)
 	{
 		m_TCPSession->Close();
 		return;
 	}
 
-	m_TCPSession->OnRecv(m_Buffer, byteSize);
+	m_TCPSession->OnRecv(m_Buffer, number_of_bytes);
 }
 
 
 ///////////////////////////// DisconnectOverlapped /////////////////////////////
-DisconnectOverlapped::DisconnectOverlapped(TCPSession* tcpSession)
-	: m_TCPSession(tcpSession)
+DisconnectOverlapped::DisconnectOverlapped(TCPSession* tcp_session)
+	: m_TCPSession(tcp_session)
 {
 }
 
-DisconnectOverlapped::~DisconnectOverlapped()
-= default;
-
-void DisconnectOverlapped::Execute(BOOL result, DWORD byteSize)
+void DisconnectOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 {
 	if (nullptr == m_TCPSession)
 	{
-		GameServerDebug::LogError("세션이 세팅되어있지 않은 오버랩드 객체입니다");
+		GameServerDebug::LogError("Attempted To Set Nullptr Session");
 		return;
 	}
 
 	m_TCPSession->ClearLinkObject();
 	m_TCPSession->UnRegisterSession();
+}
+
+
+
+///////////////////////////// UDPRecvOverlapped /////////////////////////////
+UDPRecvOverlapped::UDPRecvOverlapped(std::weak_ptr<UDPSession> udp_session)
+	: m_UDPSession(std::move(udp_session))
+{
+	m_wsaBuffer.buf = m_Buffer;
+	m_wsaBuffer.len = static_cast<ULONG>(sizeof(m_Buffer));
+}
+
+void UDPRecvOverlapped::Execute(BOOL result, DWORD number_of_bytes)
+{
+	const std::shared_ptr<UDPSession> udp_session = m_UDPSession.lock();
+	if (nullptr == udp_session)
+	{
+		GameServerDebug::AssertDebugMsg("UDP Session Is Nullptr");
+		return;
+	}
+
+	udp_session->OnRecv(m_Buffer, number_of_bytes);
+}
+
+
+
+///////////////////////////// UDPSendOverlapped /////////////////////////////
+void UDPSendOverlapped::Execute(BOOL result, DWORD number_of_bytes)
+{
+	const std::shared_ptr<UDPSession> udp_session = m_UDPSession.lock();
+	if (nullptr == udp_session)
+	{
+		GameServerDebug::AssertDebugMsg("UDP Session Is Nullptr");
+		return;
+	}
+
+	m_wsaBuffer.buf = m_Buffer;
+	m_wsaBuffer.len = static_cast<ULONG>(sizeof(m_Buffer));
+
+	udp_session->OnSendComplete(this);
+}
+
+void UDPSendOverlapped::CopyFrom(const std::vector<unsigned char>& from_data)
+{
+	if (sizeof(m_Buffer) < from_data.size())
+	{
+		GameServerDebug::AssertDebugMsg("Trying To Copy Exceeds The Size Of The Send Buffer");
+		return;
+	}
+
+	memcpy_s(m_wsaBuffer.buf, sizeof(m_Buffer), &from_data[0], from_data.size());
+	m_wsaBuffer.len = static_cast<ULONG>(from_data.size());
 }

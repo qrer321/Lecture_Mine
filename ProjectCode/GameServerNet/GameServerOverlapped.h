@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+
 #include "TypeDefine.h"
 
 // ¿ëµµ : 
@@ -26,7 +28,7 @@ public: // Member Function
 	LPWSAOVERLAPPED GetOverlapped();
 	void ResetOverlapped();
 
-	virtual void Execute(BOOL result, DWORD byteSize) {}
+	virtual void Execute(BOOL result, DWORD number_of_bytes) {}
 };
 
 
@@ -40,7 +42,7 @@ private:
 public:
 	AcceptExOverlapped();
 	AcceptExOverlapped(PtrSTCPSession tcpSession);
-	~AcceptExOverlapped() override;
+	~AcceptExOverlapped() override = default;
 
 	AcceptExOverlapped(const AcceptExOverlapped& other) = delete;
 	AcceptExOverlapped(AcceptExOverlapped&& other) = delete;
@@ -54,8 +56,8 @@ public:
 	PtrSTCPSession GetTCPSession() { return m_TCPSession; }
 
 public:
-	void SetTCPSession(PtrSTCPSession tcpSession);
-	void Execute(BOOL result, DWORD byteSize) override;
+	void SetTCPSession(PtrSTCPSession tcp_session);
+	void Execute(BOOL result, DWORD number_of_bytes) override;
 };
 
 
@@ -69,8 +71,8 @@ private:
 
 public:
 	SendOverlapped();
-	SendOverlapped(TCPSession* tcpSession);
-	~SendOverlapped() override;
+	SendOverlapped(TCPSession* tcp_session);
+	~SendOverlapped() override = default;
 
 	SendOverlapped(const SendOverlapped& other) = delete;
 	SendOverlapped(SendOverlapped&& other) = delete;
@@ -84,11 +86,11 @@ public:
 	int GetMaxBufferLength() const;
 
 public:
-	void SetTCPSession(TCPSession* tcpSession);
-	void New(size_t maxBufferLength);
+	void SetTCPSession(TCPSession* tcp_session);
+	void New(size_t max_buffer_length);
 	void CopyFrom(const std::vector<unsigned char>& from);
 
-	void Execute(BOOL result, DWORD byteSize) override;
+	void Execute(BOOL result, DWORD number_of_bytes) override;
 };
 
 
@@ -102,8 +104,8 @@ private:
 
 public:
 	RecvOverlapped() = delete;
-	RecvOverlapped(TCPSession* tcpSession);
-	~RecvOverlapped() override;
+	RecvOverlapped(TCPSession* tcp_session);
+	~RecvOverlapped() override = default;
 
 	RecvOverlapped(const RecvOverlapped& other) = delete;
 	RecvOverlapped(RecvOverlapped&& other) = delete;
@@ -119,7 +121,7 @@ public:
 	LPWSABUF GetWSABuffer() { return &m_wsaBuffer;  }
 
 public:
-	void Execute(BOOL result, DWORD byteSize) override;
+	void Execute(BOOL result, DWORD number_of_bytes) override;
 	void Clear();
 };
 
@@ -132,8 +134,8 @@ private:
 
 public:
 	DisconnectOverlapped() = delete;
-	DisconnectOverlapped(TCPSession* tcpSession);
-	~DisconnectOverlapped() override;
+	DisconnectOverlapped(TCPSession* tcp_session);
+	~DisconnectOverlapped() override = default;
 
 	DisconnectOverlapped(const DisconnectOverlapped& other) = delete;
 	DisconnectOverlapped(DisconnectOverlapped&& other) = delete;
@@ -143,5 +145,66 @@ public:
 	DisconnectOverlapped& operator=(DisconnectOverlapped&& other) = delete;
 
 public:
-	void Execute(BOOL result, DWORD byteSize) override;
+	void Execute(BOOL result, DWORD number_of_bytes) override;
+};
+
+
+
+/////////////////////// UDPRecvOverlapped ///////////////////////
+class UDPSession;
+class UDPRecvOverlapped : public GameServerOverlapped
+{
+private:
+	std::weak_ptr<UDPSession>	m_UDPSession;
+	char						m_Buffer[1024]{};
+	WSABUF						m_wsaBuffer{};
+	DWORD						m_NumberOfBytes{};
+
+public:
+	UDPRecvOverlapped(std::weak_ptr<UDPSession> udp_session);
+	~UDPRecvOverlapped() override = default;
+
+	UDPRecvOverlapped(const UDPRecvOverlapped& other) = delete;
+	UDPRecvOverlapped(UDPRecvOverlapped&& other) = delete;
+	UDPRecvOverlapped& operator=(const UDPRecvOverlapped& other) = delete;
+	UDPRecvOverlapped& operator=(UDPRecvOverlapped&& other) = delete;
+
+public:
+	void*	 GetBuffer()		{ return m_Buffer; }
+	LPDWORD	 GetBufferLength()	{ return &m_NumberOfBytes; }
+	LPWSABUF GetWSABuffer()		{ return &m_wsaBuffer; }
+
+	void Execute(BOOL result, DWORD number_of_bytes) override;
+};
+
+
+
+/////////////////////// UDPSendOverlapped ///////////////////////
+class UDPSession;
+class UDPSendOverlapped : public GameServerOverlapped
+{
+private:
+	std::weak_ptr<UDPSession>	m_UDPSession;
+	char						m_Buffer[1024]{};
+	WSABUF						m_wsaBuffer{};
+	DWORD						m_NumberOfBytes{};
+
+public:
+	UDPSendOverlapped() = default;
+	~UDPSendOverlapped() override = default;
+
+	UDPSendOverlapped(const UDPSendOverlapped& other) = delete;
+	UDPSendOverlapped(UDPSendOverlapped&& other) = delete;
+	UDPSendOverlapped& operator=(const UDPSendOverlapped& other) = delete;
+	UDPSendOverlapped& operator=(UDPSendOverlapped&& other) = delete;
+
+public:
+	void*	 GetBuffer()		{ return m_Buffer; }
+	LPDWORD	 GetBufferLength()	{ return &m_NumberOfBytes; }
+	LPWSABUF GetWSABuffer()		{ return &m_wsaBuffer; }
+
+	void SetUDPSession(std::weak_ptr<UDPSession> udp_session) { m_UDPSession = std::move(udp_session); }
+
+	void Execute(BOOL result, DWORD number_of_bytes) override;
+	void CopyFrom(const std::vector<unsigned char>& from_data);
 };
