@@ -2,6 +2,7 @@
 #include <GameServerNet/TCPListener.h>
 
 class TCPSession;
+class UDPSession;
 class GameServerCore
 {
 protected:
@@ -14,6 +15,10 @@ protected:
 
 	static TCPListener										s_Listener;
 	static std::function<void(std::shared_ptr<TCPSession>)> s_AcceptCallback;
+
+	static IPEndPoint										s_ServerEndPoint;
+	static std::vector<std::shared_ptr<UDPSession>>			s_AllUDPSession;
+	static std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)> s_UDPCallBack;
 
 public: // Default
 	GameServerCore() = default;
@@ -32,7 +37,8 @@ public: // Default
 	static std::string	GetDBPw()		{ return s_DBPw; }
 
 protected:
-	void SetAcceptCallback(const std::function<void(std::shared_ptr<TCPSession>)>& callback);
+	void SetAcceptCallBack(const std::function<void(std::shared_ptr<TCPSession>)>& callback);
+	void InitializeUDP(int udp_count, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback);
 
 private:
 	static bool CoreInit();

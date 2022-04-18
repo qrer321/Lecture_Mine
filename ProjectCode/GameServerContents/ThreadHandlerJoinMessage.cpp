@@ -37,12 +37,12 @@ void ThreadHandlerJoinMessage::ResultSend()
 	// 클라이언트에서는 해당 정보를 Deserialize하여 동작에 사용하여야 한다.
 	GameServerSerializer serializer;
 	m_ResultMessage.Serialize(serializer);
-	m_TCPSession->Send(serializer.GetData());
+	m_Session->Send(serializer.GetData());
 }
 
 void ThreadHandlerJoinMessage::Start()
 {
-	if (nullptr == m_TCPSession)
+	if (nullptr == m_Session)
 	{
 		GameServerDebug::LogError("Join TCPSession Error");
 		return;

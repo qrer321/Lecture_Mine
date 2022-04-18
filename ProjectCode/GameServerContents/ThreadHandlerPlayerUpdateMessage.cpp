@@ -3,7 +3,7 @@
 
 void ThreadHandlerPlayerUpdateMessage::Start()
 {
-	if (nullptr == m_TCPSession)
+	if (nullptr == m_Session)
 	{
 		GameServerDebug::LogError("Player Update TCPSession Error");
 		return;

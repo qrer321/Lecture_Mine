@@ -11,12 +11,14 @@
 #include "FightZone.h"
 #include "NoneFightZone.h"
 #include "Player.h"
+#include "ThreadHandlerPlayerUpdateMessage_UDP.h"
 
 void GameServerContentsCore::UserStart()
 {
 	DispatcherRegistration();
 
-	SetAcceptCallback(AcceptEvent);
+	SetAcceptCallBack(AcceptEvent);
+	InitializeUDP(8, RecvEvent_UDP);
 }
 
 void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& session)
@@ -38,9 +40,9 @@ void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& sess
 	GameServerSectionManager::GetInst()->CreateSection<FightZone>(2, ESectionType::FIGHT_ZONE_4);
 }
 
-void GameServerContentsCore::RecvEvent(const std::shared_ptr<TCPSession>& session, const std::vector<unsigned char>& value)
+void GameServerContentsCore::RecvEvent(const std::shared_ptr<TCPSession>& session, const std::vector<unsigned char>& data)
 {
-	MessageConverter converter = MessageConverter(value);
+	MessageConverter converter = MessageConverter(data);
 	if (false == converter.IsValid())
 	{
 		// converter가 유효하지 않다면
@@ -53,7 +55,7 @@ void GameServerContentsCore::RecvEvent(const std::shared_ptr<TCPSession>& sessio
 	// -> 메시지 처리한 시간을 기록하여야 한다.
 
 	MessageHandler<TCPSession> handler;
-	if (false == g_dispatcher.GetHandler(converter.GetMessageType(), handler))
+	if (false == g_tcp_dispatcher.GetHandler(converter.GetMessageType(), handler))
 	{
 		GameServerDebug::AssertDebugMsg("Invalid Handler");
 		return;
@@ -85,4 +87,31 @@ void GameServerContentsCore::CloseEvent(const std::shared_ptr<TCPSession>& sessi
 	}
 
 	session->ClearLinkObject();
+}
+
+void GameServerContentsCore::RecvEvent_UDP(const std::shared_ptr<UDPSession>& session, const std::vector<unsigned char>& data, IPEndPoint& end_point)
+{
+	MessageConverter converter = MessageConverter(data);
+	if (false == converter.IsValid())
+	{
+		GameServerDebug::AssertDebugMsg("Message Converter Is Not Valid");
+		return;
+	}
+
+	if (static_cast<int>(MessageType::PlayerUpdate) != converter.GetMessageType())
+	{
+		GameServerDebug::AssertDebugMsg("UDP Session Can Only Player Update Message");
+		return;
+	}
+
+	const std::shared_ptr<PlayerUpdateMessage> player_update_message = std::dynamic_pointer_cast<PlayerUpdateMessage>(converter.GetServerMessage());
+	if (nullptr == player_update_message)
+	{
+		GameServerDebug::AssertDebugMsg("Player Update Message Is Nullptr");
+		return;
+	}
+
+	const std::shared_ptr<ThreadHandlerPlayerUpdateMessage_UDP> update_message_udp = std::make_shared<ThreadHandlerPlayerUpdateMessage_UDP>();
+	update_message_udp->Init(session, player_update_message);
+	update_message_udp->Start();
 }

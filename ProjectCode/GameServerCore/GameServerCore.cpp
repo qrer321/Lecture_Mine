@@ -1,12 +1,15 @@
 #include "PreCompile.h"
 #include "GameServerCore.h"
+#include <conio.h>
 #include <GameServerBase/GameServerDebug.h>
 #include <GameServerBase/GameServerDirectory.h>
 #include <GameServerNet/ServerHelper.h>
+#include <GameServerNet/UDPSession.h>
+#include <GameServerNet/IPEndPoint.h>
 #include "GameServerSectionManager.h"
 #include "DBQueue.h"
 #include "NetQueue.h"
-#include <conio.h>
+
 
 int			GameServerCore::s_ServerPort;
 int			GameServerCore::s_DBPort;
@@ -16,7 +19,11 @@ std::string	GameServerCore::s_DBUser;
 std::string	GameServerCore::s_DBPw;
 
 TCPListener GameServerCore::s_Listener;
-std::function<void(std::shared_ptr<TCPSession>)> GameServerCore::s_AcceptCallback;
+std::function<void(std::shared_ptr<TCPSession>)>	GameServerCore::s_AcceptCallback;
+
+IPEndPoint											GameServerCore::s_ServerEndPoint;
+std::vector<std::shared_ptr<UDPSession>>			GameServerCore::s_AllUDPSession;
+std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)> GameServerCore::s_UDPCallBack;
 
 bool GameServerCore::CoreDataCheck()
 {
@@ -33,9 +40,31 @@ bool GameServerCore::CoreDataCheck()
 	return true;
 }
 
-void GameServerCore::SetAcceptCallback(const std::function<void(std::shared_ptr<TCPSession>)>& callback)
+void GameServerCore::SetAcceptCallBack(const std::function<void(std::shared_ptr<TCPSession>)>& callback)
 {
 	s_AcceptCallback = callback;
+}
+
+void GameServerCore::InitializeUDP(int udp_count, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback)
+{
+	s_UDPCallBack = callback;
+
+	for (int i = 0; i < udp_count; ++i)
+	{
+		IPEndPoint end_point = IPEndPoint(s_ServerEndPoint.GetAddress(), s_ServerEndPoint.GetPort() + i);
+
+		std::shared_ptr<UDPSession> udp_session = std::make_shared<UDPSession>();
+		udp_session->Initialize(end_point, s_UDPCallBack);
+		if (false == udp_session->BindQueue(NetQueue::GetQueue()))
+		{
+			int a = 0;
+		}
+
+		udp_session->Recv();
+		s_AllUDPSession.push_back(udp_session);
+	}
+
+	return;
 }
 
 bool GameServerCore::CoreInit()
@@ -74,6 +103,8 @@ bool GameServerCore::CoreInit()
 
 		GameServerDebug::LogInfo("Server Config Info");
 		GameServerDebug::LogInfo(std::string("ServerPort : " + std::to_string(s_ServerPort)));
+
+		s_ServerEndPoint = IPEndPoint(IPAddress::Parse("127.0.0.1"), s_ServerPort);
 	}
 
 	{
@@ -122,7 +153,7 @@ bool GameServerCore::CoreRun()
 		return false;
 	}
 
-	s_Listener.Initialize(IPEndPoint(IPAddress::Parse("0.0.0.0"), s_ServerPort), s_AcceptCallback);
+	s_Listener.Initialize(IPEndPoint(IPAddress::Parse("127.0.0.1"), s_ServerPort), s_AcceptCallback);
 
 	s_Listener.BindQueue(NetQueue::GetQueue());
 	s_Listener.StartAccept(10);

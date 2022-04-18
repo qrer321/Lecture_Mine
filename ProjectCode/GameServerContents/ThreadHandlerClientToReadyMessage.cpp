@@ -4,7 +4,7 @@
 
 void ThreadHandlerClientToReadyMessage::Start()
 {
-	if (nullptr == m_TCPSession)
+	if (nullptr == m_Session)
 	{
 		GameServerDebug::LogError("Client To Ready TCPSession Error");
 		return;

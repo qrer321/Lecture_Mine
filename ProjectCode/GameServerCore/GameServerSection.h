@@ -100,6 +100,7 @@ public: // Member Function
 	void Release();
 
 	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
+	void SectionPost(uint64_t section_index, const std::shared_ptr<GameServerMessage>& message);
 	void ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
 };
 

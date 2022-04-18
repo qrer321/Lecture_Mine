@@ -495,7 +495,8 @@ int main()
 				}
 
 				dispatcher_text += "																																			\n";
-				dispatcher_text += "Dispatcher<TCPSession> g_dispatcher;																										\n";
+				dispatcher_text += "Dispatcher<TCPSession> g_tcp_dispatcher;																										\n";
+				dispatcher_text += "Dispatcher<UDPSession> g_udp_dispatcher;																										\n";
 				dispatcher_text += "																																			\n";
 				dispatcher_text += "template <typename MessageHandler, typename MessageType>																					\n";
 				dispatcher_text += "void OnMessageProcess(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)									\n";
@@ -518,7 +519,7 @@ int main()
 				for (auto& server_client_element : server_client_message)
 				{
 					dispatcher_text += "																												\n";
-					dispatcher_text += "		g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + server_client_element.MessageName + "),	\n";
+					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + server_client_element.MessageName + "),	\n";
 					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					\n";
 					dispatcher_text += "		{																										\n";
 					dispatcher_text += "			return OnMessageProcess<ThreadHandler" + server_client_element.MessageName + "Message, " +
@@ -529,7 +530,7 @@ int main()
 				for (auto& client_element : client_message)
 				{
 					dispatcher_text += "																												\n";
-					dispatcher_text += "		g_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + client_element.MessageName + "),			\n";
+					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + client_element.MessageName + "),			\n";
 					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					\n";
 					dispatcher_text += "		{																										\n";
 					dispatcher_text += "			return OnMessageProcess<ThreadHandler" + client_element.MessageName + "Message, " +

@@ -45,13 +45,13 @@ void ThreadHandlerLoginMessage::ResultSend()
 	{
 		m_UserData = std::make_shared<ContentsUserData>();
 		m_UserData->m_UserRow = *m_RowDatum;
-		m_TCPSession->SetLink(EDataIndex::USER_DATA, m_UserData);
+		m_Session->SetLink(EDataIndex::USER_DATA, m_UserData);
 		m_UserIndex = m_UserData->m_UserRow.m_Index;
 	}
 
 	GameServerSerializer serializer;
 	m_ResultMessage.Serialize(serializer);
-	m_TCPSession->Send(serializer.GetData());
+	m_Session->Send(serializer.GetData());
 
 	GameServerDebug::LogInfo("Send Login Result");
 
@@ -63,7 +63,7 @@ void ThreadHandlerLoginMessage::ResultSend()
 
 void ThreadHandlerLoginMessage::DBCharacterListCheck()
 {
-	m_UserData = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	m_UserData = m_Session->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 
 	CharacterTable_SelectUserCharacters select_query(m_UserIndex);
 	select_query.ExecuteQuery();
@@ -83,11 +83,11 @@ void ThreadHandlerLoginMessage::CharactersSend()
 {
 	GameServerSerializer serializer;
 	m_CharacterListMessage.Serialize(serializer);
-	m_TCPSession->Send(serializer.GetData());
+	m_Session->Send(serializer.GetData());
 
 	if (EGameServerCode::OK == m_ResultMessage.m_Code)
 	{
-		const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+		const std::shared_ptr<ContentsUserData> user_data = m_Session->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 		user_data->m_UserRow = *m_RowDatum;
 	}
 
@@ -96,7 +96,7 @@ void ThreadHandlerLoginMessage::CharactersSend()
 
 void ThreadHandlerLoginMessage::Start()
 {
-	if (nullptr == m_TCPSession)
+	if (nullptr == m_Session)
 	{
 		GameServerDebug::LogError("Login TCPSession Error");
 		return;

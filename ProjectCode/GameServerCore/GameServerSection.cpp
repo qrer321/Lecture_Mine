@@ -129,6 +129,10 @@ void GameServerSection::Broadcasting(const std::vector<unsigned char>& buffer, u
 	}
 }
 
+void GameServerSection::SectionPost(uint64_t section_index, const std::shared_ptr<GameServerMessage>& message)
+{
+}
+
 void GameServerSection::ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message)
 {
 	static std::map<uint64_t, std::shared_ptr<GameServerActor>>::iterator find_iter;

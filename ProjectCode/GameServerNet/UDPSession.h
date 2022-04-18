@@ -11,9 +11,11 @@ class UDPSession : public GameServerObjectBase
 	friend UDPSendOverlapped;
 
 private: // Member Var
+	IPEndPoint	m_LocalEndPoint;
 	SOCKET		m_SessionSocket{};
 	SOCKADDR_IN m_RemoteAddr{};
 	int			m_AddrSize{};
+	int			m_Flag;
 
 	GameServerObjectPool<UDPSendOverlapped> m_SendOverlappedPool;
 	UDPRecvOverlapped*						m_RecvOverlapped{};
@@ -21,7 +23,7 @@ private: // Member Var
 	std::function<void(std::shared_ptr<UDPSession> , const std::vector<unsigned char>&, IPEndPoint&)> m_RecvCallBack;
 
 public: // Default
-	UDPSession() = default;
+	UDPSession();
 	~UDPSession() override;
 
 	UDPSession(const UDPSession& other) = delete;
@@ -36,6 +38,8 @@ private:
 	void OnRecv(const char* recv_buffer, DWORD number_of_bytes);
 
 public: // Member Function
+	bool Initialize(const IPEndPoint& end_point, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback);
+
 	bool Send(const std::vector<unsigned char>& send_data, const IPEndPoint& remote_end_point);
 	bool Recv();
 

@@ -3,9 +3,41 @@
 #include "GameServerOverlapped.h"
 #include "SocketAddress.h"
 
+UDPSession::UDPSession()
+	: m_Flag(0)
+{
+	memset(&m_RemoteAddr, 0x00, sizeof(m_RemoteAddr));
+	m_AddrSize = static_cast<int>(sizeof(m_RemoteAddr));
+}
+
 UDPSession::~UDPSession()
 {
 	delete m_RecvOverlapped;
+}
+
+bool UDPSession::Initialize(const IPEndPoint& end_point, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback)
+{
+	m_RecvCallBack = callback;
+	m_LocalEndPoint = end_point;
+
+	m_RecvOverlapped = new UDPRecvOverlapped(DynamicCast<UDPSession>());
+
+	m_SessionSocket = WSASocket(AF_INET, SOCK_DGRAM, IPPROTO::IPPROTO_UDP, nullptr, NULL, WSA_FLAG_OVERLAPPED);
+	if (INVALID_SOCKET == m_SessionSocket)
+	{
+		GameServerDebug::GetLastErrorPrint();
+		return false;
+	}
+
+	const SocketAddress socket_address = m_LocalEndPoint.Serialize();
+	if (SOCKET_ERROR == 
+		bind(m_SessionSocket, reinterpret_cast<const sockaddr*>(socket_address.GetBuffer()), static_cast<int>(socket_address.GetBufferLength())))
+	{
+		GameServerDebug::GetLastErrorPrint();
+		return false;
+	}
+
+	return true;
 }
 
 bool UDPSession::BindQueue(const GameServerQueue& task_queue)

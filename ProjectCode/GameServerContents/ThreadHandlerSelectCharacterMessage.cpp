@@ -24,7 +24,7 @@ void ThreadHandlerSelectCharacterMessage::DBCheck()
 
 void ThreadHandlerSelectCharacterMessage::SelectResult()
 {
-	const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	const std::shared_ptr<ContentsUserData> user_data = m_Session->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 	if (EGameServerCode::OK == m_ResultMessage.m_Code)
 	{
 		for (const FCharacterInfo& character_info : user_data->m_CharactersInfo)
@@ -36,7 +36,7 @@ void ThreadHandlerSelectCharacterMessage::SelectResult()
 				GameServerSerializer serializer;
 				m_ResultMessage.m_Nickname = m_Message->m_Nickname;
 				m_ResultMessage.Serialize(serializer);
-				m_TCPSession->Send(serializer.GetData());
+				m_Session->Send(serializer.GetData());
 				GameServerDebug::LogInfo("Send Select Character OK Result");
 
 				NetWork(&ThreadHandlerSelectCharacterMessage::InsertSection);
@@ -49,14 +49,14 @@ void ThreadHandlerSelectCharacterMessage::SelectResult()
 	GameServerSerializer serializer;
 	m_ResultMessage.m_Code = EGameServerCode::SelectCharacterError;
 	m_ResultMessage.Serialize(serializer);
-	m_TCPSession->Send(serializer.GetData());
+	m_Session->Send(serializer.GetData());
 
 	GameServerDebug::LogInfo("Send Select Character Fail Result");
 }
 
 void ThreadHandlerSelectCharacterMessage::InsertSection()
 {
-	const std::shared_ptr<ContentsUserData> user_data = m_TCPSession->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	const std::shared_ptr<ContentsUserData> user_data = m_Session->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 
 	int last_section_id = user_data->m_SelectCharacterInfo.m_LastSectionID;
 	if (-1 == last_section_id)
@@ -70,19 +70,19 @@ void ThreadHandlerSelectCharacterMessage::InsertSection()
 		return;
 	}
 
-	std::shared_ptr<Player> new_player = last_section->CreateSessionActor<Player>(m_TCPSession);
+	std::shared_ptr<Player> new_player = last_section->CreateSessionActor<Player>(m_Session);
 	if (nullptr == new_player)
 	{
 		// 액터 생성에 실패에 대한 정보를 클라이언트로 보내주어야 한다.
 	}
 
-	const std::shared_ptr<ContentsPlayerData> player_data = m_TCPSession->CreateLink<ContentsPlayerData>(EDataIndex::PLAYABLE);
+	const std::shared_ptr<ContentsPlayerData> player_data = m_Session->CreateLink<ContentsPlayerData>(EDataIndex::PLAYABLE);
 	player_data->m_ConnectPlayer = new_player.get();	// 순환참조로 인해 그냥 포인터로 처리
 }
 
 void ThreadHandlerSelectCharacterMessage::Start()
 {
-	if (nullptr == m_TCPSession)
+	if (nullptr == m_Session)
 	{
 		GameServerDebug::LogError("Select TCPSession Error");
 		return;

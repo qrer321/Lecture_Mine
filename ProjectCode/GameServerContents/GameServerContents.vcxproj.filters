@@ -51,6 +51,9 @@
     <ClCompile Include="Player_Message.cpp">
       <Filter>Object\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerPlayerUpdateMessage_UDP.cpp">
+      <Filter>ThreadHandler\PlayerUpdate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompile.h">
@@ -120,6 +123,9 @@
     </ClInclude>
     <ClInclude Include="ContentsPlayerData.h">
       <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadHandlerPlayerUpdateMessage_UDP.h">
+      <Filter>ThreadHandler\PlayerUpdate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
