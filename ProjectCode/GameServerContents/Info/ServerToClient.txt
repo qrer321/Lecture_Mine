@@ -12,8 +12,12 @@ FCharacterInfo m_CharacterInfo;
 EGameServerCode m_Code;
 std::string m_Nickname;
 
+|UDPReadyOK-
+EGameServerCode m_Code;
+
 |InsertSectionResult-
 EGameServerCode m_Code;
+uint64_t m_UDPPort;
 uint64_t m_ActorIndex;
 uint64_t m_ThreadIndex;
 uint64_t m_SectionIndex;

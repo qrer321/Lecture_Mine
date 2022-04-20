@@ -81,7 +81,7 @@ public:
 	{
 		std::shared_ptr<ActorType> new_actor = std::make_shared<ActorType>(args...);
 		new_actor->SetActorIndex(actor_index);
-		new_actor->SetSession(session);
+		new_actor->SetTCPSession(session);
 
 		InsertActor(std::dynamic_pointer_cast<GameServerActor>(new_actor));
 
@@ -99,8 +99,9 @@ public: // Member Function
 	bool Update(float delta_time);
 	void Release();
 
-	void Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
-	void SectionPost(uint64_t section_index, const std::shared_ptr<GameServerMessage>& message);
+	void Broadcasting_TCP(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
+	void Broadcasting_UDP(const std::vector<unsigned char>& buffer, uint64_t ignore_actor = -1);
+
 	void ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
 };
 

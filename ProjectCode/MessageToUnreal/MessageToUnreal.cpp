@@ -495,11 +495,11 @@ int main()
 				}
 
 				dispatcher_text += "																																			\n";
-				dispatcher_text += "Dispatcher<TCPSession> g_tcp_dispatcher;																										\n";
-				dispatcher_text += "Dispatcher<UDPSession> g_udp_dispatcher;																										\n";
+				dispatcher_text += "Dispatcher<TCPSession> g_tcp_dispatcher;																									\n";
+				dispatcher_text += "Dispatcher<UDPSession> g_udp_dispatcher;																									\n";
 				dispatcher_text += "																																			\n";
-				dispatcher_text += "template <typename MessageHandler, typename MessageType>																					\n";
-				dispatcher_text += "void OnMessageProcess(std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)									\n";
+				dispatcher_text += "template <typename MessageHandler, typename MessageType, typename SessionType = TCPSession>													\n";
+				dispatcher_text += "void OnMessageProcess(std::shared_ptr<SessionType> session, std::shared_ptr<GameServerMessage> message)										\n";
 				dispatcher_text += "{																																			\n";
 				dispatcher_text += "	std::shared_ptr<MessageType> convert_message = std::dynamic_pointer_cast<MessageType>(std::move(message));								\n";
 				dispatcher_text += "	if (nullptr == convert_message)																											\n";
@@ -509,7 +509,7 @@ int main()
 				dispatcher_text += "	}																																		\n";
 				dispatcher_text += "																																			\n";
 				dispatcher_text += "	std::shared_ptr<MessageHandler> message_handler = std::make_shared<MessageHandler>();													\n";
-				dispatcher_text += "	message_handler->Init(std::move(tcp_session), std::move(convert_message));																\n";
+				dispatcher_text += "	message_handler->Init(std::move(session), std::move(convert_message));																\n";
 				dispatcher_text += "	message_handler->Start();																												\n";
 				dispatcher_text += "}																																			\n";
 				dispatcher_text += "																																			\n";
@@ -518,27 +518,27 @@ int main()
 
 				for (auto& server_client_element : server_client_message)
 				{
-					dispatcher_text += "																												\n";
+					dispatcher_text += "																													\n";
 					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + server_client_element.MessageName + "),	\n";
-					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					\n";
-					dispatcher_text += "		{																										\n";
-					dispatcher_text += "			return OnMessageProcess<ThreadHandler" + server_client_element.MessageName + "Message, " +
-													server_client_element.MessageName + "Message>(std::move(tcp_session), std::move(message));			\n";
-					dispatcher_text += "		});																										\n";
+					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)						\n";
+					dispatcher_text += "		{																											\n";
+					dispatcher_text += "			OnMessageProcess<ThreadHandler" + server_client_element.MessageName + "Message, " +
+													server_client_element.MessageName + "Message + "" +>(std::move(tcp_session), std::move(message));				\n";
+					dispatcher_text += "		});																											\n";
 				}
 
 				for (auto& client_element : client_message)
 				{
-					dispatcher_text += "																												\n";
+					dispatcher_text += "																													\n";
 					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + client_element.MessageName + "),			\n";
-					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)					\n";
-					dispatcher_text += "		{																										\n";
-					dispatcher_text += "			return OnMessageProcess<ThreadHandler" + client_element.MessageName + "Message, " +
-													client_element.MessageName + "Message>(std::move(tcp_session), std::move(message));					\n";
-					dispatcher_text += "		});																										\n";
+					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)						\n";
+					dispatcher_text += "		{																											\n";
+					dispatcher_text += "			OnMessageProcess<ThreadHandler" + client_element.MessageName + "Message, " +
+													client_element.MessageName + "Message>(std::move(tcp_session), std::move(message));						\n";
+					dispatcher_text += "		});																											\n";
 				}
 
-				dispatcher_text += "}																																		     ";
+				dispatcher_text += "}																														";
 
 				server_save_map.insert(make_pair(dispatcher_file_dir.AddFileNameToPath("ServerDispatcher.cpp"), dispatcher_text));
 			}

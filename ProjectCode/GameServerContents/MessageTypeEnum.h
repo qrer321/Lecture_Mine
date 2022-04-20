@@ -8,6 +8,7 @@ enum class MessageType
 	JoinResult,
 	CreateCharacterResult,
 	SelectCharacterResult,
+	UDPReadyOK,
 	InsertSectionResult,
 	CharacterList,
 	ServerDestroy,
@@ -20,5 +21,6 @@ enum class MessageType
 	CreateCharacter,
 	SelectCharacter,
 	ClientToReady,
+	UDPConnectResult,
 	MAX
 };

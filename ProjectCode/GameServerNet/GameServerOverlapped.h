@@ -190,7 +190,7 @@ private:
 	DWORD						m_NumberOfBytes{};
 
 public:
-	UDPSendOverlapped() = default;
+	UDPSendOverlapped();
 	~UDPSendOverlapped() override = default;
 
 	UDPSendOverlapped(const UDPSendOverlapped& other) = delete;

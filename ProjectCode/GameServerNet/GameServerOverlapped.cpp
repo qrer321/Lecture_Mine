@@ -249,12 +249,23 @@ void UDPRecvOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 		return;
 	}
 
+	if (0 == number_of_bytes)
+	{
+		return;
+	}
+
 	udp_session->OnRecv(m_Buffer, number_of_bytes);
 }
 
 
 
 ///////////////////////////// UDPSendOverlapped /////////////////////////////
+UDPSendOverlapped::UDPSendOverlapped()
+{
+	m_wsaBuffer.buf = m_Buffer;
+	m_wsaBuffer.len = static_cast<ULONG>(sizeof(m_Buffer));
+}
+
 void UDPSendOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 {
 	const std::shared_ptr<UDPSession> udp_session = m_UDPSession.lock();

@@ -10,7 +10,6 @@
 #include "DBQueue.h"
 #include "NetQueue.h"
 
-
 int			GameServerCore::s_ServerPort;
 int			GameServerCore::s_DBPort;
 std::string	GameServerCore::s_DBHost;
@@ -18,12 +17,15 @@ std::string	GameServerCore::s_DBSchema;
 std::string	GameServerCore::s_DBUser;
 std::string	GameServerCore::s_DBPw;
 
-TCPListener GameServerCore::s_Listener;
+TCPListener											GameServerCore::s_Listener;
 std::function<void(std::shared_ptr<TCPSession>)>	GameServerCore::s_AcceptCallback;
 
 IPEndPoint											GameServerCore::s_ServerEndPoint;
 std::vector<std::shared_ptr<UDPSession>>			GameServerCore::s_AllUDPSession;
 std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)> GameServerCore::s_UDPCallBack;
+
+std::atomic<int> GameServerCore::s_UDPPortNumber;
+std::atomic<int> GameServerCore::s_MaxUDPPortNumber;
 
 bool GameServerCore::CoreDataCheck()
 {
@@ -45,9 +47,11 @@ void GameServerCore::SetAcceptCallBack(const std::function<void(std::shared_ptr<
 	s_AcceptCallback = callback;
 }
 
-void GameServerCore::InitializeUDP(int udp_count, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback)
+void GameServerCore::UDPInitialize(int udp_count, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback)
 {
 	s_UDPCallBack = callback;
+	s_UDPPortNumber = 0;
+	s_MaxUDPPortNumber = udp_count;
 
 	for (int i = 0; i < udp_count; ++i)
 	{
@@ -63,8 +67,26 @@ void GameServerCore::InitializeUDP(int udp_count, const std::function<void(std::
 		udp_session->Recv();
 		s_AllUDPSession.push_back(udp_session);
 	}
+}
 
-	return;
+std::shared_ptr<UDPSession> GameServerCore::GetUDPPort(int& udp_port_dest)
+{
+	if (s_MaxUDPPortNumber <= s_UDPPortNumber)
+	{
+		// udp용 port 카운트 초기화
+		s_UDPPortNumber = 0;
+	}
+
+	const int udp_index = s_UDPPortNumber;
+	udp_port_dest = s_ServerEndPoint.GetPort() + s_UDPPortNumber++;
+
+	if (udp_index >= static_cast<int>(s_AllUDPSession.size()))
+	{
+		GameServerDebug::AssertDebugMsg("Invalid Access To UDP Session Vector");
+		return nullptr;
+	}
+
+	return s_AllUDPSession[udp_index];
 }
 
 bool GameServerCore::CoreInit()

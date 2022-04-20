@@ -104,7 +104,7 @@ bool UDPSession::Send(const std::vector<unsigned char>& send_data, const IPEndPo
 		1,
 		&sent_bytes,
 		0,
-		reinterpret_cast<sockaddr*>(&socket_address),
+		reinterpret_cast<const sockaddr*>(socket_address.GetBuffer()),
 		static_cast<int>(socket_address.GetBufferLength()),
 		send_overlapped->GetOverlapped(),
 		nullptr

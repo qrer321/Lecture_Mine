@@ -12,8 +12,10 @@ private: // Member Var
 
 	std::shared_ptr<ContentsUserData>	m_UserData;
 
+	bool								m_UDPReady;
+
 public: // Default
-	Player() = default;
+	Player();
 	~Player() override = default;
 
 	Player(const Player& other) = delete;
@@ -29,7 +31,8 @@ protected:
 	void PlayerUpdateBroadcasting();
 
 private:
-	void SessionInitialize() override;
+	void TCPSessionInitialize() override;
+	void UDPSessionInitialize() override;
 	void SectionInitialize() override;
 
 	void Update(float delta_time) override;

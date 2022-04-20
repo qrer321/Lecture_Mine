@@ -55,7 +55,7 @@ void Player::ClientToReadyMessageProcess(const std::shared_ptr<ClientToReadyMess
 
 	// 자신을 제외한 액터들에게 메시지 Serialize 후 Send
 	update_message.Serialize(serializer);
-	GetSession()->Send(serializer.GetData());
+	GetTCPSession()->Send(serializer.GetData());
 	PlayerUpdateBroadcasting();
 
 	PlayerUpdateSelf();
@@ -63,6 +63,19 @@ void Player::ClientToReadyMessageProcess(const std::shared_ptr<ClientToReadyMess
 
 void Player::PlayerUpdateMessageProcess(const std::shared_ptr<PlayerUpdateMessage>& message)
 {
+	if (false == m_UDPReady)
+	{
+		// 현재 message가 처음 날아왔다면
+		m_UDPReady = true;
+
+		UDPReadyOKMessage udp_ready_message;
+		GameServerSerializer serializer;
+		udp_ready_message.m_Code = EGameServerCode::OK;
+		udp_ready_message.Serialize(serializer);
+
+		GetTCPSession()->Send(serializer.GetData());
+	}
+
 	message->m_Datum = m_UpdateMessage.m_Datum;
 
 	SetActorPos(m_UpdateMessage.m_Datum.m_Pos);

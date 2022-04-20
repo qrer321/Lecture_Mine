@@ -1,7 +1,9 @@
 #include "PreCompile.h"
 #include "GameServerSection.h"
+
+#include <GameServerNet/TCPSession.h>
+#include <GameServerNet/UDPSession.h>
 #include "GameServerActor.h"
-#include "GameServerNet/TCPSession.h"
 
 GameServerSection::GameServerSection()
 	: m_SectionThread(nullptr)
@@ -49,7 +51,7 @@ bool GameServerSection::Update(float delta_time)
 		std::lock_guard lock(m_WaitLock);
 		for (const auto& wait_actor : m_WaitActor)
 		{
-			if (nullptr != wait_actor->GetSession())
+			if (nullptr != wait_actor->GetTCPSession())
 			{
 				m_PlayableActor.push_back(wait_actor);
 			}
@@ -116,7 +118,7 @@ void GameServerSection::Release()
 	}
 }
 
-void GameServerSection::Broadcasting(const std::vector<unsigned char>& buffer, uint64_t ignore_actor /*= -1*/)
+void GameServerSection::Broadcasting_TCP(const std::vector<unsigned char>& buffer, uint64_t ignore_actor /*= -1*/)
 {
 	for (const auto& actor : m_PlayableActor)
 	{
@@ -125,12 +127,21 @@ void GameServerSection::Broadcasting(const std::vector<unsigned char>& buffer, u
 			continue;
 		}
 
-		actor->GetSession()->Send(buffer);
+		actor->GetTCPSession()->Send(buffer);
 	}
 }
 
-void GameServerSection::SectionPost(uint64_t section_index, const std::shared_ptr<GameServerMessage>& message)
+void GameServerSection::Broadcasting_UDP(const std::vector<unsigned char>& buffer, uint64_t ignore_actor)
 {
+	for (const auto& actor : m_PlayableActor)
+	{
+		if (ignore_actor == actor->GetActorIndex())
+		{
+			continue;
+		}
+
+		//actor->GetUDPSession()->Send(buffer);
+	}
 }
 
 void GameServerSection::ActorPost(uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message)

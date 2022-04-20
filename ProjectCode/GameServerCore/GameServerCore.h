@@ -20,6 +20,9 @@ protected:
 	static std::vector<std::shared_ptr<UDPSession>>			s_AllUDPSession;
 	static std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)> s_UDPCallBack;
 
+	static std::atomic<int> s_UDPPortNumber;
+	static std::atomic<int> s_MaxUDPPortNumber;
+
 public: // Default
 	GameServerCore() = default;
 	~GameServerCore() = default;
@@ -36,9 +39,11 @@ public: // Default
 	static std::string	GetDBUser()		{ return s_DBUser; }
 	static std::string	GetDBPw()		{ return s_DBPw; }
 
+	static std::shared_ptr<UDPSession> GetUDPPort(int& udp_port_dest);
+
 protected:
 	void SetAcceptCallBack(const std::function<void(std::shared_ptr<TCPSession>)>& callback);
-	void InitializeUDP(int udp_count, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback);
+	void UDPInitialize(int udp_count, const std::function<void(std::shared_ptr<UDPSession>, const std::vector<unsigned char>&, IPEndPoint&)>& callback);
 
 private:
 	static bool CoreInit();

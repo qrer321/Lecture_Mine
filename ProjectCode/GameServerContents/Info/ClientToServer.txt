@@ -16,3 +16,8 @@ std::string m_Nickname;
 uint64_t m_ActorIndex;
 uint64_t m_ThreadIndex;
 uint64_t m_SectionIndex;
+
+|UDPConnectResult-
+uint64_t m_ActorIndex;
+uint64_t m_ThreadIndex;
+uint64_t m_SectionIndex;

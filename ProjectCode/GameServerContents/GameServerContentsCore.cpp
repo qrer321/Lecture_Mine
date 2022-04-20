@@ -18,7 +18,7 @@ void GameServerContentsCore::UserStart()
 	DispatcherRegistration();
 
 	SetAcceptCallBack(AcceptEvent);
-	InitializeUDP(8, RecvEvent_UDP);
+	UDPInitialize(8, RecvEvent_UDP);
 }
 
 void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& session)

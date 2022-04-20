@@ -8,6 +8,11 @@
 #include "ContentsUserData.h"
 #include "ContentsSystemEnum.h"
 
+Player::Player()
+	: m_UDPReady(false)
+{
+}
+
 PlayerUpdateMessage& Player::GetPlayerUpdateMessage()
 {
 	m_UpdateMessage.m_Datum.m_Pos = GetActorPos();
@@ -29,22 +34,26 @@ GameServerSerializer& Player::GetPlayerUpdateSerializer()
 
 void Player::PlayerUpdateSelf()
 {
-	GetSession()->Send(GetPlayerUpdateSerializer().GetData());
+	GetTCPSession()->Send(GetPlayerUpdateSerializer().GetData());
 }
 
 void Player::PlayerUpdateBroadcasting()
 {
-	GetSection()->Broadcasting(GetPlayerUpdateSerializer().GetData(), GetActorIndex());
+	GetSection()->Broadcasting_UDP(GetPlayerUpdateSerializer().GetData(), GetActorIndex());
 }
 
-void Player::SessionInitialize()
+void Player::TCPSessionInitialize()
 {
-	m_UserData = GetSession()->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
+	m_UserData = GetTCPSession()->GetLink<ContentsUserData>(EDataIndex::USER_DATA);
 	if (nullptr == m_UserData)
 	{
 		GameServerDebug::AssertDebugMsg("User Data Setting Error");
 		return;
 	}
+}
+
+void Player::UDPSessionInitialize()
+{
 }
 
 void Player::SectionInitialize()
@@ -78,7 +87,7 @@ bool Player::InsertSection()
 	insert_message.m_ThreadIndex = GetThreadIndex();
 	insert_message.m_SectionIndex = GetSectionIndex();
 	insert_message.Serialize(serializer);
-	GetSession()->Send(serializer.GetData());
+	GetTCPSession()->Send(serializer.GetData());
 
 	//PlayerUpdateBroadcasting();
 	GameServerDebug::LogInfo("Insert Section Result Send");
@@ -104,14 +113,14 @@ void Player::DeathEvent()
 			}
 
 			std::shared_ptr<Player> other_player = std::dynamic_pointer_cast<Player>(other_actor);
-			other_player->GetSession()->Send(serializer.GetData());
+			other_player->GetTCPSession()->Send(serializer.GetData());
 		}
 	}
 
 	PlayerDestroyMessage destroy_message;
 	GameServerSerializer serializer;
 	destroy_message.Serialize(serializer);
-	GetSession()->Send(serializer.GetData());
+	GetTCPSession()->Send(serializer.GetData());
 }
 
 void Player::Disconnect()

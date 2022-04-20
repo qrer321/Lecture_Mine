@@ -220,3 +220,51 @@ public:
 	}																											
 };																											
 
+class UDPConnectResultMessage : public GameServerMessage											
+{																											
+public:																										
+	uint64_t m_ActorIndex;
+	uint64_t m_ThreadIndex;
+	uint64_t m_SectionIndex;
+																												
+public:																										
+	UDPConnectResultMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::UDPConnectResult))					
+		, m_ActorIndex()																		
+		, m_ThreadIndex()																		
+		, m_SectionIndex()																		
+	{																											
+	}																											
+	~UDPConnectResultMessage() override = default;													
+																												
+	UDPConnectResultMessage(const UDPConnectResultMessage& other) = delete;				
+	UDPConnectResultMessage(UDPConnectResultMessage&& other) noexcept = delete;			
+																												
+	UDPConnectResultMessage& operator=(const UDPConnectResultMessage& other) = delete;	
+	UDPConnectResultMessage& operator=(UDPConnectResultMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer << m_ActorIndex;
+		serializer << m_ThreadIndex;
+		serializer << m_SectionIndex;
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer >> m_ActorIndex;
+		serializer >> m_ThreadIndex;
+		serializer >> m_SectionIndex;
+	}																											
+};																											
+
