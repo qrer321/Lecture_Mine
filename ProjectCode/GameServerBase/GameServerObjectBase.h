@@ -12,6 +12,7 @@ private: // Member Var
 	std::atomic<bool>									m_IsUpdate;
 	std::atomic<bool>									m_IsDeath;
 	float												m_AccTime;
+	int													m_Frame;
 
 public: // Default
 	GameServerObjectBase();
@@ -111,9 +112,10 @@ public: // Member Function
 	[[nodiscard]] bool IsUpdate() const { return m_IsUpdate && false == m_IsDeath; }
 
 	void AccTimeReset() { m_AccTime = 0.f; }
-	void AccTimeUpdate(float delta_time) { m_AccTime += delta_time; }
+	void AccTimeUpdate(float delta_time) { m_AccTime += delta_time; ++m_Frame; }
 	float GetAccTime() const { return m_AccTime; }
+	bool IsFrame(int frame) const { return (m_Frame % frame) == 0; }
 
-	void SetDeath(bool is_death = true) { m_IsDeath = is_death; }
+	virtual void SetDeath(bool is_death = true) { m_IsDeath = is_death; }
 };
 

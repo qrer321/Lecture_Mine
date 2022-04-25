@@ -24,6 +24,9 @@
     <ClInclude Include="GameServerSectionThread.h">
       <Filter>Object</Filter>
     </ClInclude>
+    <ClInclude Include="GameServerCollision.h">
+      <Filter>Object\ActorSub</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServerCore.cpp" />
@@ -49,6 +52,9 @@
     <ClCompile Include="GameServerSectionThread.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="GameServerCollision.cpp">
+      <Filter>Object\ActorSub</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -62,6 +68,9 @@
     </Filter>
     <Filter Include="Object\Manager">
       <UniqueIdentifier>{fa0ea2b8-e149-4213-b222-de4487276e15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\ActorSub">
+      <UniqueIdentifier>{2f8601aa-8d75-4cc0-99ef-5995311d834c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

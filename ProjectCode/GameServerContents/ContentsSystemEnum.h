@@ -6,3 +6,10 @@ enum class EDataIndex
 	PLAYABLE,
 	MAX,
 };
+
+enum class ECollisionGroup
+{
+	PLAYER,
+	PORTAL,
+	MONSTER,
+};

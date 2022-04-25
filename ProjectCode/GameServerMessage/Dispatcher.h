@@ -21,7 +21,6 @@ public: // Default
 
 	Dispatcher(const Dispatcher& other) = delete;
 	Dispatcher(Dispatcher&& other) noexcept = delete;
-
 	Dispatcher& operator=(const Dispatcher& other) = delete;
 	Dispatcher& operator=(Dispatcher&& other) = delete;
 

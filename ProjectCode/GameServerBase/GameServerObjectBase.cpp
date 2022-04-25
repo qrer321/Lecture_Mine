@@ -19,6 +19,7 @@ GameServerObjectBase::GameServerObjectBase(GameServerObjectBase&& other) noexcep
     : m_Parent(other.m_Parent)
     , m_LinkObject(std::move(other.m_LinkObject))
     , m_AccTime(other.m_AccTime)
+	, m_Frame(0)
 {
     other.m_Parent = nullptr;
     other.m_LinkObject.clear();

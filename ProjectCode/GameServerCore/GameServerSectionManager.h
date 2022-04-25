@@ -1,6 +1,7 @@
 #pragma once
 #include <GameServerBase/GameServerThread.h>
 #include <GameServerMessage/GameServerMessage.h>
+#include <GameServerNet/IPEndPoint.h>
 #include "GameServerSectionThread.h"
 #include "GameServerSection.h"
 
@@ -41,15 +42,18 @@ public: // Member Function
 	void Init(int thread_count, const std::string& thread_name);
 
 	template <typename SectionType, typename EnumType, typename... Parameter>
-	void CreateSection(int thread_index, EnumType enum_type, Parameter... args)
+	std::shared_ptr<SectionType> CreateSection(int thread_index, EnumType enum_type, Parameter... args)
 	{
-		CreateSection<SectionType>(thread_index, static_cast<uint64_t>(enum_type), args...);
+		return CreateSection<SectionType>(thread_index, static_cast<uint64_t>(enum_type), args...);
 	}
 
 	template <typename SectionType, typename... Parameter>
-	void CreateSection(int thread_index, uint64_t section_index, Parameter... args)
+	std::shared_ptr<SectionType> CreateSection(int thread_index, uint64_t section_index, Parameter... args)
 	{
-		CreateSection(thread_index, section_index, std::make_shared<SectionType>(args...));
+		std::shared_ptr<SectionType> new_section = std::make_shared<SectionType>(args...);
+		CreateSection(thread_index, section_index, new_section);
+
+		return new_section;
 	}
 
 	void CreateSection(int thread_index, uint64_t section_index, const std::shared_ptr<GameServerSection>& section);
@@ -59,5 +63,6 @@ public: // Member Function
 
 	void MessagePost(uint64_t thread_index, const std::function<void()>& callback);
 	void ActorPost(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
+	void ActorEndPointPost(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const IPEndPoint& end_point, const std::shared_ptr<GameServerMessage>& message);
 };
 

@@ -4,3 +4,8 @@
 void NoneFightZone::UserUpdate()
 {
 }
+
+bool NoneFightZone::Init()
+{
+	return true;
+}

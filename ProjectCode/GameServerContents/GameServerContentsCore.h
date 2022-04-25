@@ -20,6 +20,6 @@ protected:
 	static void RecvEvent(const std::shared_ptr<TCPSession>& session, const std::vector<unsigned char>& data);
 	static void CloseEvent(const std::shared_ptr<TCPSession>& session);
 
-	static void RecvEvent_UDP(const std::shared_ptr<UDPSession>& session, const std::vector<unsigned char>& data, IPEndPoint& end_point);
+	static void RecvEvent_UDP(const std::shared_ptr<UDPSession>& session, const std::vector<unsigned char>& data, const IPEndPoint& end_point);
 };
 

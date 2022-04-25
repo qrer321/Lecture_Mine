@@ -251,6 +251,7 @@ void UDPRecvOverlapped::Execute(BOOL result, DWORD number_of_bytes)
 
 	if (0 == number_of_bytes)
 	{
+		udp_session->Recv();
 		return;
 	}
 

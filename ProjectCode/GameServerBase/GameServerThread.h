@@ -47,6 +47,7 @@ public: // Default
 public:
 	[[nodiscard]] std::thread::id GetThreadID() const { return m_Thread.get_id(); }
 	static std::string GetThreadName() { return m_ThreadName; }
+	static int GetThreadOrder() { return m_Order; }
 
 	static void SetThreadName(const std::string& name);
 	static void SetThreadOrder(unsigned int order);

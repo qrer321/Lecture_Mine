@@ -18,5 +18,6 @@ private:
 
 public: // Member Function
 	void UserUpdate() override;
+	bool Init() override;
 };
 

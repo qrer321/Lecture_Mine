@@ -12,8 +12,15 @@ FCharacterInfo m_CharacterInfo;
 EGameServerCode m_Code;
 std::string m_Nickname;
 
+|MoveLevel-
+uint64_t m_ActorIndex;
+uint64_t m_ThreadIndex;
+uint64_t m_SectionIndex;
+std::string m_MoveLevel;
+
 |UDPReadyOK-
 EGameServerCode m_Code;
+uint64_t m_ActorIndex;
 
 |InsertSectionResult-
 EGameServerCode m_Code;
@@ -21,6 +28,7 @@ uint64_t m_UDPPort;
 uint64_t m_ActorIndex;
 uint64_t m_ThreadIndex;
 uint64_t m_SectionIndex;
+std::string m_MoveLevel;
 
 |CharacterList-
 std::vector<FCharacterInfo> m_CharactersInfo;

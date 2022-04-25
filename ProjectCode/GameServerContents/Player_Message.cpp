@@ -71,9 +71,11 @@ void Player::PlayerUpdateMessageProcess(const std::shared_ptr<PlayerUpdateMessag
 		UDPReadyOKMessage udp_ready_message;
 		GameServerSerializer serializer;
 		udp_ready_message.m_Code = EGameServerCode::OK;
+		udp_ready_message.m_ActorIndex = GetActorIndex();
 		udp_ready_message.Serialize(serializer);
 
 		GetTCPSession()->Send(serializer.GetData());
+		return;
 	}
 
 	message->m_Datum = m_UpdateMessage.m_Datum;

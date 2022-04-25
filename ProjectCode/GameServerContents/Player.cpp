@@ -3,10 +3,12 @@
 
 #include <GameServerNet/TCPSession.h>
 #include <GameServerCore/GameServerSection.h>
+#include <GameServerCore/GameServerCollision.h>
 #include "ServerToClient.h"
 #include "ClientToServer.h"
 #include "ContentsUserData.h"
 #include "ContentsSystemEnum.h"
+#include "Portal.h"
 
 Player::Player()
 	: m_UDPReady(false)
@@ -58,12 +60,50 @@ void Player::UDPSessionInitialize()
 
 void Player::SectionInitialize()
 {
-	//GetSection();
+	if (nullptr == m_HitCollision)
+	{
+		m_HitCollision = GetSection()->CreateCollision(ECollisionGroup::PLAYER, this);
+		m_HitCollision->SetScale({ 100.f, 100.f, 100.f });
+	}
+
+	m_UDPReady = false;
 }
 
 void Player::Update(float delta_time)
 {
 	CheckMessage();
+
+	if (IsFrame(10))
+	{
+		static std::vector<std::shared_ptr<GameServerCollision>> hit_result;
+
+		if (true == m_HitCollision->CollisionCheckResult(CollisionCheckType::SPHERE, ECollisionGroup::PORTAL, CollisionCheckType::SPHERE, hit_result))
+		{
+			Portal* portal_actor = hit_result[0]->GetOwnerActorConvert<Portal>();
+			if (nullptr == portal_actor)
+			{
+				GameServerDebug::AssertDebugMsg("Portal Actor Is Nullptr");
+				return;
+			}
+
+			LevelMoveMessage move_message;
+			GameServerSerializer serializer;
+			move_message.m_ActorIndex = GetActorIndex();
+			move_message.m_ThreadIndex = GetThreadIndex();
+			move_message.m_SectionIndex = GetSectionIndex();
+			move_message.m_MoveLevel = portal_actor->m_LinkSection->GetNameCopy();
+			move_message.Serialize(serializer);
+
+			GetSection()->Broadcasting_UDP(serializer.GetData(), GetActorIndex());
+
+			m_HitCollision->SetDeath();
+			m_HitCollision = nullptr;
+
+			GetSection()->MoveSection(DynamicCast<GameServerActor>(), portal_actor->m_LinkSection);
+		}
+
+		hit_result.clear();
+	}
 }
 
 bool Player::InsertSection()
@@ -83,11 +123,15 @@ bool Player::InsertSection()
 	InsertSectionResultMessage insert_message;
 	GameServerSerializer serializer;
 	insert_message.m_Code = EGameServerCode::OK;
+	insert_message.m_UDPPort = GetUDPPort();
 	insert_message.m_ActorIndex = GetActorIndex();
 	insert_message.m_ThreadIndex = GetThreadIndex();
 	insert_message.m_SectionIndex = GetSectionIndex();
+	insert_message.m_MoveLevel = GetSection()->GetNameCopy();
 	insert_message.Serialize(serializer);
 	GetTCPSession()->Send(serializer.GetData());
+
+	SetActorPos(FVector4::ZeroVector);
 
 	//PlayerUpdateBroadcasting();
 	GameServerDebug::LogInfo("Insert Section Result Send");

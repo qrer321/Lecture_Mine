@@ -1,6 +1,7 @@
 #pragma once
 #include <GameServerBase/GameServerQueue.h>
 #include <GameServerBase/GameServerThread.h>
+#include <GameServerNet/IPEndPoint.h>
 #include "GameServerSection.h"
 
 class GameServerMessage;
@@ -33,10 +34,11 @@ public: // Default
 	GameServerSectionThread& operator=(GameServerSectionThread&& other) = delete;
 
 private:
-	void ThreadFunction();
+	void ThreadFunction(int thread_index);
 	void SetThreadIndex(uint64_t thread_index) { m_ThreadIndex = thread_index; }
 
 	void ActorPost(uint64_t section_index, uint64_t actor_index, const std::shared_ptr<GameServerMessage>& message);
+	void ActorEndPointPost(uint64_t section_index, uint64_t actor_index, const IPEndPoint& end_point, const std::shared_ptr<GameServerMessage>& message);
 
 public: // Member Function
 	uint64_t GetThreadIndex() const { return m_ThreadIndex; }
@@ -44,6 +46,6 @@ public: // Member Function
 	void AddSection(const std::shared_ptr<GameServerSection>& section);
 	void RemoveSection(const std::shared_ptr<GameServerSection>& section);
 
-	void StartSectionThread();
+	void StartSectionThread(int thread_index);
 };
 

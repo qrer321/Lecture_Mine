@@ -172,15 +172,69 @@ public:
 	}																											
 };																											
 
+class MoveLevelMessage : public GameServerMessage											
+{																											
+public:																										
+	uint64_t m_ActorIndex;
+	uint64_t m_ThreadIndex;
+	uint64_t m_SectionIndex;
+	std::string m_MoveLevel;
+																												
+public:																										
+	MoveLevelMessage()																		
+		: GameServerMessage(static_cast<uint32_t>(MessageType::MoveLevel))					
+		, m_ActorIndex()																		
+		, m_ThreadIndex()																		
+		, m_SectionIndex()																		
+		, m_MoveLevel()																		
+	{																											
+	}																											
+	~MoveLevelMessage() override = default;													
+																												
+	MoveLevelMessage(const MoveLevelMessage& other) = delete;				
+	MoveLevelMessage(MoveLevelMessage&& other) noexcept = delete;			
+																												
+	MoveLevelMessage& operator=(const MoveLevelMessage& other) = delete;	
+	MoveLevelMessage& operator=(MoveLevelMessage&& other) = delete;			
+																												
+public:																										
+	int SizeCheck() override																					
+	{																											
+		return DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex) + DataSizeCheck(m_MoveLevel);
+	}																											
+																												
+	void Serialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Serialize(serializer);																
+																												
+		serializer << m_ActorIndex;
+		serializer << m_ThreadIndex;
+		serializer << m_SectionIndex;
+		serializer << m_MoveLevel;
+	}																											
+																												
+	void Deserialize(GameServerSerializer& serializer) override													
+	{																											
+		GameServerMessage::Deserialize(serializer);																
+																												
+		serializer >> m_ActorIndex;
+		serializer >> m_ThreadIndex;
+		serializer >> m_SectionIndex;
+		serializer >> m_MoveLevel;
+	}																											
+};																											
+
 class UDPReadyOKMessage : public GameServerMessage											
 {																											
 public:																										
 	EGameServerCode m_Code;
+	uint64_t m_ActorIndex;
 																												
 public:																										
 	UDPReadyOKMessage()																		
 		: GameServerMessage(static_cast<uint32_t>(MessageType::UDPReadyOK))					
 		, m_Code()																		
+		, m_ActorIndex()																		
 	{																											
 	}																											
 	~UDPReadyOKMessage() override = default;													
@@ -194,7 +248,7 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Code);
+		return DataSizeCheck(m_Code) + DataSizeCheck(m_ActorIndex);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
@@ -202,6 +256,7 @@ public:
 		GameServerMessage::Serialize(serializer);																
 																												
 		serializer.WriteEnum(m_Code);
+		serializer << m_ActorIndex;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
@@ -209,6 +264,7 @@ public:
 		GameServerMessage::Deserialize(serializer);																
 																												
 		serializer.ReadEnum(m_Code);
+		serializer >> m_ActorIndex;
 	}																											
 };																											
 
@@ -220,6 +276,7 @@ public:
 	uint64_t m_ActorIndex;
 	uint64_t m_ThreadIndex;
 	uint64_t m_SectionIndex;
+	std::string m_MoveLevel;
 																												
 public:																										
 	InsertSectionResultMessage()																		
@@ -229,6 +286,7 @@ public:
 		, m_ActorIndex()																		
 		, m_ThreadIndex()																		
 		, m_SectionIndex()																		
+		, m_MoveLevel()																		
 	{																											
 	}																											
 	~InsertSectionResultMessage() override = default;													
@@ -242,7 +300,7 @@ public:
 public:																										
 	int SizeCheck() override																					
 	{																											
-		return DataSizeCheck(m_Code) + DataSizeCheck(m_UDPPort) + DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex);
+		return DataSizeCheck(m_Code) + DataSizeCheck(m_UDPPort) + DataSizeCheck(m_ActorIndex) + DataSizeCheck(m_ThreadIndex) + DataSizeCheck(m_SectionIndex) + DataSizeCheck(m_MoveLevel);
 	}																											
 																												
 	void Serialize(GameServerSerializer& serializer) override													
@@ -254,6 +312,7 @@ public:
 		serializer << m_ActorIndex;
 		serializer << m_ThreadIndex;
 		serializer << m_SectionIndex;
+		serializer << m_MoveLevel;
 	}																											
 																												
 	void Deserialize(GameServerSerializer& serializer) override													
@@ -265,6 +324,7 @@ public:
 		serializer >> m_ActorIndex;
 		serializer >> m_ThreadIndex;
 		serializer >> m_SectionIndex;
+		serializer >> m_MoveLevel;
 	}																											
 };																											
 

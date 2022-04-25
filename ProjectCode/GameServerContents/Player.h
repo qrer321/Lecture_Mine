@@ -4,6 +4,7 @@
 
 class ContentsUserData;
 class ClientToReadyMessage;
+class GameServerCollision;
 class Player : public GameServerActor
 {
 private: // Member Var
@@ -13,6 +14,8 @@ private: // Member Var
 	std::shared_ptr<ContentsUserData>	m_UserData;
 
 	bool								m_UDPReady;
+
+	std::shared_ptr<GameServerCollision> m_HitCollision;
 
 public: // Default
 	Player();

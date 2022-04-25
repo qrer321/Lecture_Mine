@@ -5,7 +5,7 @@
 class ThreadHandlerPlayerUpdateMessage_UDP final : public ThreadHandlerBase<PlayerUpdateMessage, UDPSession>
 {
 private: // Member Var
-	PlayerUpdateMessage	m_ResultMessage;	// 처리한 결과
+	IPEndPoint m_EndPoint;
 
 public: // Default
 	ThreadHandlerPlayerUpdateMessage_UDP() = default;
@@ -17,6 +17,8 @@ public: // Default
 	ThreadHandlerPlayerUpdateMessage_UDP& operator=(ThreadHandlerPlayerUpdateMessage_UDP&& other) = delete;
 
 public:
+	void SetEndPoint(const IPEndPoint& end_point) { m_EndPoint = end_point; }
+
 	void Start() override;
 };
 

@@ -1,6 +1,8 @@
 #include "PreCompile.h"
 #include "ThreadHandlerChatMessage.h"
 
+#include "GameServerNet/TCPListener.h"
+
 void ThreadHandlerChatMessage::Start()
 {
 	if (nullptr == m_Session)
@@ -9,7 +11,7 @@ void ThreadHandlerChatMessage::Start()
 		return;
 	}
 
-	/*GameServerSerializer serializer;
+	GameServerSerializer serializer;
 	m_Message->Serialize(serializer);
 
 	auto* listener = m_Session->GetParent<TCPListener>();
@@ -19,5 +21,5 @@ void ThreadHandlerChatMessage::Start()
 		return;
 	}
 
-	listener->BroadCast(serializer.GetData(), m_Session);*/
+	listener->BroadCast(serializer.GetData(), m_Session);
 }

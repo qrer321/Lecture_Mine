@@ -182,6 +182,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CharacterTable.cpp" />
+    <ClCompile Include="ContentsGlobalValue.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="ContentsUserData.cpp">
       <SubType>
       </SubType>
@@ -204,6 +208,10 @@
       </SubType>
     </ClCompile>
     <ClCompile Include="Player_Message.cpp" />
+    <ClCompile Include="Portal.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="PreCompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">PreCompile.h</PrecompiledHeaderFile>
@@ -226,12 +234,20 @@
     <ClCompile Include="ThreadHandlerPlayerUpdateMessage.cpp" />
     <ClCompile Include="ThreadHandlerPlayerUpdateMessage_UDP.cpp" />
     <ClCompile Include="ThreadHandlerSelectCharacterMessage.cpp" />
+    <ClCompile Include="ThreadHandlerUDPConnectResultMessage.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="UserTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CharacterTable.h" />
     <ClInclude Include="ClientToServer.h" />
     <ClInclude Include="ContentsEnum.h" />
+    <ClInclude Include="ContentsGlobalValue.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="ContentsPlayerData.h" />
     <ClInclude Include="ContentsStructure.h" />
     <ClInclude Include="ContentsSystemEnum.h" />
@@ -256,6 +272,10 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Portal.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="PreCompile.h" />
     <ClInclude Include="ServerAndClient.h" />
     <ClInclude Include="ServerDispatcher.h" />
@@ -271,6 +291,10 @@
     <ClInclude Include="ThreadHandlerPlayerUpdateMessage.h" />
     <ClInclude Include="ThreadHandlerPlayerUpdateMessage_UDP.h" />
     <ClInclude Include="ThreadHandlerSelectCharacterMessage.h" />
+    <ClInclude Include="ThreadHandlerUDPConnectResultMessage.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="UserTable.h" />
   </ItemGroup>
   <ItemGroup>

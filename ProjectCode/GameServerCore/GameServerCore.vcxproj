@@ -180,6 +180,10 @@
   <ItemGroup>
     <ClInclude Include="DBQueue.h" />
     <ClInclude Include="GameServerActor.h" />
+    <ClInclude Include="GameServerCollision.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="GameServerCore.h">
       <SubType>
       </SubType>
@@ -206,6 +210,10 @@
   <ItemGroup>
     <ClCompile Include="DBQueue.cpp" />
     <ClCompile Include="GameServerActor.cpp" />
+    <ClCompile Include="GameServerCollision.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="GameServerCore.cpp">
       <SubType>
       </SubType>

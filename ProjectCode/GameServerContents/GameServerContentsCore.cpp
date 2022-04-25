@@ -8,9 +8,11 @@
 #include "ContentsEnum.h"
 #include "ContentsUserData.h"
 #include "ContentsPlayerData.h"
+#include "ContentsGlobalValue.h"
 #include "FightZone.h"
 #include "NoneFightZone.h"
 #include "Player.h"
+#include "Portal.h"
 #include "ThreadHandlerPlayerUpdateMessage_UDP.h"
 
 void GameServerContentsCore::UserStart()
@@ -32,12 +34,22 @@ void GameServerContentsCore::AcceptEvent(const std::shared_ptr<TCPSession>& sess
 
 	GameServerSectionManager::GetInst()->Init(3, "SectionThread");
 
-	GameServerSectionManager::GetInst()->CreateSection<NoneFightZone>(0, ESectionType::NONE_FIGHT);
+	std::shared_ptr<Portal> play_level_portal_0;
+	std::shared_ptr<Portal> play_level_portal_1;
+	std::shared_ptr<Portal> play_level_portal_2;
+	std::shared_ptr<Portal> play_level_portal_3;
+	std::shared_ptr<NoneFightZone> main_section;
 
-	GameServerSectionManager::GetInst()->CreateSection<FightZone>(1, ESectionType::FIGHT_ZONE_1);
-	GameServerSectionManager::GetInst()->CreateSection<FightZone>(1, ESectionType::FIGHT_ZONE_2);
-	GameServerSectionManager::GetInst()->CreateSection<FightZone>(2, ESectionType::FIGHT_ZONE_3);
-	GameServerSectionManager::GetInst()->CreateSection<FightZone>(2, ESectionType::FIGHT_ZONE_4);
+	/*{
+		std::shared_ptr<NoneFightZone> section = GameServerSectionManager::GetInst()->CreateSection<NoneFightZone>(0, ESectionType::NONE_FIGHT);
+		main_section = section;
+
+		section->SetName("PlayLevel");
+		play_level_portal_0 = section->CreateActor<Portal>(FVector4(2500.0f, 300.0f, -300.0f), FVector4(100.0f, 100.0f, 100.0f));
+		play_level_portal_1 = section->CreateActor<Portal>(FVector4(300.0f, -1600.0f, -300.0f), FVector4(100.0f, 100.0f, 100.0f));
+		play_level_portal_2 = section->CreateActor<Portal>(FVector4(160.0f, 2300.0f, -300.0f), FVector4(100.0f, 100.0f, 100.0f));
+		play_level_portal_3 = section->CreateActor<Portal>(FVector4(-1700.0f, 640.0f, -300.0f), FVector4(100.0f, 100.0f, 100.0f));
+	}*/
 }
 
 void GameServerContentsCore::RecvEvent(const std::shared_ptr<TCPSession>& session, const std::vector<unsigned char>& data)
@@ -89,7 +101,7 @@ void GameServerContentsCore::CloseEvent(const std::shared_ptr<TCPSession>& sessi
 	session->ClearLinkObject();
 }
 
-void GameServerContentsCore::RecvEvent_UDP(const std::shared_ptr<UDPSession>& session, const std::vector<unsigned char>& data, IPEndPoint& end_point)
+void GameServerContentsCore::RecvEvent_UDP(const std::shared_ptr<UDPSession>& session, const std::vector<unsigned char>& data, const IPEndPoint& end_point)
 {
 	MessageConverter converter = MessageConverter(data);
 	if (false == converter.IsValid())
@@ -112,6 +124,7 @@ void GameServerContentsCore::RecvEvent_UDP(const std::shared_ptr<UDPSession>& se
 	}
 
 	const std::shared_ptr<ThreadHandlerPlayerUpdateMessage_UDP> update_message_udp = std::make_shared<ThreadHandlerPlayerUpdateMessage_UDP>();
+	update_message_udp->SetEndPoint(end_point);
 	update_message_udp->Init(session, player_update_message);
 	update_message_udp->Start();
 }

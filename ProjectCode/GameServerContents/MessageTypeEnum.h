@@ -8,6 +8,7 @@ enum class MessageType
 	JoinResult,
 	CreateCharacterResult,
 	SelectCharacterResult,
+	MoveLevel,
 	UDPReadyOK,
 	InsertSectionResult,
 	CharacterList,

@@ -54,6 +54,15 @@
     <ClCompile Include="ThreadHandlerPlayerUpdateMessage_UDP.cpp">
       <Filter>ThreadHandler\PlayerUpdate</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerUDPConnectResultMessage.cpp">
+      <Filter>ThreadHandler\UDPConnect</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentsGlobalValue.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Portal.cpp">
+      <Filter>Object\Actor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompile.h">
@@ -127,6 +136,15 @@
     <ClInclude Include="ThreadHandlerPlayerUpdateMessage_UDP.h">
       <Filter>ThreadHandler\PlayerUpdate</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadHandlerUDPConnectResultMessage.h">
+      <Filter>ThreadHandler\UDPConnect</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentsGlobalValue.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Object\Actor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -179,6 +197,9 @@
     </Filter>
     <Filter Include="ThreadHandler\PlayerUpdate">
       <UniqueIdentifier>{c87a8468-d188-4580-a129-0d3bb145495d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\UDPConnect">
+      <UniqueIdentifier>{6ba684f7-78a1-4063-9e9f-4abaa6177c8e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

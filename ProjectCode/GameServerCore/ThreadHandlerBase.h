@@ -54,5 +54,10 @@ public:
 	{
 		GameServerSectionManager::GetInst()->ActorPost(thread_index, section_index, actor_index, message);
 	}
+
+	void ActorEndPointWork(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const IPEndPoint& end_point, const std::shared_ptr<GameServerMessage>& message)
+	{
+		GameServerSectionManager::GetInst()->ActorEndPointPost(thread_index, section_index, actor_index, end_point, message);
+	}
 };
 

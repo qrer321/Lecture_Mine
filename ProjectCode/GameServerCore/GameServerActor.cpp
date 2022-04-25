@@ -1,6 +1,8 @@
 #include "PreCompile.h"
 #include "GameServerActor.h"
 
+#include "GameServerCore.h"
+
 GameServerActor::GameServerActor()
 	: m_Section(nullptr)
 	, m_ActorIndex(-1)
@@ -8,6 +10,9 @@ GameServerActor::GameServerActor()
 	, m_SectionIndex(-1)
 	, m_ActorPos(FVector4::ZeroVector)
 	, m_ActorDir(FVector4::ZeroVector)
+	, m_ActorScale(FVector4::ZeroVector)
+	, m_UDPPort(0)
+	, m_IsSectionMove(true)
 {
 }
 

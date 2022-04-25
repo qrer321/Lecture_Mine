@@ -519,23 +519,29 @@ int main()
 				for (auto& server_client_element : server_client_message)
 				{
 					dispatcher_text += "																													\n";
-					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + server_client_element.MessageName + "),	\n";
-					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)						\n";
-					dispatcher_text += "		{																											\n";
-					dispatcher_text += "			OnMessageProcess<ThreadHandler" + server_client_element.MessageName + "Message, " +
-													server_client_element.MessageName + "Message + "" +>(std::move(tcp_session), std::move(message));				\n";
-					dispatcher_text += "		});																											\n";
+					//dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + server_client_element.MessageName + "),	\n";
+					//dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)						\n";
+					//dispatcher_text += "		{																											\n";
+					//dispatcher_text += "			OnMessageProcess<ThreadHandler" + server_client_element.MessageName + "Message, " +
+					//								server_client_element.MessageName + "Message + "" +>(std::move(tcp_session), std::move(message));		\n";
+					//dispatcher_text += "		});																											\n";
+					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + server_client_element.MessageName + "), " + 
+												"std::bind(&OnMessageProcess<ThreadHandler" + server_client_element.MessageName + "Message, " +
+												server_client_element.MessageName + "Message>, std::placeholders::_1, std::placeholders::_2));				\n";
 				}
 
 				for (auto& client_element : client_message)
 				{
 					dispatcher_text += "																													\n";
-					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + client_element.MessageName + "),			\n";
-					dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)						\n";
-					dispatcher_text += "		{																											\n";
-					dispatcher_text += "			OnMessageProcess<ThreadHandler" + client_element.MessageName + "Message, " +
-													client_element.MessageName + "Message>(std::move(tcp_session), std::move(message));						\n";
-					dispatcher_text += "		});																											\n";
+					//dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + client_element.MessageName + "),			\n";
+					//dispatcher_text += "		[](std::shared_ptr<TCPSession> tcp_session, std::shared_ptr<GameServerMessage> message)						\n";
+					//dispatcher_text += "		{																											\n";
+					//dispatcher_text += "			OnMessageProcess<ThreadHandler" + client_element.MessageName + "Message, " +
+					//								client_element.MessageName + "Message>(std::move(tcp_session), std::move(message));						\n";
+					//dispatcher_text += "		});																											\n";
+					dispatcher_text += "		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::" + client_element.MessageName + "), " +
+												"std::bind(&OnMessageProcess<ThreadHandler" + client_element.MessageName + "Message, " +
+												client_element.MessageName + "Message>, std::placeholders::_1, std::placeholders::_2));						\n";
 				}
 
 				dispatcher_text += "}																														";

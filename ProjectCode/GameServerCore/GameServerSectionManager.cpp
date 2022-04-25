@@ -16,7 +16,7 @@ void GameServerSectionManager::Init(int thread_count, const std::string& thread_
 	for (int i = 0; i < thread_count; ++i)
 	{
 		std::shared_ptr<GameServerSectionThread> new_section_thread = std::make_shared<GameServerSectionThread>();
-		new_section_thread->StartSectionThread();
+		new_section_thread->StartSectionThread(static_cast<int>(i));
 		new_section_thread->SetThreadIndex(i);
 		new_section_thread->SetName(thread_name + std::to_string(i));
 		m_SectionThread.push_back(new_section_thread);
@@ -35,11 +35,11 @@ void GameServerSectionManager::CreateSection(int thread_index, uint64_t section_
 
 		section->SetSectionIndex(section_index);
 		section->SetThreadIndex(thread_index);
+		section->Init();
+
 		m_AllSection.insert(std::unordered_map<uint64_t, std::shared_ptr<GameServerSection>>::value_type(section_index, section));
 		m_SectionThread[thread_index]->AddSection(section);
 	}
-
-	return;
 }
 
 uint64_t GameServerSectionManager::RemoveSection(int thread_index, uint64_t section_index)
@@ -77,4 +77,16 @@ void GameServerSectionManager::ActorPost(uint64_t thread_index, uint64_t section
 
 	const std::shared_ptr<GameServerSectionThread>& section_thread = m_SectionThread[thread_index];
 	section_thread->m_SectionThreadQueue.EnQueue(std::bind(&GameServerSectionThread::ActorPost, section_thread.get(), section_index, actor_index, message));
+}
+
+void GameServerSectionManager::ActorEndPointPost(uint64_t thread_index, uint64_t section_index, uint64_t actor_index, const IPEndPoint& end_point, const std::shared_ptr<GameServerMessage>& message)
+{
+	if (thread_index >= m_SectionThread.size())
+	{
+		GameServerDebug::AssertDebugMsg("Message Sent To Section That Does Not Exist");
+		return;
+	}
+
+	const std::shared_ptr<GameServerSectionThread>& section_thread = m_SectionThread[thread_index];
+	section_thread->m_SectionThreadQueue.EnQueue(std::bind(&GameServerSectionThread::ActorEndPointPost, section_thread.get(), section_index, actor_index, end_point, message));
 }

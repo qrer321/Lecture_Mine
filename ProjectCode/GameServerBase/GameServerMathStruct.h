@@ -71,6 +71,11 @@ public:
 		return { X - value.X, Y - value.Y, Z - value.Z };
 	}
 
+	FVector4 operator+(const FVector4& value)
+	{
+		return { X + value.X, Y + value.Y, Z + value.Z };
+	}
+
 	static float Length2D(const FVector4& value)
 	{
 		const DirectX::XMVECTOR vec = DirectX::XMVector2Length(value.dxVector);
@@ -96,6 +101,21 @@ public:
 	std::string ToString() const
 	{
 		return "X : " + std::to_string(X) + " Y : " + std::to_string(Y) + " Z : " + std::to_string(Z);
+	}
+
+	FVector4 HalfVector3D()
+	{
+		return { X * 0.5f, Y * 0.5f, Z * 0.5f };
+	}
+
+	DirectX::XMFLOAT3 ConvertXMFloat3()
+	{
+		return { X, Y, Z };
+	}
+
+	DirectX::XMFLOAT4 ConvertXMFloat4()
+	{
+		return { X, Y, Z, W };
 	}
 
 	FVector4()

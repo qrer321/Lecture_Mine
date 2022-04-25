@@ -32,6 +32,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::SelectCharacterResult:
 		m_Message = std::make_shared<SelectCharacterResultMessage>();
 		break;
+	case MessageType::MoveLevel:
+		m_Message = std::make_shared<MoveLevelMessage>();
+		break;
 	case MessageType::UDPReadyOK:
 		m_Message = std::make_shared<UDPReadyOKMessage>();
 		break;

@@ -15,6 +15,7 @@ enum class EGameObjectType
 	Player,
 	Enemy,
 	Item,
+	Portal,
 	MAX
 };
 

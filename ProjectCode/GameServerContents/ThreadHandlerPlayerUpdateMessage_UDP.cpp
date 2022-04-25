@@ -9,5 +9,5 @@ void ThreadHandlerPlayerUpdateMessage_UDP::Start()
 		return;
 	}
 
-	//ActorWork(m_Message->m_Datum.m_ThreadIndex, m_Message->m_Datum.m_SectionIndex, m_Message->m_Datum.m_ActorIndex, m_Message);
+	ActorEndPointWork(m_Message->m_Datum.m_ThreadIndex, m_Message->m_Datum.m_SectionIndex, m_Message->m_Datum.m_ActorIndex, m_EndPoint, m_Message);
 }
