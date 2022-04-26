@@ -29,9 +29,9 @@ void GameServerSection::InsertActor(uint64_t id, const std::shared_ptr<GameServe
 	m_WaitActorCount = m_WaitActor.size();
 }
 
-std::shared_ptr<GameServerCollision> GameServerSection::CreateCollision(int collision_type, GameServerActor* owner_actor)
+GameServerCollision* GameServerSection::CreateCollision(int collision_type, GameServerActor* owner_actor)
 {
-	std::shared_ptr<GameServerCollision> new_collision = std::make_shared<GameServerCollision>();
+	GameServerCollision* new_collision = new GameServerCollision;
 	new_collision->SetGroupIndex(collision_type);
 	new_collision->m_OwnerSection = this;
 	new_collision->m_OwnerActor = owner_actor;
@@ -185,7 +185,7 @@ void GameServerSection::ActorPost(uint64_t actor_index, const std::shared_ptr<Ga
 
 	if (m_AllActor.end() == find_iter)
 	{
-		//GameServerDebug::AssertDebugMsg("Message Sent To Invalid Actor");
+		GameServerDebug::AssertDebugMsg("Message Sent To Invalid Actor");
 		return;
 	}
 
@@ -231,5 +231,10 @@ void GameServerSection::MoveActor(const std::shared_ptr<GameServerActor>& actor)
 
 void GameServerSection::MoveSection(const std::shared_ptr<GameServerActor>& move_actor, GameServerSection* dest_section)
 {
+	if (nullptr == move_actor || nullptr == dest_section)
+	{
+		return;
+	}
+
 	m_MoveActors.push_back({ move_actor, dest_section });
 }

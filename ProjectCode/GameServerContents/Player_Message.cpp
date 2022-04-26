@@ -7,6 +7,7 @@
 #include "ServerToClient.h"
 #include "ClientToServer.h"
 #include "MessageTypeEnum.h"
+#include "Portal.h"
 
 void Player::CheckMessage()
 {
@@ -83,4 +84,16 @@ void Player::PlayerUpdateMessageProcess(const std::shared_ptr<PlayerUpdateMessag
 	SetActorPos(m_UpdateMessage.m_Datum.m_Pos);
 	SetActorDir(m_UpdateMessage.m_Datum.m_Dir);
 	PlayerUpdateBroadcasting();
+}
+
+void Player::MoveLevelResponseMessageProcess(const std::shared_ptr<MoveLevelResponseMessage>& message)
+{
+	if (nullptr == m_PortalForMove)
+	{
+		GameServerDebug::AssertDebugMsg("Player Portal Is Nullptr");
+		return;
+	}
+
+	GetSection()->MoveSection(DynamicCast<Player>(), m_PortalForMove->m_LinkSection);
+	m_PortalForMove = nullptr;
 }

@@ -231,6 +231,7 @@
     </ClCompile>
     <ClCompile Include="ThreadHandlerJoinMessage.cpp" />
     <ClCompile Include="ThreadHandlerLoginMessage.cpp" />
+    <ClCompile Include="ThreadHandlerMoveLevelResponseMessage.cpp" />
     <ClCompile Include="ThreadHandlerPlayerUpdateMessage.cpp" />
     <ClCompile Include="ThreadHandlerPlayerUpdateMessage_UDP.cpp" />
     <ClCompile Include="ThreadHandlerSelectCharacterMessage.cpp" />
@@ -288,6 +289,7 @@
     </ClInclude>
     <ClInclude Include="ThreadHandlerJoinMessage.h" />
     <ClInclude Include="ThreadHandlerLoginMessage.h" />
+    <ClInclude Include="ThreadHandlerMoveLevelResponseMessage.h" />
     <ClInclude Include="ThreadHandlerPlayerUpdateMessage.h" />
     <ClInclude Include="ThreadHandlerPlayerUpdateMessage_UDP.h" />
     <ClInclude Include="ThreadHandlerSelectCharacterMessage.h" />

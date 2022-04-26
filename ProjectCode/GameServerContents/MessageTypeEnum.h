@@ -23,5 +23,6 @@ enum class MessageType
 	SelectCharacter,
 	ClientToReady,
 	UDPConnectResult,
+	MoveLevelResponse,
 	MAX
 };

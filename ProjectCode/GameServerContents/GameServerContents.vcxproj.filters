@@ -63,6 +63,9 @@
     <ClCompile Include="Portal.cpp">
       <Filter>Object\Actor</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadHandlerMoveLevelResponseMessage.cpp">
+      <Filter>ThreadHandler\MoveLevel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PreCompile.h">
@@ -145,6 +148,9 @@
     <ClInclude Include="Portal.h">
       <Filter>Object\Actor</Filter>
     </ClInclude>
+    <ClInclude Include="ThreadHandlerMoveLevelResponseMessage.h">
+      <Filter>ThreadHandler\MoveLevel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="PreCompile">
@@ -200,6 +206,9 @@
     </Filter>
     <Filter Include="ThreadHandler\UDPConnect">
       <UniqueIdentifier>{6ba684f7-78a1-4063-9e9f-4abaa6177c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ThreadHandler\MoveLevel">
+      <UniqueIdentifier>{a4bd1b25-1de9-4c16-b900-04dd9fe6a999}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

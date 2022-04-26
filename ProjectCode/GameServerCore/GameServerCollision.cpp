@@ -36,7 +36,7 @@ bool GameServerCollision::CollisionCheck(CollisionCheckType check_type, int coll
 		return false;
 	}
 
-	const std::list<std::shared_ptr<GameServerCollision>> collision_list = m_OwnerSection->m_CollisionList[collision_type];
+	const std::list<GameServerCollision*> collision_list = m_OwnerSection->m_CollisionList[collision_type];
 	if (0 == collision_list.size())
 	{
 		return false;
@@ -48,7 +48,7 @@ bool GameServerCollision::CollisionCheck(CollisionCheckType check_type, int coll
 	{
 		other_collision->CollisionDataUpdate();
 
-		if (true == s_CollisionCheckFunction[static_cast<int>(check_type)][static_cast<int>(other_check_type)](this, other_collision.get()))
+		if (true == s_CollisionCheckFunction[static_cast<int>(check_type)][static_cast<int>(other_check_type)](this, other_collision))
 		{
 			return true;
 		}
@@ -58,7 +58,7 @@ bool GameServerCollision::CollisionCheck(CollisionCheckType check_type, int coll
 }
 
 bool GameServerCollision::CollisionCheckResult(CollisionCheckType check_type, int collision_type,
-	CollisionCheckType other_check_type, std::vector<std::shared_ptr<GameServerCollision>>& hit_result)
+	CollisionCheckType other_check_type, std::vector<GameServerCollision*>& hit_result)
 {
 	if (nullptr == m_OwnerSection)
 	{
@@ -72,7 +72,7 @@ bool GameServerCollision::CollisionCheckResult(CollisionCheckType check_type, in
 		return false;
 	}
 
-	const std::list<std::shared_ptr<GameServerCollision>> collision_list = m_OwnerSection->m_CollisionList[collision_type];
+	const std::list<GameServerCollision*> collision_list = m_OwnerSection->m_CollisionList[collision_type];
 	if (0 == collision_list.size())
 	{
 		return false;
@@ -84,7 +84,7 @@ bool GameServerCollision::CollisionCheckResult(CollisionCheckType check_type, in
 	{
 		other_collision->CollisionDataUpdate();
 
-		if (true == s_CollisionCheckFunction[static_cast<int>(check_type)][static_cast<int>(other_check_type)](this, other_collision.get()))
+		if (true == s_CollisionCheckFunction[static_cast<int>(check_type)][static_cast<int>(other_check_type)](this, other_collision))
 		{
 			hit_result.push_back(other_collision);
 		}
@@ -120,5 +120,6 @@ void GameServerCollision::SetDeath(bool is_death)
 		return;
 	}
 
-	m_OwnerSection->m_CollisionList[m_GroupIndex].remove(DynamicCast<GameServerCollision>());
+	m_OwnerSection->m_CollisionList[m_GroupIndex].remove(this);
+	delete this;
 }

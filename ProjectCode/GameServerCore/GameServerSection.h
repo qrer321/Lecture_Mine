@@ -38,7 +38,7 @@ private: // Member Var
 	uint64_t m_SectionIndex{};
 	uint64_t m_ThreadIndex{};
 
-	std::map<int, std::list<std::shared_ptr<GameServerCollision>>> m_CollisionList;
+	std::map<int, std::list<GameServerCollision*>> m_CollisionList;
 	std::vector<MoveActorData> m_MoveActors;
 
 public: // Default
@@ -95,12 +95,12 @@ public:
 	}
 
 	template <typename CollisionType>
-	std::shared_ptr<GameServerCollision> CreateCollision(CollisionType collision_type, GameServerActor* owner_actor)
+	GameServerCollision* CreateCollision(CollisionType collision_type, GameServerActor* owner_actor)
 	{
 		return CreateCollision(static_cast<int>(collision_type), owner_actor);
 	}
 
-	std::shared_ptr<GameServerCollision> CreateCollision(int collision_type, GameServerActor* owner_actor);
+	GameServerCollision* CreateCollision(int collision_type, GameServerActor* owner_actor);
 
 private:
 	virtual void UserUpdate() = 0;

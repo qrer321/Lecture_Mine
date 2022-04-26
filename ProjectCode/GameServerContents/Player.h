@@ -1,25 +1,28 @@
 #pragma once
 #include <GameServerCore/GameServerActor.h>
 #include "ServerAndClient.h"
+#include "ClientToServer.h"
 
 class ContentsUserData;
 class ClientToReadyMessage;
 class GameServerCollision;
+class Portal;
 class Player : public GameServerActor
 {
 private: // Member Var
-	PlayerUpdateMessage					m_UpdateMessage;
-	GameServerSerializer				m_Serializer;
+	PlayerUpdateMessage						m_UpdateMessage;
+	GameServerSerializer					m_Serializer;
 
-	std::shared_ptr<ContentsUserData>	m_UserData;
+	std::shared_ptr<ContentsUserData>		m_UserData;
 
-	bool								m_UDPReady;
+	GameServerCollision*					m_HitCollision;
+	Portal*									m_PortalForMove;
 
-	std::shared_ptr<GameServerCollision> m_HitCollision;
+	bool									m_UDPReady;
 
 public: // Default
 	Player();
-	~Player() override = default;
+	~Player() override;
 
 	Player(const Player& other) = delete;
 	Player(Player&& other) noexcept = delete;
@@ -47,7 +50,9 @@ private:
 
 public: // Member Function
 	void CheckMessage();
+
 	void ClientToReadyMessageProcess(const std::shared_ptr<ClientToReadyMessage>& message);
 	void PlayerUpdateMessageProcess(const std::shared_ptr<PlayerUpdateMessage>& message);
+	void MoveLevelResponseMessageProcess(const std::shared_ptr<MoveLevelResponseMessage>& message);
 };
 

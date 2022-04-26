@@ -77,6 +77,9 @@ MessageConverter::MessageConverter(const std::vector<unsigned char>& buffer)
 	case MessageType::UDPConnectResult:
 		m_Message = std::make_shared<UDPConnectResultMessage>();
 		break;
+	case MessageType::MoveLevelResponse:
+		m_Message = std::make_shared<MoveLevelResponseMessage>();
+		break;
 	default:																	
 		return;																	
 	}																			

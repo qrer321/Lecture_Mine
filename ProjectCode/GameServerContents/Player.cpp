@@ -11,8 +11,19 @@
 #include "Portal.h"
 
 Player::Player()
-	: m_UDPReady(false)
+	: m_HitCollision(nullptr)
+	, m_PortalForMove(nullptr)
+	, m_UDPReady(false)
 {
+}
+
+Player::~Player()
+{
+	if (nullptr != m_HitCollision)
+	{
+		m_HitCollision->SetDeath();
+		m_HitCollision = nullptr;
+	}
 }
 
 PlayerUpdateMessage& Player::GetPlayerUpdateMessage()
@@ -73,33 +84,34 @@ void Player::Update(float delta_time)
 {
 	CheckMessage();
 
-	if (IsFrame(10))
+	if (IsFrame(10) && nullptr != m_HitCollision)
 	{
-		static std::vector<std::shared_ptr<GameServerCollision>> hit_result;
+		static std::vector<GameServerCollision*> hit_result;
 
 		if (true == m_HitCollision->CollisionCheckResult(CollisionCheckType::SPHERE, ECollisionGroup::PORTAL, CollisionCheckType::SPHERE, hit_result))
 		{
-			Portal* portal_actor = hit_result[0]->GetOwnerActorConvert<Portal>();
-			if (nullptr == portal_actor)
+			m_PortalForMove = hit_result[0]->GetOwnerActorConvert<Portal>();
+			if (nullptr == m_PortalForMove)
 			{
 				GameServerDebug::AssertDebugMsg("Portal Actor Is Nullptr");
 				return;
 			}
 
-			LevelMoveMessage move_message;
+			MoveLevelMessage move_message;
 			GameServerSerializer serializer;
 			move_message.m_ActorIndex = GetActorIndex();
 			move_message.m_ThreadIndex = GetThreadIndex();
 			move_message.m_SectionIndex = GetSectionIndex();
-			move_message.m_MoveLevel = portal_actor->m_LinkSection->GetNameCopy();
+			move_message.m_MoveLevel = m_PortalForMove->m_LinkSection->GetNameCopy();
 			move_message.Serialize(serializer);
 
-			GetSection()->Broadcasting_UDP(serializer.GetData(), GetActorIndex());
+			GetSection()->Broadcasting_TCP(serializer.GetData(), GetActorIndex());
+			GetTCPSession()->Send(serializer.GetData());
 
 			m_HitCollision->SetDeath();
 			m_HitCollision = nullptr;
 
-			GetSection()->MoveSection(DynamicCast<GameServerActor>(), portal_actor->m_LinkSection);
+			// GetSection()->MoveSection(DynamicCast<GameServerActor>(), portal_actor->m_LinkSection);
 		}
 
 		hit_result.clear();

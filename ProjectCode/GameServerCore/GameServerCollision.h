@@ -88,13 +88,13 @@ public: // Member Function
 
 	template <typename CollisionType>
 	bool CollisionCheckResult(CollisionCheckType check_type, CollisionType collision_type, CollisionCheckType other_check_type, 
-		std::vector<std::shared_ptr<GameServerCollision>>& hit_result)
+		std::vector<GameServerCollision*>& hit_result)
 	{
 		return CollisionCheckResult(check_type, static_cast<int>(collision_type), other_check_type, hit_result);
 	}
 
 	bool CollisionCheckResult(CollisionCheckType check_type, int collision_type, CollisionCheckType other_check_type,
-		std::vector<std::shared_ptr<GameServerCollision>>& hit_result);
+		std::vector<GameServerCollision*>& hit_result);
 
 	void CollisionDataUpdate();
 

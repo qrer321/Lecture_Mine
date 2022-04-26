@@ -10,6 +10,7 @@
 #include "ThreadHandlerSelectCharacterMessage.h"																	
 #include "ThreadHandlerClientToReadyMessage.h"																	
 #include "ThreadHandlerUDPConnectResultMessage.h"																	
+#include "ThreadHandlerMoveLevelResponseMessage.h"																	
 																																			
 Dispatcher<TCPSession> g_tcp_dispatcher;																									
 Dispatcher<UDPSession> g_udp_dispatcher;																									
@@ -46,4 +47,6 @@ void DispatcherRegistration()
 		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::ClientToReady), std::bind(&OnMessageProcess<ThreadHandlerClientToReadyMessage, ClientToReadyMessage>, std::placeholders::_1, std::placeholders::_2));						
 																													
 		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::UDPConnectResult), std::bind(&OnMessageProcess<ThreadHandlerUDPConnectResultMessage, UDPConnectResultMessage>, std::placeholders::_1, std::placeholders::_2));						
+																													
+		g_tcp_dispatcher.AddHandler(static_cast<uint32_t>(MessageType::MoveLevelResponse), std::bind(&OnMessageProcess<ThreadHandlerMoveLevelResponseMessage, MoveLevelResponseMessage>, std::placeholders::_1, std::placeholders::_2));						
 }																														

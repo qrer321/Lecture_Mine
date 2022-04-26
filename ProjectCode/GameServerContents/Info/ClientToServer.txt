@@ -21,3 +21,8 @@ uint64_t m_SectionIndex;
 uint64_t m_ActorIndex;
 uint64_t m_ThreadIndex;
 uint64_t m_SectionIndex;
+
+|MoveLevelResponse-
+uint64_t m_ActorIndex;
+uint64_t m_ThreadIndex;
+uint64_t m_SectionIndex;
